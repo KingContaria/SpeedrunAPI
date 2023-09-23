@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "speedrunapi",
+	"version": "${version}",
+	"name": "Speedrun API",
+	"description": "API for MCSR mods, providing a Config API, selected Fabric API modules and MixinExtras.",
+
+	"authors": [
+		"contaria"
+	],
+	"contact": {
+		"sources": "https://github.com/KingContaria/SpeedrunAPI"
+	},
+
+	"license": "MIT",
+	"icon": "assets/speedrunapi/icon.png",
+
+	"environment": "*",
+	"entrypoints": {
+		"preLaunch": [
+			"org.mcsr.speedrunapi.SpeedrunAPI"
+		],
+		"main": [
+			"org.mcsr.speedrunapi.SpeedrunAPI"
+		]
+	},
+
+	"custom": {
+		"speedrunapi": {
+			"config": "org.mcsr.speedrunapi.config.example.ExampleConfig"
+		}
+	},
+
+	"mixins": [
+		"speedrunapi.mixins.json"
+	],
+
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "1.16.1"
+	}
+}
