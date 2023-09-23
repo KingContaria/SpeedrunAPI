@@ -17,7 +17,7 @@ public class ExampleConfig {
     public boolean aBooleanConfigOption = false;
 
     // a String config option limited to 20 characters which defaults to "fraud"
-    // @Config.Strings.MaxChars is an optional annotation, if not present it will default to a 100-character limit
+    // @Config.Strings.MaxChars is an optional annotation
     @Config.Strings.MaxChars(20)
     private String aStringConfigOption = "fraud";
 
