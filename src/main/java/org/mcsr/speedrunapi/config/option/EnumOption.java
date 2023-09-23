@@ -39,9 +39,9 @@ public class EnumOption extends Option<Enum> {
     @Override
     public void fromJson(JsonElement jsonElement) {
         String jsonString = jsonElement.getAsString();
-        for (Object enumConstant : this.option.getType().getEnumConstants()) {
-            if (enumConstant.toString().equals(jsonString)) {
-                this.set((Enum) enumConstant);
+        for (Enum enumConstant : (Enum[]) this.option.getType().getEnumConstants()) {
+            if (enumConstant.name().equals(jsonString)) {
+                this.set(enumConstant);
                 break;
             }
         }
@@ -49,7 +49,7 @@ public class EnumOption extends Option<Enum> {
 
     @Override
     public JsonElement toJson() {
-        return new JsonPrimitive(this.get().toString());
+        return new JsonPrimitive(this.get().name());
     }
 
     @Override
