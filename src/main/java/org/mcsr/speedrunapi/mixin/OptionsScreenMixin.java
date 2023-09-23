@@ -19,14 +19,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class OptionsScreenMixin extends Screen {
 
     @Unique
-    private static final Identifier SPEEDRUNAPI$FEATHER = new Identifier("textures/item/writable_book.png");
+    private static final Identifier SPEEDRUNAPI$WRITABLE_BOOK = new Identifier("textures/item/writable_book.png");
+
+    @Unique
+    private ButtonWidget speedrunAPI$speedrunConfigButton;
 
     protected OptionsScreenMixin(Text title) {
         super(title);
     }
-
-    @Unique
-    private ButtonWidget speedrunAPI$speedrunConfigButton;
 
     @Inject(method = "init", at = @At("TAIL"))
     private void speedrunAPI$addSpeedrunConfigButton(CallbackInfo ci) {
@@ -39,7 +39,7 @@ public abstract class OptionsScreenMixin extends Screen {
     @Inject(method = "render", at = @At("TAIL"))
     private void speedrunAPI$renderSpeedrunConfigButtonOverlay(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         assert this.client != null;
-        this.client.getTextureManager().bindTexture(SPEEDRUNAPI$FEATHER);
+        this.client.getTextureManager().bindTexture(SPEEDRUNAPI$WRITABLE_BOOK);
         ButtonWidget button = this.speedrunAPI$speedrunConfigButton;
         drawTexture(matrices, button.x + 2, button.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
         if (button.isHovered()) {
