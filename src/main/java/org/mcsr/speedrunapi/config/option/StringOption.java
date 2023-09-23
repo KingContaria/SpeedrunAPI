@@ -61,6 +61,6 @@ public class StringOption extends Option<String> {
     }
 
     public int getMaxLength() {
-        return this.maxLength != null ? this.maxLength.value() : 100;
+        return this.maxLength != null ? this.maxLength.value() : Integer.MAX_VALUE;
     }
 }
