@@ -29,7 +29,7 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
 
         this.intervals = option.getAnnotation(Config.Numbers.Whole.Intervals.class);
         long intervals = this.getIntervals();
-        if (intervals != 0L && (this.getMax() - this.getMin() % intervals) != 0) {
+        if (intervals != 0L && ((this.getMax() - this.getMin() % intervals) != 0L || intervals < 0L)) {
             throw new RuntimeException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
     }
