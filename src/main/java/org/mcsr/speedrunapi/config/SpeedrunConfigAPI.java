@@ -33,7 +33,11 @@ public class SpeedrunConfigAPI {
                         Class<?> configClass = Class.forName(config.getAsString());
                         SpeedrunConfig configAnnotation = configClass.getAnnotation(SpeedrunConfig.class);
                         if (configAnnotation != null) {
-                            CONFIGS_TO_INITIALIZE.computeIfAbsent(configAnnotation.initializeOn(), initPoint -> new HashMap<>()).put(mod, configClass);
+                            if (configAnnotation.modID().equals(mod.getMetadata().getId())) {
+                                CONFIGS_TO_INITIALIZE.computeIfAbsent(configAnnotation.initializeOn(), initPoint -> new HashMap<>()).put(mod, configClass);
+                            } else {
+                                throw new RuntimeException("The provided @SpeedrunConfig's mod ID doesnt match.");
+                            }
                         } else {
                             throw new RuntimeException("Provided config class from " + mod.getMetadata().getId() + " is not annotated with @SpeedrunConfig.");
                         }
