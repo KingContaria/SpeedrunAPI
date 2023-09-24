@@ -25,7 +25,7 @@ public class Config {
         boolean literal() default false;
 
         /**
-         * Sets the name for the annotated option as translation of "speedrunapi.config.<modid>.<option>".
+         * Sets the name for the annotated option as translation of "speedrunapi.config.modid.option".
          */
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.FIELD)
@@ -51,7 +51,7 @@ public class Config {
         boolean literal() default false;
 
         /**
-         * Sets the description for the annotated option as translation of "speedrunapi.config.<modid>.<option>.description".
+         * Sets the description for the annotated option as translation of "speedrunapi.config.modid.option.description".
          */
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.FIELD)
