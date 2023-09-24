@@ -3,8 +3,9 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+def majorMCVersion = Integer.parseInt(project.minecraft_version.split("\\.")[1])
+sourceCompatibility = majorMCVersion > 17 ? JavaVersion.VERSION_17 : majorMCVersion > 16 ? JavaVersion.VERSION_16 : JavaVersion.VERSION_1_8
+targetCompatibility = sourceCompatibility
 
 version = project.mod_version
 group = project.maven_group
@@ -29,8 +30,8 @@ dependencies {
 	include(api(annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"))
 
 	// Fabric API
-	include(modApi "net.fabricmc.fabric-api:fabric-key-binding-api-v1:1.0.36+fb8d95da77")
-	include(modApi "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.2.7+c668f41583")
+	include(modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_api_version))
+	include(modApi fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version))
 }
 
 processResources {
@@ -38,22 +39,21 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
+		expand "minecraft_version": project.minecraft_version
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 
-	// Minecraft 1.17 (21w19a) upwards uses Java 16.
-	def targetVersion = 8
-	it.options.release = targetVersion
+	it.options.release = majorMCVersion > 17 ? 17 : majorMCVersion > 16 ? 16 : 8
 }
 
 java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+	// withSourcesJar()
 }
 
 jar {
@@ -62,7 +62,6 @@ jar {
 	}
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -70,11 +69,14 @@ publishing {
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/octocat/hello-world"
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
 	}
 }
