@@ -16,12 +16,10 @@ import java.util.List;
 public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionEntry> {
 
     private final SpeedrunConfigScreen parent;
-    private final SpeedrunConfigContainer<?> config;
 
     public SpeedrunOptionListWidget(SpeedrunConfigContainer<?> config, SpeedrunConfigScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
         super(client, width, height, top, bottom, 30);
         this.parent = parent;
-        this.config = config;
 
         for (Option<?> option : config.getOptions()) {
             this.addEntry(new OptionEntry(option));
