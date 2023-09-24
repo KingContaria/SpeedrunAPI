@@ -22,13 +22,17 @@ public class ExampleConfig {
     private String aStringConfigOption = "fraud";
 
     // an int config option with a minimum value of 11 and a maximum value of 44 which defaults to 43
-    // @Config.Numbers.WholeBounds is a required annotation for short, int and long options
-    @Config.Numbers.WholeBounds(min = 11, max = 44)
-    public int anIntegerConfigOption = 43;
+    // @Config.Numbers.Whole.Bounds is a required annotation for short, int and long options
+    // @Config.Numbers.Whole.Intervals is an optional annotation for short, int and long options
+    @Config.Numbers.Whole.Bounds(min = 11, max = 44)
+    @Config.Numbers.Whole.Intervals(3)
+    public int anIntegerConfigOption = 41;
 
     // an int config option with a (defaulted) minimum value of 0.0 and a maximum value of 5.0 which defaults to 0.7
-    // @Config.Numbers.FractionalBounds is a required annotation for float and double options
-    @Config.Numbers.FractionalBounds(max = 5.0)
+    // @Config.Numbers.Fractional.Bounds is a required annotation for float and double options
+    // @Config.Numbers.Fractional.Intervals is an optional annotation for float and double options
+    @Config.Numbers.Fractional.Bounds(max = 5.0)
+    @Config.Numbers.Fractional.Intervals(0.1)
     public double aDoubleConfigOption = 0.7;
 
     // an enum config option of the ExampleEnum type

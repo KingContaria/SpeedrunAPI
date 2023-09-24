@@ -24,8 +24,17 @@ public class FloatOption extends FractionalNumberOption<Float> {
 
     @Override
     public void set(@NotNull Float value) {
+        double min = this.getMin();
+        double max = this.getMax();
+        double intervals = this.getIntervals();
+
+        value = (float) MathHelper.clamp(value, min, max);
+
+        double remainder = value % intervals;
+        value = (float) (value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0));
+
         try {
-            this.option.setFloat(this.config, MathHelper.clamp(value, (float) this.getMin(), (float) this.getMax()));
+            this.option.setFloat(this.config, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

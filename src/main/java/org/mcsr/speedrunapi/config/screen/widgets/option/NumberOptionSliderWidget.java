@@ -11,6 +11,8 @@ public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extend
     public NumberOptionSliderWidget(T option, int x, int y, double value) {
         super(x, y, 150, 20, LiteralText.EMPTY, value);
         this.option = option;
-        this.updateMessage();
+        this.updateValue();
     }
+
+    protected abstract void updateValue();
 }

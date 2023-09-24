@@ -24,6 +24,15 @@ public class ShortOption extends WholeNumberOption<Short> {
 
     @Override
     public void set(@NotNull Short value) {
+        long min = this.getMin();
+        long max = this.getMax();
+        long intervals = this.getIntervals();
+
+        value = (short) MathHelper.clamp(value, min, max);
+
+        long remainder = value % intervals;
+        value = (short) (value - remainder + (remainder * 2 >= intervals ? intervals : 0));
+
         try {
             this.option.setShort(this.config, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
         } catch (IllegalAccessException e) {

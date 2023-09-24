@@ -22,10 +22,20 @@ public class DoubleOption extends FractionalNumberOption<Double> {
         }
     }
 
+    // min = 2, value = 6, max = 14, intervals = 3
     @Override
     public void set(@NotNull Double value) {
+        double min = this.getMin();
+        double max = this.getMax();
+        double intervals = this.getIntervals();
+
+        value = MathHelper.clamp(value, min, max);
+
+        double remainder = value % intervals;
+        value = value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0);
+
         try {
-            this.option.setDouble(this.config, MathHelper.clamp(value, this.getMin(), this.getMax()));
+            this.option.setDouble(this.config, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

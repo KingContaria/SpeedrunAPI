@@ -13,7 +13,10 @@ public class WholeNumberOptionSliderWidget<T extends Number> extends NumberOptio
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
-            this.option.setLong(this.option.get().longValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -1 : 1));
+            long interval = this.option.getIntervals();
+            interval = interval != 0 ? interval : 1;
+            this.option.setLong(this.option.get().longValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -interval : interval));
+            this.updateValue();
             return true;
         }
         return false;
@@ -27,5 +30,11 @@ public class WholeNumberOptionSliderWidget<T extends Number> extends NumberOptio
     @Override
     protected void applyValue() {
         this.option.setFromSliderValue(this.value);
+    }
+
+    @Override
+    protected void updateValue() {
+        this.value = (this.option.get().doubleValue() - this.option.getMin()) / (this.option.getMax() - this.option.getMin());
+        this.updateMessage();
     }
 }

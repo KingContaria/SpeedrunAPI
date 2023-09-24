@@ -61,42 +61,76 @@ public class Config {
 
     public static class Numbers {
 
-        /**
-         * Required annotation for {@code float} and {@code double} options.
-         * Sets the allowed bounds for the option.
-         */
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target(ElementType.FIELD)
-        public @interface FractionalBounds {
+        public static class Fractional {
 
             /**
-             * @return Returns the minimum value for the annotated option.
+             * Required annotation for {@code float} and {@code double} options.
+             * Sets the allowed bounds for the option.
              */
-            double min() default 0.0;
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target(ElementType.FIELD)
+            public @interface Bounds {
+
+                /**
+                 * @return Returns the minimum value for the annotated option.
+                 */
+                double min() default 0.0;
+
+                /**
+                 * @return Returns the maximum value for the annotated option.
+                 */
+                double max();
+            }
 
             /**
-             * @return Returns the maximum value for the annotated option.
+             * Optional annotation for {@code float} and {@code double} options.
+             * Sets the intervals for the annotated option.
              */
-            double max();
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target(ElementType.FIELD)
+            public @interface Intervals {
+
+                /**
+                 * @return Returns the allowed intervals for the annotated option.
+                 */
+                double value();
+            }
         }
 
-        /**
-         * Required annotation for {@code short}, {@code int} and {@code long} options.
-         * Sets the allowed bounds for the annotated option.
-         */
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target(ElementType.FIELD)
-        public @interface WholeBounds {
+        public static class Whole {
 
             /**
-             * @return Returns the minimum value for the annotated option.
+             * Required annotation for {@code short}, {@code int} and {@code long} options.
+             * Sets the allowed bounds for the annotated option.
              */
-            long min() default 0L;
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target(ElementType.FIELD)
+            public @interface Bounds {
+
+                /**
+                 * @return Returns the minimum value for the annotated option.
+                 */
+                long min() default 0L;
+
+                /**
+                 * @return Returns the maximum value for the annotated option.
+                 */
+                long max();
+            }
 
             /**
-             * @return Returns the maximum value for the annotated option.
+             * Optional annotation for {@code short}, {@code int} and {@code long} options.
+             * Sets the intervals for the annotated option.
              */
-            long max();
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target(ElementType.FIELD)
+            public @interface Intervals {
+
+                /**
+                 * @return Returns the allowed intervals for the annotated option.
+                 */
+                long value();
+            }
         }
     }
 
