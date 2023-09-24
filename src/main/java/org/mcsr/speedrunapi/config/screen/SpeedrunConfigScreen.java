@@ -10,7 +10,6 @@ import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class SpeedrunConfigScreen extends Screen {
 
