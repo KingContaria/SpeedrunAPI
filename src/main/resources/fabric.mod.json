@@ -18,6 +18,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"preLaunch": [
+			"org.mcsr.speedrunapi.VersionValidator",
 			"org.mcsr.speedrunapi.SpeedrunAPI"
 		],
 		"main": [
@@ -28,7 +29,8 @@
 	"custom": {
 		"speedrunapi": {
 			"config": "org.mcsr.speedrunapi.config.example.ExampleConfig"
-		}
+		},
+		"speedrunapi-mcversion": "{{MC_VERSION}}"
 	},
 
 	"mixins": [
@@ -36,7 +38,6 @@
 	],
 
 	"depends": {
-		"fabricloader": ">=0.14.11",
-		"minecraft": "${minecraft_version}"
+		"fabricloader": ">=0.14.11"
 	}
 }

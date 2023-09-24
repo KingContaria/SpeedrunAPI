@@ -3,9 +3,8 @@ plugins {
 	id 'maven-publish'
 }
 
-def majorMCVersion = Integer.parseInt(project.minecraft_version.split("\\.")[1])
-sourceCompatibility = majorMCVersion > 17 ? JavaVersion.VERSION_17 : majorMCVersion > 16 ? JavaVersion.VERSION_16 : JavaVersion.VERSION_1_8
-targetCompatibility = sourceCompatibility
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_1_8
 
 version = project.mod_version
 group = project.maven_group
@@ -36,18 +35,17 @@ dependencies {
 
 processResources {
 	inputs.property "version", project.version
-	inputs.property "minecraft_version", project.minecraft_version
 
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
-		expand "minecraft_version": project.minecraft_version
+		filter { line -> line.replace("{{MC_VERSION}}", project.minecraft_version) }
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 
-	it.options.release = majorMCVersion > 17 ? 17 : majorMCVersion > 16 ? 16 : 8
+	it.options.release = 8
 }
 
 java {
