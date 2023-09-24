@@ -9,11 +9,11 @@ plugins {
 def targetJavaVersion = {
 	Pattern snapshotPattern = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
 	Matcher snapshotMatcher = snapshotPattern.matcher(project.minecraft_version)
-	String[] versionSplit = project.minecraft_version.split("\\.");
+	String[] versionSplit = project.minecraft_version.split("\\.")
 	try {
 		if (versionSplit.length > 1) {
-			if (Integer.parseInt(versionSplit[2]) > 17) return 17
-			if (Integer.parseInt(versionSplit[2]) > 16) return 16
+			if (Integer.parseInt(versionSplit[1]) > 17) return 17
+			if (Integer.parseInt(versionSplit[1]) > 16) return 16
 		} else if (snapshotMatcher.matches()) {
 			int year = Integer.parseInt(snapshotMatcher.group(1))
 			int week = Integer.parseInt(snapshotMatcher.group(2))
