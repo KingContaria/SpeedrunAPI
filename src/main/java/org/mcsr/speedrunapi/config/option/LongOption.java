@@ -30,7 +30,7 @@ public class LongOption extends WholeNumberOption<Long> {
 
         value = MathHelper.clamp(value, min, max);
 
-        long remainder = value % intervals;
+        long remainder = (value - min) % intervals;
         value = value - remainder + (remainder * 2 >= intervals ? intervals : 0);
 
         try {
