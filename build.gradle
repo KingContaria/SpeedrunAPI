@@ -26,7 +26,10 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// MixinExtras
-	include(implementation(annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras_version}"))
+	include(implementation(annotationProcessor "com.github.llamalad7.mixinextras:mixinextras-fabric:${project.mixinextras}"))
+
+	// MixinSquared
+	include(implementation(annotationProcessor "com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixinsquared}"))
 
 	// Fabric API
 	include(modImplementation "net.fabricmc.fabric-api:fabric-key-binding-api-v1:1.0.36+fb8d95da77")
