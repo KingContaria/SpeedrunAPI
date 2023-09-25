@@ -29,7 +29,7 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
 
         this.intervals = option.getAnnotation(Config.Numbers.Fractional.Intervals.class);
         double intervals = this.getIntervals();
-        if (intervals != 0.0 && ((this.getMax() - this.getMin() % intervals) != 0.0 || intervals < 0.0)) {
+        if (intervals != 0.0 && (((this.getMax() - this.getMin()) % intervals) != 0.0 || intervals < 0.0)) {
             throw new RuntimeException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
     }
