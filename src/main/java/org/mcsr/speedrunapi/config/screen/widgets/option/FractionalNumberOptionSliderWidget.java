@@ -14,9 +14,11 @@ public class FractionalNumberOptionSliderWidget<T extends Number> extends Number
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
             double interval = this.option.getIntervals();
-            interval = interval != 0 ? interval : 1;
-            this.option.setDouble(this.option.get().longValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -interval : interval));
-            this.updateMessage();
+            if (interval == 0) {
+                return super.keyPressed(keyCode, scanCode, modifiers);
+            }
+            this.option.setDouble(this.option.get().doubleValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -interval : interval));
+            this.updateValue();
             return true;
         }
         return false;
