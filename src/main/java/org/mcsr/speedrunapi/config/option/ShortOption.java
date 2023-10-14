@@ -32,8 +32,10 @@ public class ShortOption extends WholeNumberOption<Short> {
 
         value = (short) MathHelper.clamp(value, min, max);
 
-        long remainder = (value - min) % intervals;
-        value = (short) (value - remainder + (remainder * 2 >= intervals ? intervals : 0));
+        if (intervals != 0) {
+            long remainder = (value - min) % intervals;
+            value = (short) (value - remainder + (remainder * 2 >= intervals ? intervals : 0));
+        }
 
         try {
             if (this.setter != null) {

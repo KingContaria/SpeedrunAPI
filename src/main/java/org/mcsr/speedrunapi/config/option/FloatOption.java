@@ -32,8 +32,10 @@ public class FloatOption extends FractionalNumberOption<Float> {
 
         value = (float) MathHelper.clamp(value, min, max);
 
-        double remainder = (value - min) % intervals;
-        value = (float) (value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0));
+        if (intervals != 0) {
+            double remainder = (value - min) % intervals;
+            value = (float) (value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0));
+        }
 
         try {
             if (this.setter != null) {
