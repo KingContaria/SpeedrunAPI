@@ -41,9 +41,6 @@ public class SpeedrunModConfigsScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
-            return true;
-        }
-        return this.list.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyCode, scanCode, modifiers) || this.list.keyPressed(keyCode, scanCode, modifiers);
     }
 }

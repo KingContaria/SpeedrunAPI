@@ -4,12 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class FloatOption extends FractionalNumberOption<Float> {
 
-    public FloatOption(Object config, Field option) {
+    public FloatOption(SpeedrunConfig config, Field option) {
         super(config, option);
     }
 
@@ -18,7 +20,7 @@ public class FloatOption extends FractionalNumberOption<Float> {
         try {
             return this.option.getFloat(this.config);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
@@ -34,9 +36,12 @@ public class FloatOption extends FractionalNumberOption<Float> {
         value = (float) (value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0));
 
         try {
+            if (this.setter != null) {
+                this.setter.invoke(this.config, value);
+            }
             this.option.setFloat(this.config, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 

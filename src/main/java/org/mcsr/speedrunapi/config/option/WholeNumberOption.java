@@ -3,7 +3,10 @@ package org.mcsr.speedrunapi.config.option;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
+import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
+import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 import org.mcsr.speedrunapi.config.screen.widgets.option.WholeNumberOptionSliderWidget;
 
 import java.lang.reflect.Field;
@@ -12,30 +15,35 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
 
     @NotNull
     private final Config.Numbers.Whole.Bounds bounds;
-
     @Nullable
     private final Config.Numbers.Whole.Intervals intervals;
+    private final boolean useTextField;
 
-    public WholeNumberOption(Object config, Field option) {
+    public WholeNumberOption(SpeedrunConfig config, Field option) {
         super(config, option);
 
         this.bounds = option.getAnnotation(Config.Numbers.Whole.Bounds.class);
         if (this.bounds == null) {
-            throw new RuntimeException("Missing WholeBounds annotation on " + this.getID() + " config field!");
+            throw new InvalidConfigException("Missing Bounds annotation on " + this.getID() + " config field!");
         }
         if (this.getMax() <= this.getMin()) {
-            throw new RuntimeException("Invalid bounds for " + this.getID() + "! Min: " + this.getMin() + ", Max: " + this.getMax());
+            throw new InvalidConfigException("Invalid bounds for " + this.getID() + "! Min: " + this.getMin() + ", Max: " + this.getMax());
         }
 
         this.intervals = option.getAnnotation(Config.Numbers.Whole.Intervals.class);
         long intervals = this.getIntervals();
         if (intervals != 0L && (((this.getMax() - this.getMin()) % intervals) != 0L || intervals < 0L)) {
-            throw new RuntimeException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
+            throw new InvalidConfigException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
+
+        this.useTextField = option.isAnnotationPresent(Config.Numbers.TextField.class);
     }
 
     @Override
     public AbstractButtonWidget createWidget() {
+        if (this.useTextField) {
+            return new NumberOptionTextFieldWidget<>(this, 0, 0);
+        }
         return new WholeNumberOptionSliderWidget<>(this, 0, 0);
     }
 
@@ -44,7 +52,11 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
         long min = this.getMin();
         long max = this.getMax();
         this.setLong(Math.round(min + (max - min) * sliderValue));
-        this.get();
+    }
+
+    @Override
+    public void setFromString(String stringValue) throws NumberFormatException {
+        this.setLong(Long.parseLong(stringValue));
     }
 
     public long getMin() {

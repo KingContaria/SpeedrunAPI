@@ -2,18 +2,22 @@ package org.mcsr.speedrunapi.config.example;
 
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import org.mcsr.speedrunapi.config.api.EnumTextProvider;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
 import org.mcsr.speedrunapi.config.api.annotations.*;
 
 @SuppressWarnings("unused")
-@SpeedrunConfig(modID = "speedrunapi")
-public class ExampleConfig {
+@InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
+public class ExampleConfig implements SpeedrunConfig {
 
+    @NoConfig
     public static ExampleConfig INSTANCE;
 
-    // a boolean config option named joe which defaults to false
-    @Config.Name(value = "Joe", literal = true)
-    @Config.Description(value = "This option is named Joe", literal = true)
+    // a boolean config option using custom translation keys for name and description
+    // without these, translation keys default to "speedrunapi.config.modid.option.theOption" for the name
+    // and "speedrunapi.config.modid.option.theOption.description" for the description
+    @Config.Name("speedrunapi.some.other.translationkey")
+    @Config.Description("speedrunapi.some.other.translationkey.description")
     public boolean aBooleanConfigOption = false;
 
     // a String config option limited to 20 characters which defaults to "fraud"
@@ -31,19 +35,21 @@ public class ExampleConfig {
     // an int config option with a (defaulted) minimum value of 0.0 and a maximum value of 5.0 which defaults to 0.7
     // @Config.Numbers.Fractional.Bounds is a required annotation for float and double options
     // @Config.Numbers.Fractional.Intervals is an optional annotation for float and double options
+    // @Config.Numbers.TextField is an optional annotation for number options and makes the gui widget for the option
+    // a text input field rather than a slider
     @Config.Numbers.Fractional.Bounds(max = 5.0)
     @Config.Numbers.Fractional.Intervals(0.1)
+    @Config.Numbers.TextField
     public double aDoubleConfigOption = 0.7;
 
     // an enum config option of the ExampleEnum type
-    // @Config.Name.Auto will make the name the translation of "speedrunapi.config.<modid>.<option>"
-    // @Config.Description.Auto will make the name the translation of "speedrunapi.config.<modid>.<option>.description"
-    @Config.Name.Auto
-    @Config.Description.Auto
     protected ExampleEnum anEnum = ExampleEnum.THREE;
 
     // the two following boolean options are just here to make the scrollbar on the config menu appear
+    @Config.Category("fillers")
     public boolean isTrue = false;
+
+    @Config.Category("fillers")
     public boolean isFalse = true;
 
     // a boolean value in the config class which is not configurable (and also not saved in the config file)
@@ -53,6 +59,11 @@ public class ExampleConfig {
 
     {
         INSTANCE = this;
+    }
+
+    @Override
+    public String modID() {
+        return "speedrunapi";
     }
 
     public enum ExampleEnum implements EnumTextProvider {
@@ -67,6 +78,7 @@ public class ExampleConfig {
             this.string = string;
         }
 
+        // Implementing EnumTextProvider allows you to use custom names for your enum values
         @Override
         public Text toText() {
             return new LiteralText(this.string);

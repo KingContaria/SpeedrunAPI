@@ -4,12 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class DoubleOption extends FractionalNumberOption<Double> {
 
-    public DoubleOption(Object config, Field option) {
+    public DoubleOption(SpeedrunConfig config, Field option) {
         super(config, option);
     }
 
@@ -18,11 +20,10 @@ public class DoubleOption extends FractionalNumberOption<Double> {
         try {
             return this.option.getDouble(this.config);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
-    // min = 2, value = 6, max = 14, intervals = 3
     @Override
     public void set(@NotNull Double value) {
         double min = this.getMin();
@@ -35,9 +36,12 @@ public class DoubleOption extends FractionalNumberOption<Double> {
         value = value - remainder + (remainder * 2.0 >= intervals ? intervals : 0.0);
 
         try {
+            if (this.setter != null) {
+                this.setter.invoke(this.config, value);
+            }
             this.option.setDouble(this.config, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 

@@ -2,5 +2,6 @@
   "speedrunapi.gui.speedrunConfigButton": "Mod Configs",
   "speedrunapi.gui.speedrunConfigTitle": "Speedrun API - Mod Configs",
   "speedrunapi.config.speedrunapi.option.anEnum": "Countdown",
-  "speedrunapi.config.speedrunapi.option.anEnum.description": "But in Twitch emotes, yaaayyyyy!"
+  "speedrunapi.config.speedrunapi.option.anEnum.description": "But in Twitch emotes, yaaayyyyy!",
+  "speedrunapi.config.speedrunapi.category.fillers": "2 boolean options"
 }

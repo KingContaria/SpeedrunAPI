@@ -27,7 +27,8 @@
 
 	"custom": {
 		"speedrunapi": {
-			"config": "org.mcsr.speedrunapi.config.example.ExampleConfig"
+			"config": "org.mcsr.speedrunapi.config.example.ExampleConfig",
+			"properties": "org.mcsr.speedrunapi.properties.example.ExampleProperties"
 		}
 	},
 

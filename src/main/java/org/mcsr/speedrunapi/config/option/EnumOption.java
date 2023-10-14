@@ -3,18 +3,20 @@ package org.mcsr.speedrunapi.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.NotNull;
-import org.mcsr.speedrunapi.config.api.EnumTextProvider;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 
 import java.lang.reflect.Field;
 
 @SuppressWarnings("rawtypes")
-public class EnumOption extends Option<Enum> {
+public class EnumOption extends BaseOption<Enum> {
 
-    public EnumOption(Object config, Field option) {
+    public EnumOption(SpeedrunConfig config, Field option) {
         super(config, option);
     }
 
@@ -23,16 +25,19 @@ public class EnumOption extends Option<Enum> {
         try {
             return (Enum) this.option.get(this.config);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
     @Override
     public void set(@NotNull Enum value) {
         try {
+            if (this.setter != null) {
+                this.setter.invoke(this.config, value);
+            }
             this.option.set(this.config, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
@@ -62,6 +67,6 @@ public class EnumOption extends Option<Enum> {
         if (value instanceof EnumTextProvider) {
             return ((EnumTextProvider) value).toText();
         }
-        return new LiteralText(value.name());
+        return new TranslatableText("speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value." + value.name());
     }
 }

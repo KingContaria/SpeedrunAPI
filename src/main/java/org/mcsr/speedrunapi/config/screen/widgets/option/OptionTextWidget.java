@@ -8,7 +8,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.option.Option;
 
 public class OptionTextWidget<T> implements Drawable, Element {

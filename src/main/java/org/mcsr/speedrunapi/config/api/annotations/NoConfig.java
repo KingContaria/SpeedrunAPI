@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for fields in config classes that are not configurable.
+ * <p>
  * The field will not be available from the {@link SpeedrunConfigScreen} and will not be saved in the config file.
  */
 @Retention(RetentionPolicy.RUNTIME)

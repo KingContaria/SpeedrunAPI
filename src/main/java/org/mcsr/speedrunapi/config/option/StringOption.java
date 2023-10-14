@@ -5,22 +5,24 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
 
 import java.lang.reflect.Field;
 
-public class StringOption extends Option<String> {
+public class StringOption extends BaseOption<String> {
 
     @Nullable
     private final Config.Strings.MaxChars maxLength;
 
-    public StringOption(Object config, Field option) {
+    public StringOption(SpeedrunConfig config, Field option) {
         super(config, option);
 
         this.maxLength = option.getAnnotation(Config.Strings.MaxChars.class);
         if (this.getMaxLength() <= 0) {
-            throw new RuntimeException("Max String length cannot be 0 or less!");
+            throw new SpeedrunConfigAPIException("Max String length cannot be 0 or less!");
         }
     }
 
@@ -29,7 +31,7 @@ public class StringOption extends Option<String> {
         try {
             return (String) this.option.get(this.config);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
@@ -39,9 +41,12 @@ public class StringOption extends Option<String> {
             if (value.length() > this.getMaxLength()) {
                 value = value.substring(0, this.getMaxLength() - 1);
             }
+            if (this.setter != null) {
+                this.setter.invoke(this.config, value);
+            }
             this.option.set(this.config, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 

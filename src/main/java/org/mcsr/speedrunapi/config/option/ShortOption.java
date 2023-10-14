@@ -4,12 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class ShortOption extends WholeNumberOption<Short> {
 
-    public ShortOption(Object config, Field option) {
+    public ShortOption(SpeedrunConfig config, Field option) {
         super(config, option);
     }
 
@@ -18,7 +20,7 @@ public class ShortOption extends WholeNumberOption<Short> {
         try {
             return this.option.getShort(this.config);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 
@@ -34,9 +36,12 @@ public class ShortOption extends WholeNumberOption<Short> {
         value = (short) (value - remainder + (remainder * 2 >= intervals ? intervals : 0));
 
         try {
+            if (this.setter != null) {
+                this.setter.invoke(this.config, value);
+            }
             this.option.setShort(this.config, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new SpeedrunConfigAPIException(e);
         }
     }
 

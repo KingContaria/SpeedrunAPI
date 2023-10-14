@@ -1,19 +1,22 @@
 package org.mcsr.speedrunapi.config.screen.widgets.list;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.option.Option;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.option.OptionTextWidget;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionEntry> {
+public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionListEntry> {
 
     private final SpeedrunConfigScreen parent;
 
@@ -21,8 +24,19 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         super(client, width, height, top, bottom, 30);
         this.parent = parent;
 
+        Map<String, Set<Option<?>>> categorizedOptions = new HashMap<>();
         for (Option<?> option : config.getOptions()) {
+            if (option.getCategory() != null) {
+                categorizedOptions.computeIfAbsent(option.getCategory(), string -> new HashSet<>()).add(option);
+                continue;
+            }
             this.addEntry(new OptionEntry(option));
+        }
+        for (Map.Entry<String, Set<Option<?>>> category : categorizedOptions.entrySet()) {
+            this.addEntry(new OptionCategoryEntry(new TranslatableText("speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey())));
+            for (Option<?> option : category.getValue()) {
+                this.addEntry(new OptionEntry(option));
+            }
         }
     }
 
@@ -36,7 +50,15 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         return super.getScrollbarPositionX() + 32;
     }
 
-    public class OptionEntry extends ElementListWidget.Entry<OptionEntry> {
+    @Override
+    protected void moveSelection(EntryListWidget.MoveDirection direction) {
+        this.moveSelectionIf(direction, entry -> !(entry instanceof OptionCategoryEntry));
+    }
+
+    public abstract static class OptionListEntry extends ElementListWidget.Entry<OptionListEntry> {
+    }
+
+    public class OptionEntry extends OptionListEntry {
 
         private final OptionTextWidget<?> text;
         private final AbstractButtonWidget button;
@@ -60,10 +82,26 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         @Override
         public List<? extends Element> children() {
-            List<Element> children = new ArrayList<>();
-            children.add(this.text);
-            children.add(this.button);
-            return children;
+            return ImmutableList.of(this.text, this.button);
+        }
+    }
+
+    public class OptionCategoryEntry extends OptionListEntry {
+
+        private final Text category;
+
+        public OptionCategoryEntry(Text category) {
+            this.category = category;
+        }
+
+        @Override
+        public List<? extends Element> children() {
+            return ImmutableList.of();
+        }
+
+        @Override
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            SpeedrunOptionListWidget.this.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

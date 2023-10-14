@@ -1,7 +1,6 @@
 package org.mcsr.speedrunapi.config.screen.widgets.list;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.MinecraftClient;
@@ -25,8 +24,7 @@ import org.mcsr.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Map;
+import java.util.*;
 
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigEntry> {
 
@@ -39,7 +37,11 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         super(client, width, height, top, bottom, 36);
         this.parent = parent;
 
-        modConfigScreenProviders.forEach((mod, configScreenProvider) -> this.addEntry(new ModConfigEntry(mod, configScreenProvider)));
+        List<ModContainer> sortedModList = new ArrayList<>(modConfigScreenProviders.keySet());
+        sortedModList.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
+        for (ModContainer mod : sortedModList) {
+            this.addEntry(new ModConfigEntry(mod, modConfigScreenProviders.get(mod)));
+        }
     }
 
     @Override
