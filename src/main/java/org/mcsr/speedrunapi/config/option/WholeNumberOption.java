@@ -17,7 +17,6 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     private final Config.Numbers.Whole.Bounds bounds;
     @Nullable
     private final Config.Numbers.Whole.Intervals intervals;
-    private final boolean useTextField;
 
     public WholeNumberOption(SpeedrunConfig config, Field option) {
         super(config, option);
@@ -35,8 +34,6 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
         if (intervals != 0L && (((this.getMax() - this.getMin()) % intervals) != 0L || intervals < 0L)) {
             throw new InvalidConfigException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
-
-        this.useTextField = option.isAnnotationPresent(Config.Numbers.TextField.class);
     }
 
     @Override

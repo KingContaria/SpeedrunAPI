@@ -17,7 +17,6 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     private final Config.Numbers.Fractional.Bounds bounds;
     @Nullable
     private final Config.Numbers.Fractional.Intervals intervals;
-    private final boolean useTextField;
 
     public FractionalNumberOption(SpeedrunConfig config, Field option) {
         super(config, option);
@@ -35,8 +34,6 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
         if (intervals < 0.0) {
             throw new InvalidConfigException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
-
-        this.useTextField = option.isAnnotationPresent(Config.Numbers.TextField.class);
     }
 
     @Override
