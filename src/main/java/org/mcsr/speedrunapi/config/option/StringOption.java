@@ -6,6 +6,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
@@ -17,8 +18,8 @@ public class StringOption extends BaseOption<String> {
     @Nullable
     private final Config.Strings.MaxChars maxLength;
 
-    public StringOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public StringOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
 
         this.maxLength = option.getAnnotation(Config.Strings.MaxChars.class);
         if (this.getMaxLength() <= 0) {
@@ -29,7 +30,7 @@ public class StringOption extends BaseOption<String> {
     @Override
     public @NotNull String get() {
         try {
-            return (String) this.option.get(this.config);
+            return (String) this.option.get(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -42,9 +43,9 @@ public class StringOption extends BaseOption<String> {
                 value = value.substring(0, this.getMaxLength() - 1);
             }
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.set(this.config, value);
+            this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }

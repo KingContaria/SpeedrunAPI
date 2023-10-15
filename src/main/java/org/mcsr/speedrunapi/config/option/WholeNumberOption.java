@@ -4,6 +4,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
@@ -18,8 +19,8 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     @Nullable
     protected final Config.Numbers.Whole.Intervals intervals;
 
-    public WholeNumberOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public WholeNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
 
         this.bounds = option.getAnnotation(Config.Numbers.Whole.Bounds.class);
         if (this.bounds == null) {

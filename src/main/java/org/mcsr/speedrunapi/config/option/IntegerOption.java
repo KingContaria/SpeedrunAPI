@@ -5,20 +5,21 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class IntegerOption extends WholeNumberOption<Integer> {
 
-    public IntegerOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public IntegerOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
     }
 
     @Override
     public @NotNull Integer get() {
         try {
-            return this.option.getInt(this.config);
+            return this.option.getInt(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -41,9 +42,9 @@ public class IntegerOption extends WholeNumberOption<Integer> {
 
         try {
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.setInt(this.config, value);
+            this.option.setInt(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }

@@ -24,10 +24,10 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         super(client, width, height, top, bottom, 30);
         this.parent = parent;
 
-        Map<String, Set<Option<?>>> categorizedOptions = new HashMap<>();
+        Map<String, Set<Option<?>>> categorizedOptions = new LinkedHashMap<>();
         for (Option<?> option : config.getOptions()) {
             if (option.getCategory() != null) {
-                categorizedOptions.computeIfAbsent(option.getCategory(), string -> new HashSet<>()).add(option);
+                categorizedOptions.computeIfAbsent(option.getCategory(), string -> new LinkedHashSet<>()).add(option);
                 continue;
             }
             this.addEntry(new OptionEntry(option));

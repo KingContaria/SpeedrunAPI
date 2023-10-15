@@ -3,10 +3,11 @@ package org.mcsr.speedrunapi.config.example;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
 import org.mcsr.speedrunapi.config.api.annotations.*;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 @InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
 public class ExampleConfig implements SpeedrunConfig {
 
@@ -45,12 +46,19 @@ public class ExampleConfig implements SpeedrunConfig {
     // an enum config option of the ExampleEnum type
     protected ExampleEnum anEnum = ExampleEnum.THREE;
 
-    // the two following boolean options are just here to make the scrollbar on the config menu appear
+    // the two following boolean options are sorted under a "filler" category using the translation key "speedrunapi.config.speedrunapi.category.fillers"
     @Config.Category("fillers")
     public boolean isTrue = false;
 
+    // @Config.Description.None is an optional annotation for options to remove the default description of "speedrunapi.config.<modid>.option.<option>.description"
     @Config.Category("fillers")
+    @Config.Description.None
     public boolean isFalse = true;
+
+    // this object implements the SpeedrunConfigStorage interface, making it so that all the fields in the object get turned into options
+    // if the storage is annotated with a category, options in the storage automatically get assigned this category if they do not already have one
+    @Config.Category("storage")
+    public ExampleOptionStorage thisStoresMoreOptions = new ExampleOptionStorage();
 
     // a boolean value in the config class which is not configurable (and also not saved in the config file)
     // because it is annotated by @NoConfig
@@ -64,6 +72,17 @@ public class ExampleConfig implements SpeedrunConfig {
     @Override
     public String modID() {
         return "speedrunapi";
+    }
+
+    public static class ExampleOptionStorage implements SpeedrunConfigStorage {
+
+        public boolean thisBooleanIsStoredInAnotherClass = true;
+
+        @Config.Numbers.Whole.Bounds(max = 5)
+        public short soIsThisShort = 3;
+
+        private ExampleOptionStorage() {
+        }
     }
 
     public enum ExampleEnum implements EnumTextProvider {

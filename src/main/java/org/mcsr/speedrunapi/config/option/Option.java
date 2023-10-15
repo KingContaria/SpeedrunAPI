@@ -9,9 +9,18 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class Option<T> {
 
+    @Nullable
+    protected String category;
+
     public abstract String getID();
 
-    public abstract String getCategory();
+    public @Nullable String getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(@Nullable String category) {
+        this.category = category;
+    }
 
     public abstract String getModID();
 

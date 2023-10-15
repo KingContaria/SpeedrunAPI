@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
@@ -16,14 +17,14 @@ import java.lang.reflect.Field;
 @SuppressWarnings("rawtypes")
 public class EnumOption extends BaseOption<Enum> {
 
-    public EnumOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public EnumOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
     }
 
     @Override
     public @NotNull Enum get() {
         try {
-            return (Enum) this.option.get(this.config);
+            return (Enum) this.option.get(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -33,9 +34,9 @@ public class EnumOption extends BaseOption<Enum> {
     public void set(@NotNull Enum value) {
         try {
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.set(this.config, value);
+            this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }

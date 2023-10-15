@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 public class CustomOption<T> extends Option<T> {
 
     private final String id;
-    private final String category;
     private final String modID;
     private final Supplier<T> getFunction;
     private final Consumer<T> setFunction;
@@ -31,11 +30,6 @@ public class CustomOption<T> extends Option<T> {
     @Override
     public String getID() {
         return this.id;
-    }
-
-    @Override
-    public String getCategory() {
-        return this.category;
     }
 
     @Override

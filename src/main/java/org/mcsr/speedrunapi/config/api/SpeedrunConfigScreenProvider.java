@@ -9,7 +9,7 @@ import org.mcsr.speedrunapi.config.screen.SpeedrunModConfigsScreen;
  * <p>
  * Register by adding your class implementing {@link SpeedrunConfigScreenProvider} to your mod's fabric.mod.json like this:
  * <p>
- * "custom": [ "speedrunapi": [ "screen": "a.b.c.ScreenProvider" ] ]
+ * "custom": [ "speedrunapi": [ "screen": "a.b.c.ABCConfigScreenProvider" ] ]
  */
 public interface SpeedrunConfigScreenProvider {
 

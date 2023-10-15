@@ -5,20 +5,21 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class DoubleOption extends FractionalNumberOption<Double> {
 
-    public DoubleOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public DoubleOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
     }
 
     @Override
     public @NotNull Double get() {
         try {
-            return this.option.getDouble(this.config);
+            return this.option.getDouble(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -41,9 +42,9 @@ public class DoubleOption extends FractionalNumberOption<Double> {
 
         try {
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.setDouble(this.config, value);
+            this.option.setDouble(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }

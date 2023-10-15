@@ -5,20 +5,21 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class FloatOption extends FractionalNumberOption<Float> {
 
-    public FloatOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public FloatOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
     }
 
     @Override
     public @NotNull Float get() {
         try {
-            return this.option.getFloat(this.config);
+            return this.option.getFloat(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -41,9 +42,9 @@ public class FloatOption extends FractionalNumberOption<Float> {
 
         try {
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.setFloat(this.config, value);
+            this.option.setFloat(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }

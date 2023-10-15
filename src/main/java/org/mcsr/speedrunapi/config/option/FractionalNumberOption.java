@@ -4,6 +4,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.FractionalNumberOptionSliderWidget;
@@ -18,8 +19,8 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     @Nullable
     protected final Config.Numbers.Fractional.Intervals intervals;
 
-    public FractionalNumberOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public FractionalNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
 
         this.bounds = option.getAnnotation(Config.Numbers.Fractional.Bounds.class);
         if (this.bounds == null) {

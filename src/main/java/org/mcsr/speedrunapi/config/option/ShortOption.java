@@ -5,20 +5,21 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
 public class ShortOption extends WholeNumberOption<Short> {
 
-    public ShortOption(SpeedrunConfig config, Field option) {
-        super(config, option);
+    public ShortOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+        super(config, configStorage, option);
     }
 
     @Override
     public @NotNull Short get() {
         try {
-            return this.option.getShort(this.config);
+            return this.option.getShort(this.configStorage);
         } catch (IllegalAccessException e) {
             throw new SpeedrunConfigAPIException(e);
         }
@@ -41,9 +42,9 @@ public class ShortOption extends WholeNumberOption<Short> {
 
         try {
             if (this.setter != null) {
-                this.setter.invoke(this.config, value);
+                this.setter.invoke(this.configStorage, value);
             }
-            this.option.setShort(this.config, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
+            this.option.setShort(this.configStorage, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
