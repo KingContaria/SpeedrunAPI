@@ -18,7 +18,7 @@ public abstract class BaseOption<T> extends Option<T> {
     protected final Field option;
 
     @Nullable
-    private final Config.Category category;
+    protected final Config.Category category;
     @Nullable
     protected final Method getter;
     @Nullable

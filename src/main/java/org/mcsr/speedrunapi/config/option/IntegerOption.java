@@ -30,7 +30,9 @@ public class IntegerOption extends WholeNumberOption<Integer> {
         long max = this.getMax();
         long intervals = this.getIntervals();
 
-        value = (int) MathHelper.clamp(value, min, max);
+        if (this.bounds.enforce()) {
+            value = (int) MathHelper.clamp(value, min, max);
+        }
 
         if (intervals != 0) {
             long remainder = (value - min) % intervals;

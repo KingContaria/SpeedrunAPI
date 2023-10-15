@@ -14,9 +14,9 @@ import java.lang.reflect.Field;
 public abstract class FractionalNumberOption<T extends Number> extends NumberOption<T> {
 
     @NotNull
-    private final Config.Numbers.Fractional.Bounds bounds;
+    protected final Config.Numbers.Fractional.Bounds bounds;
     @Nullable
-    private final Config.Numbers.Fractional.Intervals intervals;
+    protected final Config.Numbers.Fractional.Intervals intervals;
 
     public FractionalNumberOption(SpeedrunConfig config, Field option) {
         super(config, option);

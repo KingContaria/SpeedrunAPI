@@ -110,6 +110,11 @@ public class Config {
                  * @return Returns the maximum value for the annotated option.
                  */
                 double max();
+
+                /**
+                 * @return Returns whether the bounds should be enforced or simply serve as boundaries for the gui widget.
+                 */
+                boolean enforce() default true;
             }
 
             /**
@@ -148,6 +153,11 @@ public class Config {
                  * @return Returns the maximum value for the annotated option.
                  */
                 long max();
+
+                /**
+                 * @return Returns whether the bounds should be enforced or simply serve as boundaries for the gui widget.
+                 */
+                boolean enforce() default true;
             }
 
             /**

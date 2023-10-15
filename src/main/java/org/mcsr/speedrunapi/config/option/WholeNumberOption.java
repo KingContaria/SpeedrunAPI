@@ -14,9 +14,9 @@ import java.lang.reflect.Field;
 public abstract class WholeNumberOption<T extends Number> extends NumberOption<T> {
 
     @NotNull
-    private final Config.Numbers.Whole.Bounds bounds;
+    protected final Config.Numbers.Whole.Bounds bounds;
     @Nullable
-    private final Config.Numbers.Whole.Intervals intervals;
+    protected final Config.Numbers.Whole.Intervals intervals;
 
     public WholeNumberOption(SpeedrunConfig config, Field option) {
         super(config, option);
