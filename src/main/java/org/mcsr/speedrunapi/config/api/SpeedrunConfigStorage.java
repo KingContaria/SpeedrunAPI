@@ -11,7 +11,7 @@ import java.util.*;
 
 public interface SpeedrunConfigStorage {
 
-    default Map<String, Option<?>> init(SpeedrunConfig config) {
+    default Map<String, Option<?>> init(SpeedrunConfig config, String optionIDPrefix) {
         Map<String, Option<?>> options = new LinkedHashMap<>();
 
         List<Class<?>> classes = new ArrayList<>();
@@ -27,7 +27,7 @@ public interface SpeedrunConfigStorage {
                 }
 
                 Class<?> type = field.getType();
-                Option<?> option;
+                BaseOption<?> option;
                 if (boolean.class.equals(type)) {
                     option = new BooleanOption(config, this, field);
                 } else if (short.class.equals(type)) {
@@ -47,7 +47,7 @@ public interface SpeedrunConfigStorage {
                 } else if (SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type)) {
                     try {
                         field.setAccessible(true);
-                        Map<String, Option<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config);
+                        Map<String, Option<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, optionIDPrefix + field.getName() + ":");
                         Config.Category category = field.getAnnotation(Config.Category.class);
                         if (category != null) {
                             for (Option<?> o : configDataOptions.values()) {
@@ -62,9 +62,10 @@ public interface SpeedrunConfigStorage {
                         throw new SpeedrunConfigAPIException(e);
                     }
                 } else {
-                    throw new UnsupportedConfigException("Option " + field.getName() + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
+                    throw new UnsupportedConfigException("Option " + optionIDPrefix + field.getName() + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
                 }
-                options.put(field.getName(), option);
+                option.setIDPrefix(optionIDPrefix);
+                options.put(optionIDPrefix + field.getName(), option);
             }
         }
         return options;
