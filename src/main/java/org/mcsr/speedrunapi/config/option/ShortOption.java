@@ -31,8 +31,11 @@ public class ShortOption extends WholeNumberOption<Short> {
         long max = this.getMax();
         long intervals = this.getIntervals();
 
-        if (this.bounds.enforce()) {
-            value = (short) MathHelper.clamp(value, min, max);
+        if (this.bounds.enforce().enforceMin()) {
+            value = (short) Math.max(value, min);
+        }
+        if (this.bounds.enforce().enforceMax()) {
+            value = (short) Math.min(value, max);
         }
 
         if (intervals != 0) {

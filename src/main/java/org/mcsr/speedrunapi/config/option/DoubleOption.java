@@ -2,7 +2,6 @@ package org.mcsr.speedrunapi.config.option;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -31,8 +30,11 @@ public class DoubleOption extends FractionalNumberOption<Double> {
         double max = this.getMax();
         double intervals = this.getIntervals();
 
-        if (this.bounds.enforce()) {
-            value = MathHelper.clamp(value, min, max);
+        if (this.bounds.enforce().enforceMin()) {
+            value = Math.max(value, min);
+        }
+        if (this.bounds.enforce().enforceMax()) {
+            value = Math.min(value, max);
         }
 
         if (intervals != 0) {

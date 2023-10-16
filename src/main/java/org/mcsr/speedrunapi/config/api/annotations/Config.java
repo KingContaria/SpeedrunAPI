@@ -114,7 +114,7 @@ public class Config {
                 /**
                  * @return Returns whether the bounds should be enforced or simply serve as boundaries for the gui widget.
                  */
-                boolean enforce() default true;
+                EnforceBounds enforce() default EnforceBounds.TRUE;
             }
 
             /**
@@ -157,7 +157,7 @@ public class Config {
                 /**
                  * @return Returns whether the bounds should be enforced or simply serve as boundaries for the gui widget.
                  */
-                boolean enforce() default true;
+                EnforceBounds enforce() default EnforceBounds.TRUE;
             }
 
             /**
@@ -184,6 +184,21 @@ public class Config {
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.FIELD)
         public @interface TextField {
+        }
+
+        public enum EnforceBounds {
+            FALSE,
+            MIN_ONLY,
+            MAX_ONLY,
+            TRUE;
+
+            public boolean enforceMin() {
+                return this == MIN_ONLY || this == TRUE;
+            }
+
+            public boolean enforceMax() {
+                return this == MAX_ONLY || this == TRUE;
+            }
         }
     }
 

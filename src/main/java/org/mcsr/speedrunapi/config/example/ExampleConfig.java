@@ -27,9 +27,10 @@ public class ExampleConfig implements SpeedrunConfig {
     private String aStringConfigOption = "fraud";
 
     // an int config option with a minimum value of 11 and a maximum value of 44 which defaults to 43
+    // the given minimum and maximum are not enforced, instead they only serve as boundaries for the gui widget
     // @Config.Numbers.Whole.Bounds is a required annotation for short, int and long options
     // @Config.Numbers.Whole.Intervals is an optional annotation for short, int and long options
-    @Config.Numbers.Whole.Bounds(min = 11, max = 44)
+    @Config.Numbers.Whole.Bounds(min = 11, max = 44, enforce = Config.Numbers.EnforceBounds.FALSE)
     @Config.Numbers.Whole.Intervals(3)
     public int anIntegerConfigOption = 41;
 
