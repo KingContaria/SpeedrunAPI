@@ -2,13 +2,14 @@
   "required": true,
   "package": "org.mcsr.speedrunapi.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
     "MinecraftClientMixin",
     "OptionsScreenMixin"
+  ],
+  "server": [
+    "MinecraftDedicatedServerMixin"
   ]
 }
