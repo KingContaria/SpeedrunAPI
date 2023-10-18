@@ -22,7 +22,7 @@ public class SpeedrunConfigAPI {
     private static final EnumMap<InitializeOn.InitPoint, Map<ModContainer, Class<? extends SpeedrunConfig>>> CONFIGS_TO_INITIALIZE = new EnumMap<>(InitializeOn.InitPoint.class);
     private static final Map<String, SpeedrunConfigContainer<?>> CONFIGS = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
-    protected static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
+    private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
     protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
     public static void initialize() {
@@ -115,6 +115,10 @@ public class SpeedrunConfigAPI {
         } else {
             throw new NoSuchConfigException();
         }
+    }
+
+    public static Path getConfigDir() {
+        return CONFIG_DIR;
     }
 
     /**

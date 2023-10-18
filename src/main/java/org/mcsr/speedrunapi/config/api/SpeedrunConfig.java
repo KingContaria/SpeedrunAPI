@@ -1,7 +1,9 @@
 package org.mcsr.speedrunapi.config.api;
 
+import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.option.*;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -27,5 +29,14 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
      */
     default Map<String, Option<?>> init() {
         return this.init(this, "");
+    }
+
+    /**
+     * Mod Authors can override this method to add global config files.
+     *
+     * @return Returns the file the config should be saved to.
+     */
+    default File getConfigFile() {
+        return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
     }
 }

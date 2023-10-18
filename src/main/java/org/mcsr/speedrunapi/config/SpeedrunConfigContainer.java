@@ -50,7 +50,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     }
 
     protected void load() throws IOException, JsonParseException {
-        File configFile = this.getConfigFile();
+        File configFile = this.config.getConfigFile();
 
         if (!configFile.exists()) {
             return;
@@ -72,7 +72,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     }
 
     public void save() throws IOException {
-        File configFile = this.getConfigFile();
+        File configFile = this.config.getConfigFile();
 
         configFile.getParentFile().mkdirs();
 
@@ -85,10 +85,6 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             writer.endObject();
             writer.flush();
         }
-    }
-
-    private File getConfigFile() {
-        return SpeedrunConfigAPI.CONFIG_DIR.resolve(this.mod.getMetadata().getId() + ".json").toFile();
     }
 
     public Collection<Option<?>> getOptions() {
