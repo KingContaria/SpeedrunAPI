@@ -32,11 +32,20 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
     }
 
     /**
-     * Mod Authors can override this method to add global config files.
+     * Mod Authors can override this method to change the config file location, for example to add global config files.
      *
      * @return Returns the file the config should be saved to.
      */
     default File getConfigFile() {
         return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
+    }
+
+    /**
+     * Mod Authors can override this method to make the config unavailable, for example during runs.
+     *
+     * @return Returns {@code true} if the config is available.
+     */
+    default boolean isAvailable() {
+        return true;
     }
 }

@@ -1,5 +1,6 @@
 package org.mcsr.speedrunapi.config.example;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -73,6 +74,11 @@ public class ExampleConfig implements SpeedrunConfig {
     @Override
     public String modID() {
         return "speedrunapi";
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     public static class ExampleOptionStorage implements SpeedrunConfigStorage {

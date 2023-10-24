@@ -191,7 +191,11 @@ public class SpeedrunConfigAPI {
     public static Map<ModContainer, SpeedrunConfigScreenProvider> getModConfigScreenProviders() {
         Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new HashMap<>();
         CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(SpeedrunConfigAPIException::new), configScreenProvider));
-        CONFIGS.forEach((modID, config) -> configScreenProviders.putIfAbsent(config.getModContainer(), parent -> new SpeedrunConfigScreen(config, parent)));
+        CONFIGS.forEach((modID, config) -> {
+            if (config.getConfig().isAvailable()) {
+                configScreenProviders.putIfAbsent(config.getModContainer(), parent -> new SpeedrunConfigScreen(config, parent));
+            }
+        });
         return configScreenProviders;
     }
 }
