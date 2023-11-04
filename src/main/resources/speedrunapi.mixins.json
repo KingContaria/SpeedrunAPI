@@ -11,5 +11,6 @@
   ],
   "server": [
     "MinecraftDedicatedServerMixin"
-  ]
+  ],
+  "plugin": "org.mcsr.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
 }
