@@ -8,7 +8,6 @@ import net.minecraft.util.Identifier;
 import org.mcsr.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.IconButtonWidget;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,16 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(OptionsScreen.class)
 public abstract class OptionsScreenMixin extends Screen {
 
-    @Unique
-    private static final Identifier SPEEDRUNAPI$WRITABLE_BOOK = new Identifier("textures/item/writable_book.png");
-
     protected OptionsScreenMixin(Text title) {
         super(title);
     }
 
     @Inject(method = "init", at = @At("TAIL"))
     private void addSpeedrunConfigButton(CallbackInfo ci) {
-        this.addButton(new IconButtonWidget(SPEEDRUNAPI$WRITABLE_BOOK, this.width / 2 + 160, this.height / 6 - 12, new TranslatableText("speedrunapi.gui.speedrunConfigButton"), button -> {
+        this.addButton(new IconButtonWidget(new Identifier("textures/item/writable_book.png"), this.width / 2 + 160, this.height / 6 - 12, new TranslatableText("speedrunapi.gui.speedrunConfigButton"), button -> {
             assert this.client != null;
             this.client.openScreen(new SpeedrunModConfigsScreen(this));
         }));
