@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
@@ -13,8 +14,11 @@ import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SpeedrunConfigAPI {
@@ -23,8 +27,10 @@ public class SpeedrunConfigAPI {
     private static final Map<String, SpeedrunConfigContainer<?>> CONFIGS = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
+    private static final Path GLOBAL_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(".mcsr").resolve("config");
     protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
+    @ApiStatus.Internal
     public static void initialize() {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
             try {
@@ -61,16 +67,19 @@ public class SpeedrunConfigAPI {
         }
     }
 
+    @ApiStatus.Internal
     public static void onPreLaunch() {
         initialize();
 
         registerConfigsForInitPoint(InitializeOn.InitPoint.PRELAUNCH);
     }
 
+    @ApiStatus.Internal
     public static void onInitialize() {
         registerConfigsForInitPoint(InitializeOn.InitPoint.ONINITIALIZE);
     }
 
+    @ApiStatus.Internal
     public static void onPostLaunch() {
         registerConfigsForInitPoint(InitializeOn.InitPoint.POSTLAUNCH);
     }
@@ -118,7 +127,25 @@ public class SpeedrunConfigAPI {
     }
 
     public static Path getConfigDir() {
+        if (!Files.exists(CONFIG_DIR)) {
+            try {
+                Files.createDirectories(CONFIG_DIR);
+            } catch (IOException e) {
+                throw new SpeedrunConfigAPIException("Failed to create speedrun config directory.", e);
+            }
+        }
         return CONFIG_DIR;
+    }
+
+    public static Path getGlobalConfigDir() {
+        if (!Files.exists(GLOBAL_CONFIG_DIR)) {
+            try {
+                Files.createDirectories(GLOBAL_CONFIG_DIR);
+            } catch (IOException e) {
+                throw new SpeedrunConfigAPIException("Failed to create global speedrun config directory.", e);
+            }
+        }
+        return GLOBAL_CONFIG_DIR;
     }
 
     /**

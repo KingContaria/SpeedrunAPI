@@ -34,6 +34,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
     /**
      * Mod Authors can override this method to change the config file location, for example to add global config files.
      *
+     * @apiNote The directory of the returned file gets created by this method.
      * @return Returns the file the config should be saved to.
      */
     default File getConfigFile() {

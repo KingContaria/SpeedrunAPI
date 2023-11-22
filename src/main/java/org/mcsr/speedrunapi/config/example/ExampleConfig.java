@@ -87,9 +87,6 @@ public class ExampleConfig implements SpeedrunConfig {
 
         @Config.Numbers.Whole.Bounds(max = 5)
         public short soIsThisShort = 3;
-
-        private ExampleOptionStorage() {
-        }
     }
 
     public enum ExampleEnum implements EnumTextProvider {

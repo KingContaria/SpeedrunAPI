@@ -31,13 +31,13 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         try {
             this.load();
         } catch (IOException | JsonParseException e) {
-            SpeedrunAPI.LOGGER.warn("Failed to load config file for {}", this.mod.getMetadata().getId(), e);
+            SpeedrunAPI.LOGGER.warn("Failed to load config file for {}.", this.mod.getMetadata().getId(), e);
         }
 
         try {
             this.save();
         } catch (IOException e) {
-            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}", this.mod.getMetadata().getId(), e);
+            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}.", this.mod.getMetadata().getId(), e);
         }
     }
 
@@ -64,7 +64,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
                     try {
                         option.fromJson(entry.getValue());
                     } catch (ClassCastException e) {
-                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {}", option.getID(), this.mod.getMetadata().getId());
+                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {}.", option.getID(), this.mod.getMetadata().getId());
                     }
                 }
             }
@@ -73,8 +73,6 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
     public void save() throws IOException {
         File configFile = this.config.getConfigFile();
-
-        configFile.getParentFile().mkdirs();
 
         try (JsonWriter writer = SpeedrunConfigAPI.GSON.newJsonWriter(new FileWriter(configFile))) {
             writer.beginObject();
