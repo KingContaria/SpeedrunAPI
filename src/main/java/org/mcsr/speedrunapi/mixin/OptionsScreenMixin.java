@@ -21,7 +21,7 @@ public abstract class OptionsScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void addSpeedrunConfigButton(CallbackInfo ci) {
-        this.addButton(new IconButtonWidget(new Identifier("textures/item/writable_book.png"), this.width / 2 + 160, this.height / 6 - 12, new TranslatableText("speedrunapi.gui.speedrunConfigButton"), button -> {
+        this.addButton(new IconButtonWidget(new Identifier("textures/item/writable_book.png"), this.width / 2 + 160, this.height / 6 - 12, new TranslatableText("speedrunapi.gui.speedrunConfig.button"), button -> {
             assert this.client != null;
             this.client.openScreen(new SpeedrunModConfigsScreen(this));
         }));

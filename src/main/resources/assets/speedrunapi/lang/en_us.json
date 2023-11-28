@@ -1,6 +1,7 @@
 {
-  "speedrunapi.gui.speedrunConfigButton": "Mod Configs",
-  "speedrunapi.gui.speedrunConfigTitle": "Speedrun API - Mod Configs",
+  "speedrunapi.gui.speedrunConfig.button": "Mod Configs",
+  "speedrunapi.gui.speedrunConfig.title": "Speedrun API - Mod Configs",
+  "speedrunapi.gui.speedrunConfig.noConfig": "§7No configs available right now :(",
   "speedrunapi.config.speedrunapi.option.anEnum": "Countdown",
   "speedrunapi.config.speedrunapi.option.anEnum.description": "But in Twitch emotes, yaaayyyyy!",
   "speedrunapi.config.speedrunapi.category.fillers": "2 boolean options",

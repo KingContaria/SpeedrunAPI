@@ -14,6 +14,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
@@ -26,7 +27,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.*;
 
-public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigEntry> {
+public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
 
     private static final Identifier NO_MOD_ICON = new Identifier("textures/misc/unknown_server.png");
     private static final Identifier EDIT_MOD_CONFIG = new Identifier("textures/gui/world_selection.png");
@@ -39,8 +40,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
         List<ModContainer> sortedModList = new ArrayList<>(modConfigScreenProviders.keySet());
         sortedModList.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
-        for (ModContainer mod : sortedModList) {
-            this.addEntry(new ModConfigEntry(mod, modConfigScreenProviders.get(mod)));
+        if (!sortedModList.isEmpty()) {
+            for (ModContainer mod : sortedModList) {
+                this.addEntry(new ModConfigEntry(mod, modConfigScreenProviders.get(mod)));
+            }
+        } else {
+            this.addEntry(new NoModConfigsEntry());
         }
     }
 
@@ -55,11 +60,14 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
     }
 
     @Override
-    public ModConfigEntry getFocused() {
+    public ModConfigListEntry getFocused() {
         return this.getSelected();
     }
 
-    public class ModConfigEntry extends EntryListWidget.Entry<ModConfigEntry> {
+    public abstract static class ModConfigListEntry extends EntryListWidget.Entry<ModConfigListEntry> {
+    }
+
+    public class ModConfigEntry extends ModConfigListEntry {
 
         private final ModContainer modContainer;
         private final ModMetadata mod;
@@ -146,6 +154,16 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private void openConfig() {
             SpeedrunModConfigListWidget.this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f));
             SpeedrunModConfigListWidget.this.client.openScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
+        }
+    }
+
+    public class NoModConfigsEntry extends ModConfigListEntry {
+
+        private final Text text = new TranslatableText("speedrunapi.gui.speedrunConfig.noConfig");
+
+        @Override
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            SpeedrunModConfigListWidget.this.drawCenteredText(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }
