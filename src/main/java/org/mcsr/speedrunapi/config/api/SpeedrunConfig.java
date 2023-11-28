@@ -28,7 +28,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
      * @return Returns a {@link Map} of all of this configs {@link Option}'s mapped to their ID's.
      */
     default Map<String, Option<?>> init() {
-        return this.init(this, "");
+        return this.init(this);
     }
 
     /**

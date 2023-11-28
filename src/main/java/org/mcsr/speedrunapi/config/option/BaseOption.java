@@ -19,7 +19,7 @@ public abstract class BaseOption<T> extends Option<T> {
     protected final SpeedrunConfigStorage configStorage;
     protected final Field option;
 
-    private String idPrefix = "";
+    private String[] idPrefix = new String[0];
 
     @Nullable
     protected final Method getter;
@@ -67,7 +67,10 @@ public abstract class BaseOption<T> extends Option<T> {
 
     @Override
     public String getID() {
-        return this.idPrefix + this.option.getName();
+        if (this.idPrefix.length != 0) {
+            return String.join(":", this.idPrefix) + ":" + this.option.getName();
+        }
+        return this.option.getName();
     }
 
     @Override
@@ -108,7 +111,7 @@ public abstract class BaseOption<T> extends Option<T> {
         }
     }
 
-    public void setIDPrefix(String idPrefix) {
+    public void setIDPrefix(String[] idPrefix) {
         this.idPrefix = idPrefix;
     }
 }

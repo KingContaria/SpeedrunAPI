@@ -11,7 +11,7 @@ import java.util.*;
 
 public interface SpeedrunConfigStorage {
 
-    default Map<String, Option<?>> init(SpeedrunConfig config, String optionIDPrefix) {
+    default Map<String, Option<?>> init(SpeedrunConfig config, String... optionIDPrefix) {
         Map<String, Option<?>> options = new LinkedHashMap<>();
 
         List<Class<?>> classes = new ArrayList<>();
@@ -47,7 +47,13 @@ public interface SpeedrunConfigStorage {
                 } else if (SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type)) {
                     try {
                         field.setAccessible(true);
-                        Map<String, Option<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, optionIDPrefix + field.getName() + ":");
+
+                        String[] updatedOptionIDPrefix = new String[optionIDPrefix.length + 1];
+                        System.arraycopy(optionIDPrefix, 0, updatedOptionIDPrefix, 0, optionIDPrefix.length);
+                        updatedOptionIDPrefix[updatedOptionIDPrefix.length - 1] = field.getName();
+
+                        Map<String, Option<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, updatedOptionIDPrefix);
+
                         Config.Category category = field.getAnnotation(Config.Category.class);
                         if (category != null) {
                             for (Option<?> o : configDataOptions.values()) {
@@ -62,10 +68,14 @@ public interface SpeedrunConfigStorage {
                         throw new SpeedrunConfigAPIException(e);
                     }
                 } else {
-                    throw new UnsupportedConfigException("Option " + optionIDPrefix + field.getName() + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
+                    String id = field.getName();
+                    if (optionIDPrefix.length != 0) {
+                        id = String.join(":", optionIDPrefix) + ":" + id;
+                    }
+                    throw new UnsupportedConfigException("Option " + id + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
                 }
                 option.setIDPrefix(optionIDPrefix);
-                options.put(optionIDPrefix + field.getName(), option);
+                options.put(option.getID(), option);
             }
         }
         return options;
