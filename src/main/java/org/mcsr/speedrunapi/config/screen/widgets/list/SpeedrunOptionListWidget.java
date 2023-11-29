@@ -26,6 +26,9 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         Map<String, Set<SpeedrunOption<?>>> categorizedOptions = new LinkedHashMap<>();
         for (SpeedrunOption<?> option : config.getOptions()) {
+            if (!option.hasWidget()) {
+                continue;
+            }
             if (option.getCategory() != null) {
                 categorizedOptions.computeIfAbsent(option.getCategory(), string -> new LinkedHashSet<>()).add(option);
                 continue;
