@@ -8,7 +8,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mcsr.speedrunapi.config.option.Option;
+import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 
 public class OptionTextWidget<T> implements Drawable, Element {
 
@@ -21,7 +21,7 @@ public class OptionTextWidget<T> implements Drawable, Element {
     public int x;
     public int y;
 
-    public OptionTextWidget(Screen screen, TextRenderer textRenderer, Option<T> option) {
+    public OptionTextWidget(Screen screen, TextRenderer textRenderer, SpeedrunOption<T> option) {
         this.screen = screen;
         this.textRenderer = textRenderer;
         this.name = option.getName();

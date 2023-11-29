@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
+import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
@@ -13,24 +14,27 @@ import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public abstract class BaseOption<T> extends Option<T> {
+public abstract class BaseOption<T> implements SpeedrunOption<T> {
 
     protected final SpeedrunConfig config;
     protected final SpeedrunConfigStorage configStorage;
     protected final Field option;
 
-    private String[] idPrefix = new String[0];
+    @Nullable
+    protected String category;
+    private final String[] idPrefix;
 
     @Nullable
     protected final Method getter;
     @Nullable
     protected final Method setter;
 
-    public BaseOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
+    public BaseOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
         this.config = config;
         this.configStorage = configStorage;
         this.option = option;
         this.option.setAccessible(true);
+        this.idPrefix = idPrefix;
 
         Config.Category category = option.getAnnotation(Config.Category.class);
         if (category != null) {
@@ -73,6 +77,14 @@ public abstract class BaseOption<T> extends Option<T> {
         return this.option.getName();
     }
 
+    public @Nullable String getCategory() {
+        return this.category;
+    }
+
+    public void setCategory(@Nullable String category) {
+        this.category = category;
+    }
+
     @Override
     public String getModID() {
         return this.config.modID();
@@ -84,7 +96,7 @@ public abstract class BaseOption<T> extends Option<T> {
         if (name != null) {
             return new TranslatableText(name.value());
         }
-        return super.getName();
+        return SpeedrunOption.super.getName();
     }
 
     @Override
@@ -96,7 +108,7 @@ public abstract class BaseOption<T> extends Option<T> {
         if (description != null) {
             return new TranslatableText(description.value());
         }
-        return super.getDescription();
+        return SpeedrunOption.super.getDescription();
     }
 
     @Override
@@ -109,9 +121,5 @@ public abstract class BaseOption<T> extends Option<T> {
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
-    }
-
-    public void setIDPrefix(String[] idPrefix) {
-        this.idPrefix = idPrefix;
     }
 }

@@ -1,5 +1,6 @@
 package org.mcsr.speedrunapi.config.api;
 
+import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
@@ -11,8 +12,8 @@ import java.util.*;
 
 public interface SpeedrunConfigStorage {
 
-    default Map<String, Option<?>> init(SpeedrunConfig config, String... optionIDPrefix) {
-        Map<String, Option<?>> options = new LinkedHashMap<>();
+    default Map<String, SpeedrunOption<?>> init(SpeedrunConfig config, String... optionIDPrefix) {
+        Map<String, SpeedrunOption<?>> options = new LinkedHashMap<>();
 
         List<Class<?>> classes = new ArrayList<>();
         for (Class<?> clas = this.getClass(); clas != null; clas = clas.getSuperclass()) {
@@ -27,24 +28,13 @@ public interface SpeedrunConfigStorage {
                 }
 
                 Class<?> type = field.getType();
-                BaseOption<?> option;
-                if (boolean.class.equals(type)) {
-                    option = new BooleanOption(config, this, field);
-                } else if (short.class.equals(type)) {
-                    option = new ShortOption(config, this, field);
-                } else if (int.class.equals(type)) {
-                    option = new IntegerOption(config, this, field);
-                } else if (long.class.equals(type)) {
-                    option = new LongOption(config, this, field);
-                } else if (float.class.equals(type)) {
-                    option = new FloatOption(config, this, field);
-                } else if (double.class.equals(type)) {
-                    option = new DoubleOption(config, this, field);
-                } else if (String.class.equals(type)) {
-                    option = new StringOption(config, this, field);
-                } else if (type.isEnum()) {
-                    option = new EnumOption(config, this, field);
-                } else if (SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type)) {
+                SpeedrunOption<?> option = this.parseField(field, config, optionIDPrefix);
+                if (option != null) {
+                    options.put(option.getID(), option);
+                    continue;
+                }
+
+                if (SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type)) {
                     try {
                         field.setAccessible(true);
 
@@ -52,18 +42,17 @@ public interface SpeedrunConfigStorage {
                         System.arraycopy(optionIDPrefix, 0, updatedOptionIDPrefix, 0, optionIDPrefix.length);
                         updatedOptionIDPrefix[updatedOptionIDPrefix.length - 1] = field.getName();
 
-                        Map<String, Option<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, updatedOptionIDPrefix);
+                        Map<String, SpeedrunOption<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, updatedOptionIDPrefix);
 
                         Config.Category category = field.getAnnotation(Config.Category.class);
                         if (category != null) {
-                            for (Option<?> o : configDataOptions.values()) {
+                            for (SpeedrunOption<?> o : configDataOptions.values()) {
                                 if (o.getCategory() == null) {
                                     o.setCategory(category.value());
                                 }
                             }
                         }
                         options.putAll(configDataOptions);
-                        continue;
                     } catch (IllegalAccessException | NullPointerException e) {
                         throw new SpeedrunConfigAPIException(e);
                     }
@@ -74,10 +63,30 @@ public interface SpeedrunConfigStorage {
                     }
                     throw new UnsupportedConfigException("Option " + id + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
                 }
-                option.setIDPrefix(optionIDPrefix);
-                options.put(option.getID(), option);
             }
         }
         return options;
+    }
+
+    default @Nullable SpeedrunOption<?> parseField(Field field, SpeedrunConfig config, String... idPrefix) {
+        Class<?> type = field.getType();
+        if (boolean.class.equals(type)) {
+            return new BooleanOption(config, this, field, idPrefix);
+        } else if (short.class.equals(type)) {
+            return new ShortOption(config, this, field, idPrefix);
+        } else if (int.class.equals(type)) {
+            return new IntegerOption(config, this, field, idPrefix);
+        } else if (long.class.equals(type)) {
+            return new LongOption(config, this, field, idPrefix);
+        } else if (float.class.equals(type)) {
+            return new FloatOption(config, this, field, idPrefix);
+        } else if (double.class.equals(type)) {
+            return new DoubleOption(config, this, field, idPrefix);
+        } else if (String.class.equals(type)) {
+            return new StringOption(config, this, field, idPrefix);
+        } else if (type.isEnum()) {
+            return new EnumOption(config, this, field, idPrefix);
+        }
+        return null;
     }
 }

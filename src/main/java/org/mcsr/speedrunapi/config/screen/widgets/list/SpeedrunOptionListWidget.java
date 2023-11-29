@@ -10,7 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
-import org.mcsr.speedrunapi.config.option.Option;
+import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.option.OptionTextWidget;
 
@@ -24,17 +24,17 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         super(client, width, height, top, bottom, 30);
         this.parent = parent;
 
-        Map<String, Set<Option<?>>> categorizedOptions = new LinkedHashMap<>();
-        for (Option<?> option : config.getOptions()) {
+        Map<String, Set<SpeedrunOption<?>>> categorizedOptions = new LinkedHashMap<>();
+        for (SpeedrunOption<?> option : config.getOptions()) {
             if (option.getCategory() != null) {
                 categorizedOptions.computeIfAbsent(option.getCategory(), string -> new LinkedHashSet<>()).add(option);
                 continue;
             }
             this.addEntry(new OptionEntry(option));
         }
-        for (Map.Entry<String, Set<Option<?>>> category : categorizedOptions.entrySet()) {
+        for (Map.Entry<String, Set<SpeedrunOption<?>>> category : categorizedOptions.entrySet()) {
             this.addEntry(new OptionCategoryEntry(new TranslatableText("speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey())));
-            for (Option<?> option : category.getValue()) {
+            for (SpeedrunOption<?> option : category.getValue()) {
                 this.addEntry(new OptionEntry(option));
             }
         }
@@ -63,7 +63,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         private final OptionTextWidget<?> text;
         private final AbstractButtonWidget button;
 
-        public OptionEntry(Option<?> option) {
+        public OptionEntry(SpeedrunOption<?> option) {
             this.text = new OptionTextWidget<>(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option);
             this.button = option.createWidget();
         }

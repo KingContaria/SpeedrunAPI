@@ -19,8 +19,8 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     @Nullable
     protected final Config.Numbers.Whole.Intervals intervals;
 
-    public WholeNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public WholeNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
 
         this.bounds = option.getAnnotation(Config.Numbers.Whole.Bounds.class);
         if (this.bounds == null) {
@@ -35,6 +35,11 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
         if (intervals != 0L && (((this.getMax() - this.getMin()) % intervals) != 0L || intervals < 0L)) {
             throw new InvalidConfigException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return true;
     }
 
     @Override

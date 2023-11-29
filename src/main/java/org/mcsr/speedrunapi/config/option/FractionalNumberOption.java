@@ -19,8 +19,8 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     @Nullable
     protected final Config.Numbers.Fractional.Intervals intervals;
 
-    public FractionalNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public FractionalNumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
 
         this.bounds = option.getAnnotation(Config.Numbers.Fractional.Bounds.class);
         if (this.bounds == null) {
@@ -35,6 +35,11 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
         if (intervals < 0.0) {
             throw new InvalidConfigException("Invalid intervals for " + this.getID() + "! Intervals: " + intervals + ", Min: " + this.getMin() + ", Max: " + this.getMax());
         }
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return true;
     }
 
     @Override

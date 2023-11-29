@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
 
 public class LongOption extends WholeNumberOption<Long> {
 
-    public LongOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public LongOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
     }
 
     @Override

@@ -18,8 +18,8 @@ public class StringOption extends BaseOption<String> {
     @Nullable
     private final Config.Strings.MaxChars maxLength;
 
-    public StringOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public StringOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
 
         this.maxLength = option.getAnnotation(Config.Strings.MaxChars.class);
         if (this.getMaxLength() <= 0) {
@@ -59,6 +59,11 @@ public class StringOption extends BaseOption<String> {
     @Override
     public JsonElement toJson() {
         return new JsonPrimitive(this.get());
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return true;
     }
 
     @Override

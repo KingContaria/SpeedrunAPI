@@ -17,8 +17,8 @@ import java.lang.reflect.Field;
 @SuppressWarnings("rawtypes")
 public class EnumOption extends BaseOption<Enum> {
 
-    public EnumOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public EnumOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
     }
 
     @Override
@@ -56,6 +56,11 @@ public class EnumOption extends BaseOption<Enum> {
     @Override
     public JsonElement toJson() {
         return new JsonPrimitive(this.get().name());
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return true;
     }
 
     @Override

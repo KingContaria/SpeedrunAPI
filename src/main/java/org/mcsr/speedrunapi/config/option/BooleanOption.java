@@ -13,8 +13,8 @@ import java.lang.reflect.Field;
 
 public class BooleanOption extends BaseOption<Boolean> {
 
-    public BooleanOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public BooleanOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
     }
 
     @Override
@@ -46,6 +46,11 @@ public class BooleanOption extends BaseOption<Boolean> {
     @Override
     public JsonElement toJson() {
         return new JsonPrimitive(this.get());
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return true;
     }
 
     @Override

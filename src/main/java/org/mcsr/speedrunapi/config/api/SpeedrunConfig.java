@@ -21,13 +21,13 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
     String modID();
 
     /**
-     * Initializes the config, creating all the {@link Option}'s it provides.
+     * Initializes the config, creating all the {@link SpeedrunOption}'s it provides.
      * <p>
      * Mod Authors can override this method to add {@link CustomOption}'s.
      *
-     * @return Returns a {@link Map} of all of this configs {@link Option}'s mapped to their ID's.
+     * @return Returns a {@link Map} of all of this configs {@link SpeedrunOption}'s mapped to their ID's.
      */
-    default Map<String, Option<?>> init() {
+    default Map<String, SpeedrunOption<?>> init() {
         return this.init(this);
     }
 
@@ -42,7 +42,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
     }
 
     /**
-     * Mod Authors can override this method to make the config unavailable, for example during runs.
+     * Mod Authors can override this method to make the config unavailable for players, for example during runs.
      *
      * @return Returns {@code true} if the config is available.
      */

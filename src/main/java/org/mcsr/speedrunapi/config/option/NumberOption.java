@@ -10,8 +10,8 @@ public abstract class NumberOption<T extends Number> extends BaseOption<T> {
 
     protected final boolean useTextField;
 
-    public NumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public NumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
 
         this.useTextField = option.isAnnotationPresent(Config.Numbers.TextField.class);
     }

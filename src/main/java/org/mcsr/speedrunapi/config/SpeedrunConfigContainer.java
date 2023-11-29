@@ -8,20 +8,22 @@ import com.google.gson.stream.JsonWriter;
 import net.fabricmc.loader.api.ModContainer;
 import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
-import org.mcsr.speedrunapi.config.option.*;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
     private final T config;
     private final ModContainer mod;
-    private final Map<String, Option<?>> options;
+    private final Map<String, SpeedrunOption<?>> options;
 
     protected SpeedrunConfigContainer(T config, ModContainer mod) {
         this.config = config;
@@ -59,7 +61,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new FileReader(configFile))) {
             JsonObject configJson = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
             for (Map.Entry<String, JsonElement> entry : configJson.entrySet()) {
-                Option<?> option = this.options.get(entry.getKey());
+                SpeedrunOption<?> option = this.options.get(entry.getKey());
                 if (option != null) {
                     try {
                         option.fromJson(entry.getValue());
@@ -76,7 +78,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
         try (JsonWriter writer = SpeedrunConfigAPI.GSON.newJsonWriter(new FileWriter(configFile))) {
             writer.beginObject();
-            for (Map.Entry<String, Option<?>> entry : this.options.entrySet()) {
+            for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
                 writer.name(entry.getKey());
                 writer.jsonValue(entry.getValue().toJson().toString());
             }
@@ -85,12 +87,12 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         }
     }
 
-    public Collection<Option<?>> getOptions() {
+    public Collection<SpeedrunOption<?>> getOptions() {
         return this.options.values();
     }
 
-    public Option<?> getOption(String name) throws NoSuchConfigException {
-        Option<?> option = this.options.get(name);
+    public SpeedrunOption<?> getOption(String name) throws NoSuchConfigException {
+        SpeedrunOption<?> option = this.options.get(name);
         if (option == null) {
             throw new NoSuchConfigException("Could not find option \"" + name + "\" in " + this.mod.getMetadata().getId() + " config.");
         }

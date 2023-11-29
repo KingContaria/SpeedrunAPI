@@ -12,8 +12,8 @@ import java.lang.reflect.Field;
 
 public class ShortOption extends WholeNumberOption<Short> {
 
-    public ShortOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option) {
-        super(config, configStorage, option);
+    public ShortOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        super(config, configStorage, option, idPrefix);
     }
 
     @Override
