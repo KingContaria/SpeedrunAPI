@@ -13,7 +13,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWi
 
 import java.lang.reflect.Field;
 
-public class StringOption extends BaseOption<String> {
+public class StringOption extends FieldBasedOption<String> {
 
     @Nullable
     private final Config.Strings.MaxChars maxLength;

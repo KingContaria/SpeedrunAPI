@@ -11,7 +11,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidg
 
 import java.lang.reflect.Field;
 
-public class BooleanOption extends BaseOption<Boolean> {
+public class BooleanOption extends FieldBasedOption<Boolean> {
 
     public BooleanOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
         super(config, configStorage, option, idPrefix);

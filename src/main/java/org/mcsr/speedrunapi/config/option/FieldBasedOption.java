@@ -14,7 +14,7 @@ import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public abstract class BaseOption<T> implements SpeedrunOption<T> {
+public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
 
     protected final SpeedrunConfig config;
     protected final SpeedrunConfigStorage configStorage;
@@ -29,7 +29,7 @@ public abstract class BaseOption<T> implements SpeedrunOption<T> {
     @Nullable
     protected final Method setter;
 
-    public BaseOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+    public FieldBasedOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
         this.config = config;
         this.configStorage = configStorage;
         this.option = option;

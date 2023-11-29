@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class CustomOption<T> extends BaseOption<T> {
+public class CustomOption<T> extends FieldBasedOption<T> {
 
     private final Supplier<T> getFunction;
     private final Consumer<T> setFunction;

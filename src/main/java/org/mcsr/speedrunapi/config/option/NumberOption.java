@@ -6,7 +6,7 @@ import org.mcsr.speedrunapi.config.api.annotations.Config;
 
 import java.lang.reflect.Field;
 
-public abstract class NumberOption<T extends Number> extends BaseOption<T> {
+public abstract class NumberOption<T extends Number> extends FieldBasedOption<T> {
 
     protected final boolean useTextField;
 

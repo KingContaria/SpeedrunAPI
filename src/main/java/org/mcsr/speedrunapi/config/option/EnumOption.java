@@ -15,7 +15,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 import java.lang.reflect.Field;
 
 @SuppressWarnings("rawtypes")
-public class EnumOption extends BaseOption<Enum> {
+public class EnumOption extends FieldBasedOption<Enum> {
 
     public EnumOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
         super(config, configStorage, option, idPrefix);
