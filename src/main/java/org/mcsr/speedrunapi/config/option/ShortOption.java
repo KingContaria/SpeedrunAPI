@@ -19,8 +19,11 @@ public class ShortOption extends WholeNumberOption<Short> {
     @Override
     public @NotNull Short get() {
         try {
+            if (this.getter != null) {
+                return (Short) this.getter.invoke(this.configStorage);
+            }
             return this.option.getShort(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -46,6 +49,7 @@ public class ShortOption extends WholeNumberOption<Short> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.setShort(this.configStorage, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
         } catch (ReflectiveOperationException e) {

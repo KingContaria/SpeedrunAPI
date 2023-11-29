@@ -30,8 +30,11 @@ public class StringOption extends FieldBasedOption<String> {
     @Override
     public @NotNull String get() {
         try {
+            if (this.getter != null) {
+                return (String) this.getter.invoke(this.configStorage);
+            }
             return (String) this.option.get(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -44,6 +47,7 @@ public class StringOption extends FieldBasedOption<String> {
             }
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {

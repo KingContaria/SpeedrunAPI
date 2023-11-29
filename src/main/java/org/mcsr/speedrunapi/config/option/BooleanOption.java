@@ -10,6 +10,7 @@ import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidget;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 public class BooleanOption extends FieldBasedOption<Boolean> {
 
@@ -20,8 +21,11 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
     @Override
     public @NotNull Boolean get() {
         try {
+            if (this.getter != null) {
+                return (Boolean) this.getter.invoke(this.configStorage);
+            }
             return this.option.getBoolean(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -31,6 +35,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.setBoolean(this.configStorage, value);
         } catch (ReflectiveOperationException e) {

@@ -18,8 +18,11 @@ public class FloatOption extends FractionalNumberOption<Float> {
     @Override
     public @NotNull Float get() {
         try {
+            if (this.getter != null) {
+                return (Float) this.getter.invoke(this.configStorage);
+            }
             return this.option.getFloat(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -45,6 +48,7 @@ public class FloatOption extends FractionalNumberOption<Float> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.setFloat(this.configStorage, value);
         } catch (ReflectiveOperationException e) {

@@ -18,8 +18,11 @@ public class IntegerOption extends WholeNumberOption<Integer> {
     @Override
     public @NotNull Integer get() {
         try {
+            if (this.getter != null) {
+                return (Integer) this.getter.invoke(this.configStorage);
+            }
             return this.option.getInt(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -45,6 +48,7 @@ public class IntegerOption extends WholeNumberOption<Integer> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.setInt(this.configStorage, value);
         } catch (ReflectiveOperationException e) {

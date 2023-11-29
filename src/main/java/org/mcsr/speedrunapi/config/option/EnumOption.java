@@ -24,8 +24,11 @@ public class EnumOption extends FieldBasedOption<Enum> {
     @Override
     public @NotNull Enum get() {
         try {
+            if (this.getter != null) {
+                return (Enum) this.getter.invoke(this.configStorage);
+            }
             return (Enum) this.option.get(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -35,6 +38,7 @@ public class EnumOption extends FieldBasedOption<Enum> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {

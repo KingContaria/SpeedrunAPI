@@ -19,8 +19,11 @@ public class LongOption extends WholeNumberOption<Long> {
     @Override
     public @NotNull Long get() {
         try {
+            if (this.getter != null) {
+                return (Long) this.getter.invoke(this.configStorage);
+            }
             return this.option.getLong(this.configStorage);
-        } catch (IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
     }
@@ -46,6 +49,7 @@ public class LongOption extends WholeNumberOption<Long> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.setLong(this.configStorage, MathHelper.clamp(value, this.getMin(), this.getMax()));
         } catch (ReflectiveOperationException e) {
