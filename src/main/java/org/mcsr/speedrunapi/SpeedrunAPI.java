@@ -5,7 +5,6 @@ import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
-import org.mcsr.speedrunapi.properties.SpeedrunPropertiesAPI;
 
 public class SpeedrunAPI implements PreLaunchEntrypoint, ModInitializer {
 
@@ -14,7 +13,6 @@ public class SpeedrunAPI implements PreLaunchEntrypoint, ModInitializer {
     @Override
     public void onPreLaunch() {
         SpeedrunConfigAPI.onPreLaunch();
-        SpeedrunPropertiesAPI.initialize();
     }
 
     @Override
