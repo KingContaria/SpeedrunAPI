@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
@@ -33,34 +35,40 @@ public class SpeedrunConfigAPI {
     @ApiStatus.Internal
     public static void initialize() {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+            ModMetadata metadata = mod.getMetadata();
+            String modID = metadata.getId();
             try {
-                CustomValue customValues = mod.getMetadata().getCustomValues().get("speedrunapi");
-                if (customValues != null) {
-                    CustomValue.CvObject customObject = customValues.getAsObject();
+                CustomValue customValues = metadata.getCustomValue("speedrunapi");
+                if (customValues == null) {
+                    continue;
+                }
+                CustomValue.CvObject customObject = customValues.getAsObject();
 
-                    CustomValue config = customObject.get("config");
-                    if (config != null) {
-                        Class<?> configClass = Class.forName(config.getAsString());
-                        if (SpeedrunConfig.class.isAssignableFrom(configClass)) {
-                            InitializeOn initializeOn = configClass.getAnnotation(InitializeOn.class);
-                            CONFIGS_TO_INITIALIZE.computeIfAbsent(initializeOn != null ? initializeOn.value() : InitializeOn.InitPoint.ONINITIALIZE, initPoint -> new HashMap<>()).put(mod, (Class<? extends SpeedrunConfig>) configClass);
-                        }
+                CustomValue config = customObject.get("config");
+                if (config != null) {
+                    Class<?> configClass = Class.forName(config.getAsString());
+                    if (SpeedrunConfig.class.isAssignableFrom(configClass)) {
+                        InitializeOn initializeOn = configClass.getAnnotation(InitializeOn.class);
+                        CONFIGS_TO_INITIALIZE.computeIfAbsent(initializeOn != null ? initializeOn.value() : InitializeOn.InitPoint.ONINITIALIZE, initPoint -> new HashMap<>()).put(mod, (Class<? extends SpeedrunConfig>) configClass);
                     }
+                }
 
-                    CustomValue screen = customObject.get("screen");
-                    if (screen != null) {
-                        Class<?> screenProviderClass = Class.forName(screen.getAsString());
-                        if (SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
-                            CUSTOM_CONFIG_SCREENS.put(mod.getMetadata().getId(), (SpeedrunConfigScreenProvider) constructClass(screenProviderClass));
-                        } else {
-                            throw new SpeedrunConfigAPIException("Provided config screen provider class from " + mod.getMetadata().getId() + " does not implement SpeedrunConfigScreenProvider.");
-                        }
+                CustomValue screen = customObject.get("screen");
+                if (screen != null) {
+                    if (config != null) {
+                        throw new SpeedrunConfigAPIException("");
+                    }
+                    Class<?> screenProviderClass = Class.forName(screen.getAsString());
+                    if (SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
+                        CUSTOM_CONFIG_SCREENS.put(modID, (SpeedrunConfigScreenProvider) constructClass(screenProviderClass));
+                    } else {
+                        throw new SpeedrunConfigAPIException("Provided config screen provider class from " + modID + " does not implement SpeedrunConfigScreenProvider.");
                     }
                 }
             } catch (ClassCastException e) {
-                throw new SpeedrunConfigAPIException("Faulty fabric.mod.json values from " + mod.getMetadata().getId() + ".", e);
+                throw new SpeedrunConfigAPIException("Faulty fabric.mod.json values from " + modID + ".", e);
             } catch (ClassNotFoundException e) {
-                throw new SpeedrunConfigAPIException("Provided class from " + mod.getMetadata().getId() + " does not exist.", e);
+                throw new SpeedrunConfigAPIException("Provided class from " + modID + " does not exist.", e);
             } catch (ReflectiveOperationException e) {
                 throw new SpeedrunConfigAPIException(e);
             }
@@ -101,11 +109,10 @@ public class SpeedrunConfigAPI {
 
         try {
             SpeedrunConfigContainer<T> config = new SpeedrunConfigContainer<>(constructClass(configClass), mod);
-            if (modID.equals(config.getConfig().modID())) {
-                CONFIGS.put(modID, config);
-            } else {
+            if (!modID.equals(config.getConfig().modID())) {
                 throw new InvalidConfigException("The provided SpeedrunConfig's mod ID (" + config.getConfig().modID() + ") doesn't match the providers mod ID (" + modID + ").");
             }
+            CONFIGS.put(modID, config);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException("Failed to build config for " + modID, e);
         }
@@ -216,13 +223,13 @@ public class SpeedrunConfigAPI {
     }
 
     public static Map<ModContainer, SpeedrunConfigScreenProvider> getModConfigScreenProviders() {
-        Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new HashMap<>();
+        Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new TreeMap<>(Comparator.comparing(mod -> mod.getMetadata().getName()));
         CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(SpeedrunConfigAPIException::new), configScreenProvider));
-        CONFIGS.forEach((modID, config) -> {
-            if (config.getConfig().isAvailable()) {
-                configScreenProviders.putIfAbsent(config.getModContainer(), parent -> new SpeedrunConfigScreen(config, parent));
-            }
-        });
+        CONFIGS.forEach((modID, config) -> configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig()));
         return configScreenProviders;
+    }
+
+    public static Screen createDefaultModConfigScreen(String modID, Screen parent) {
+        return new SpeedrunConfigScreen(getConfig(modID), parent);
     }
 }

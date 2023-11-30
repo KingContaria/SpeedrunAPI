@@ -1,5 +1,7 @@
 package org.mcsr.speedrunapi.config.api;
 
+import net.minecraft.client.gui.screen.Screen;
+import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.option.*;
 
@@ -13,7 +15,7 @@ import java.util.Map;
  * <p>
  * "custom": [ "speedrunapi": [ "config": "a.b.c.ABCConfig" ] ]
  */
-public interface SpeedrunConfig extends SpeedrunConfigStorage {
+public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScreenProvider {
 
     /**
      * @return Returns the mod ID of the mod owning the config.
@@ -41,12 +43,8 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage {
         return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
     }
 
-    /**
-     * Mod Authors can override this method to make the config unavailable for players, for example during runs.
-     *
-     * @return Returns {@code true} if the config is available.
-     */
-    default boolean isAvailable() {
-        return true;
+    @Override
+    default @NotNull Screen createConfigScreen(Screen parent) {
+        return SpeedrunConfigAPI.createDefaultModConfigScreen(this.modID(), parent);
     }
 }

@@ -38,13 +38,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         super(client, width, height, top, bottom, 36);
         this.parent = parent;
 
-        List<ModContainer> sortedModList = new ArrayList<>(modConfigScreenProviders.keySet());
-        sortedModList.sort(Comparator.comparing(mod -> mod.getMetadata().getId()));
-        if (!sortedModList.isEmpty()) {
-            for (ModContainer mod : sortedModList) {
-                this.addEntry(new ModConfigEntry(mod, modConfigScreenProviders.get(mod)));
+        for (Map.Entry<ModContainer, SpeedrunConfigScreenProvider> modConfig : modConfigScreenProviders.entrySet()) {
+            if (!modConfig.getValue().isAvailable()) {
+                continue;
             }
-        } else {
+            this.addEntry(new ModConfigEntry(modConfig.getKey(), modConfig.getValue()));
+        }
+        if (this.children().isEmpty()) {
             this.addEntry(new NoModConfigsEntry());
         }
     }

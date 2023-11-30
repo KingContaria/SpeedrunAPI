@@ -18,4 +18,13 @@ public interface SpeedrunConfigScreenProvider {
      * @return Returns a config screen for the mod providing the {@link SpeedrunConfigScreenProvider}.
      */
     @NotNull Screen createConfigScreen(Screen parent);
+
+    /**
+     * Mod Authors can override this method to make the config screen unavailable for players, for example during runs.
+     *
+     * @return Returns {@code true} if the config screen is available.
+     */
+    default boolean isAvailable() {
+        return true;
+    }
 }
