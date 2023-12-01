@@ -25,7 +25,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     /**
      * Initializes the config, creating all the {@link SpeedrunOption}'s it provides.
      * <p>
-     * Mod Authors can override this method to add {@link CustomOption}'s.
+     * Mod Authors can override this method to add their own option types.
      *
      * @return Returns a {@link Map} of all of this configs {@link SpeedrunOption}'s mapped to their ID's.
      */

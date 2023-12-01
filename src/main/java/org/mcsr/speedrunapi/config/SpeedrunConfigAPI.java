@@ -2,22 +2,29 @@ package org.mcsr.speedrunapi.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
+import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
+import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.option.CustomFieldBasedOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -222,6 +229,7 @@ public class SpeedrunConfigAPI {
         }
     }
 
+    @ApiStatus.Internal
     public static Map<ModContainer, SpeedrunConfigScreenProvider> getModConfigScreenProviders() {
         Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new TreeMap<>(Comparator.comparing(mod -> mod.getMetadata().getName()));
         CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(SpeedrunConfigAPIException::new), configScreenProvider));
@@ -231,5 +239,91 @@ public class SpeedrunConfigAPI {
 
     public static Screen createDefaultModConfigScreen(String modID, Screen parent) {
         return new SpeedrunConfigScreen(getConfig(modID), parent);
+    }
+
+    public static class CustomOption {
+
+        public static <T> SpeedrunOption<T> create(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String[] idPrefix, Getter<T> getter, Setter<T> setter, Deserializer<T> fromJson, Serializer<T> toJson, @Nullable WidgetProvider<T> createWidget) {
+            return new CustomFieldBasedOption<>(config, configStorage, optionField, idPrefix, getter, setter, fromJson, toJson, createWidget);
+        }
+
+        public static class Builder<T> {
+            private final SpeedrunConfig config;
+            private final SpeedrunConfigStorage configStorage;
+            private final Field optionField;
+            private final String[] idPrefix;
+
+            @SuppressWarnings("unchecked")
+            private Getter<T> getter = (option, config, configStorage, optionField) -> (T) optionField.get(configStorage);
+            private Setter<T> setter = (option, config, configStorage, optionField, value) -> optionField.set(configStorage, value);
+            private Deserializer<T> fromJson;
+            private Serializer<T> toJson;
+            @Nullable
+            private WidgetProvider<T> createWidget;
+
+            public Builder(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String... idPrefix) {
+                this.config = config;
+                this.configStorage = configStorage;
+                this.optionField = optionField;
+                this.idPrefix = idPrefix;
+            }
+
+            public Builder<T> getter(Getter<T> getter) {
+                this.getter = getter;
+                return this;
+            }
+
+            public Builder<T> setter(Setter<T> setter) {
+                this.setter = setter;
+                return this;
+            }
+
+            public Builder<T> fromJson(Deserializer<T> fromJson) {
+                this.fromJson = fromJson;
+                return this;
+            }
+
+            public Builder<T> toJson(Serializer<T> toJson) {
+                this.toJson = toJson;
+                return this;
+            }
+
+            public Builder<T> createWidget(WidgetProvider<T> createWidget) {
+                this.createWidget = createWidget;
+                return this;
+            }
+
+            public SpeedrunOption<T> build() {
+                if (this.fromJson == null || this.toJson == null) {
+                    throw new SpeedrunConfigAPIException("No (de-)serialization set for custom option " + this.optionField.getName() + " in " + this.config.modID() + " config.");
+                }
+                return create(this.config, this.configStorage, this.optionField, this.idPrefix, this.getter, this.setter, this.fromJson, this.toJson, this.createWidget);
+            }
+        }
+
+        @FunctionalInterface
+        public interface Getter<T> {
+            T get(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField) throws ReflectiveOperationException;
+        }
+
+        @FunctionalInterface
+        public interface Setter<T> {
+            void set(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, T value) throws ReflectiveOperationException;
+        }
+
+        @FunctionalInterface
+        public interface Deserializer<T> {
+            void fromJson(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, JsonElement jsonElement);
+        }
+
+        @FunctionalInterface
+        public interface Serializer<T> {
+            JsonElement toJson(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField);
+        }
+
+        @FunctionalInterface
+        public interface WidgetProvider<T> {
+            AbstractButtonWidget createWidget(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField);
+        }
     }
 }
