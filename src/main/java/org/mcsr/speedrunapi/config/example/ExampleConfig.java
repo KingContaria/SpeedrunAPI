@@ -12,7 +12,7 @@ import org.mcsr.speedrunapi.config.api.annotations.*;
 @InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
 public class ExampleConfig implements SpeedrunConfig {
 
-    @NoConfig
+    @Config.Ignored
     public static ExampleConfig INSTANCE;
 
     // a boolean config option using custom translation keys for name and description
@@ -63,8 +63,8 @@ public class ExampleConfig implements SpeedrunConfig {
     public ExampleOptionStorage thisStoresMoreOptions = new ExampleOptionStorage();
 
     // a boolean value in the config class which is not configurable (and also not saved in the config file)
-    // because it is annotated by @NoConfig
-    @NoConfig
+    // because it is annotated by @Config.Ignored
+    @Config.Ignored
     public boolean aNonConfigurableBooleanValue = true;
 
     {

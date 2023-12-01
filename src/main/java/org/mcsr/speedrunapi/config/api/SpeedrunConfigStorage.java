@@ -2,7 +2,6 @@ package org.mcsr.speedrunapi.config.api;
 
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
-import org.mcsr.speedrunapi.config.api.annotations.NoConfig;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.exceptions.UnsupportedConfigException;
 import org.mcsr.speedrunapi.config.option.*;
@@ -23,7 +22,7 @@ public interface SpeedrunConfigStorage {
 
         for (Class<?> clas : classes) {
             for (Field field : clas.getDeclaredFields()) {
-                if (field.isAnnotationPresent(NoConfig.class)) {
+                if (field.isAnnotationPresent(Config.Ignored.class)) {
                     continue;
                 }
 

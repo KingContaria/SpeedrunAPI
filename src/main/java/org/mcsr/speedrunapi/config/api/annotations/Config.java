@@ -1,6 +1,7 @@
 package org.mcsr.speedrunapi.config.api.annotations;
 
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
+import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionSliderWidget;
 import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 
@@ -86,6 +87,16 @@ public class Config {
          * @return Returns the name (not including parameters) of the Setter method that should be used for the annotated option.
          */
         String setter() default "";
+    }
+
+    /**
+     * Annotation for fields in config classes that are not configurable.
+     * <p>
+     * The field will not be available from the {@link SpeedrunConfigScreen} and will not be saved in the config file.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface Ignored {
     }
 
     public static class Numbers {
