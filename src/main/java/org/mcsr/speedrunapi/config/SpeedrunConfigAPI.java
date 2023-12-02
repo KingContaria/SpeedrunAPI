@@ -37,7 +37,7 @@ public class SpeedrunConfigAPI {
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
     private static final Path GLOBAL_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(".mcsr").resolve("config");
-    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
+    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
     @ApiStatus.Internal
     public static void initialize() {
