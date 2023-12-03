@@ -35,9 +35,8 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      * Gets called when the config has finished initialization and has been registered.
      *
      * @param container - The {@link SpeedrunConfigContainer} containing the options for this {@link SpeedrunConfig}.
-     * @param <THIS> - The mod config class implementing this interface.
      */
-    default <THIS extends SpeedrunConfig> void finishInitialization(SpeedrunConfigContainer<THIS> container) {
+    default void finishInitialization(SpeedrunConfigContainer<?> container) {
     }
 
     /**
