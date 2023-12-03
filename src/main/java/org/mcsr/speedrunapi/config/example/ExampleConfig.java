@@ -5,8 +5,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
+import org.mcsr.speedrunapi.config.api.annotations.Config;
+import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
 import org.mcsr.speedrunapi.config.api.option.EnumTextProvider;
-import org.mcsr.speedrunapi.config.api.annotations.*;
 
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 @InitializeOn(InitializeOn.InitPoint.PRELAUNCH)
