@@ -3,7 +3,6 @@ package org.mcsr.speedrunapi.config.api;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
-import org.mcsr.speedrunapi.config.option.*;
 
 import java.io.File;
 import java.util.Map;
@@ -24,8 +23,6 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
 
     /**
      * Initializes the config, creating all the {@link SpeedrunOption}'s it provides.
-     * <p>
-     * Mod Authors can override this method to add their own option types.
      *
      * @return Returns a {@link Map} of all of this configs {@link SpeedrunOption}'s mapped to their ID's.
      */

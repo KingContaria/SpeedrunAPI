@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 
 /**
- * Provides a custom config screen, can also be used by mods using their own config system to show up in the config list.
+ * Provides a custom config screen, can be used by mods using their own config system to show up in the config list.
  * <p>
  * Register by adding your class implementing {@link SpeedrunConfigScreenProvider} to your mod's fabric.mod.json like this:
  * <p>

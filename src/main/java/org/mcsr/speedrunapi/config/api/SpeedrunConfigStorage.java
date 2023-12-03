@@ -1,6 +1,7 @@
 package org.mcsr.speedrunapi.config.api;
 
 import org.jetbrains.annotations.Nullable;
+import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import org.mcsr.speedrunapi.config.exceptions.UnsupportedConfigException;
@@ -11,6 +12,15 @@ import java.util.*;
 
 public interface SpeedrunConfigStorage {
 
+    /**
+     * Creates the {@link SpeedrunOption}'s for this config storage.
+     *
+     * @param config - The config the options are being generated from.
+     * @param optionIDPrefix - ID Prefixes for the generated options.
+     * @return Returns a {@link Map} of all of this config storages {@link SpeedrunOption}'s mapped to their ID's.
+     *
+     * @throws UnsupportedConfigException If any fields type is not supported, and it does not have an {@link Config.Ignored} annotation.
+     */
     default Map<String, SpeedrunOption<?>> init(SpeedrunConfig config, String... optionIDPrefix) {
         Map<String, SpeedrunOption<?>> options = new LinkedHashMap<>();
 
@@ -67,6 +77,16 @@ public interface SpeedrunConfigStorage {
         return options;
     }
 
+    /**
+     * Parses a field to a {@link SpeedrunOption}.
+     * <p>
+     * Mod authors can override this method to add support for custom field types using a {@link SpeedrunConfigAPI.CustomOption.Builder}.
+     *
+     * @param field - The field in this class that is being parsed.
+     * @param config - The config the option is being generated from.
+     * @param idPrefix - ID Prefixes for the generated option.
+     * @return A {@link SpeedrunOption} for the field or null if the field type is not supported.
+     */
     default @Nullable SpeedrunOption<?> parseField(Field field, SpeedrunConfig config, String... idPrefix) {
         Class<?> type = field.getType();
         if (boolean.class.equals(type)) {
