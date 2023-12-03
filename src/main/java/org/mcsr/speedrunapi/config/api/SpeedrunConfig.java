@@ -3,6 +3,7 @@ package org.mcsr.speedrunapi.config.api;
 import net.minecraft.client.gui.screen.Screen;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
+import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 
 import java.io.File;
 import java.util.Map;
@@ -28,6 +29,15 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      */
     default Map<String, SpeedrunOption<?>> init() {
         return this.init(this);
+    }
+
+    /**
+     * Gets called when the config has finished initialization and has been registered.
+     *
+     * @param container - The {@link SpeedrunConfigContainer} containing the options for this {@link SpeedrunConfig}.
+     * @param <THIS> - The mod config class implementing this interface.
+     */
+    default <THIS extends SpeedrunConfig> void finishInitialization(SpeedrunConfigContainer<THIS> container) {
     }
 
     /**

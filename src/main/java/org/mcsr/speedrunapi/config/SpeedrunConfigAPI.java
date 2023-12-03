@@ -30,14 +30,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class SpeedrunConfigAPI {
+public final class SpeedrunConfigAPI {
 
     private static final EnumMap<InitializeOn.InitPoint, Map<ModContainer, Class<? extends SpeedrunConfig>>> CONFIGS_TO_INITIALIZE = new EnumMap<>(InitializeOn.InitPoint.class);
     private static final Map<String, SpeedrunConfigContainer<?>> CONFIGS = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
     private static final Path GLOBAL_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(".mcsr").resolve("config");
-    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
+    static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
     @ApiStatus.Internal
     public static void initialize() {
@@ -115,11 +115,13 @@ public class SpeedrunConfigAPI {
         }
 
         try {
-            SpeedrunConfigContainer<T> config = new SpeedrunConfigContainer<>(constructClass(configClass), mod);
-            if (!modID.equals(config.getConfig().modID())) {
-                throw new InvalidConfigException("The provided SpeedrunConfig's mod ID (" + config.getConfig().modID() + ") doesn't match the providers mod ID (" + modID + ").");
+            T config = constructClass(configClass);
+            SpeedrunConfigContainer<T> container = new SpeedrunConfigContainer<>(config, mod);
+            if (!modID.equals(container.getConfig().modID())) {
+                throw new InvalidConfigException("The provided SpeedrunConfig's mod ID (" + container.getConfig().modID() + ") doesn't match the providers mod ID (" + modID + ").");
             }
-            CONFIGS.put(modID, config);
+            CONFIGS.put(modID, container);
+            config.finishInitialization(container);
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException("Failed to build config for " + modID, e);
         }
@@ -133,11 +135,10 @@ public class SpeedrunConfigAPI {
 
     private static SpeedrunConfigContainer<?> getConfig(String modID) throws NoSuchConfigException {
         SpeedrunConfigContainer<?> config = CONFIGS.get(modID);
-        if (config != null) {
-            return config;
-        } else {
+        if (config == null) {
             throw new NoSuchConfigException();
         }
+        return config;
     }
 
     public static Path getConfigDir() {

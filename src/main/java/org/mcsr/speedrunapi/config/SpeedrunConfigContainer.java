@@ -19,13 +19,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
+public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
     private final T config;
     private final ModContainer mod;
     private final Map<String, SpeedrunOption<?>> options;
 
-    protected SpeedrunConfigContainer(T config, ModContainer mod) {
+    SpeedrunConfigContainer(T config, ModContainer mod) {
         this.config = config;
         this.mod = mod;
         this.options = Collections.synchronizedMap(config.init());
@@ -43,15 +43,7 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         }
     }
 
-    public ModContainer getModContainer() {
-        return this.mod;
-    }
-
-    public T getConfig() {
-        return this.config;
-    }
-
-    protected void load() throws IOException, JsonParseException {
+    public void load() throws IOException, JsonParseException {
         File configFile = this.config.getConfigFile();
 
         if (!configFile.exists()) {
@@ -65,8 +57,8 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
                 if (option != null) {
                     try {
                         option.fromJson(entry.getValue());
-                    } catch (ClassCastException e) {
-                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {}.", option.getID(), this.mod.getMetadata().getId());
+                    } catch (ClassCastException | IllegalStateException e) {
+                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.mod.getMetadata().getId());
                     }
                 }
             }
@@ -85,6 +77,14 @@ public class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             writer.endObject();
             writer.flush();
         }
+    }
+
+    public T getConfig() {
+        return this.config;
+    }
+
+    public ModContainer getModContainer() {
+        return this.mod;
     }
 
     public Collection<SpeedrunOption<?>> getOptions() {
