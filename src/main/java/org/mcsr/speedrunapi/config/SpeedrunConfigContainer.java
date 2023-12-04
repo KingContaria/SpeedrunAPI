@@ -1,5 +1,6 @@
 package org.mcsr.speedrunapi.config;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -72,11 +73,38 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             writer.beginObject();
             for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
                 writer.name(entry.getKey());
-                writer.jsonValue(entry.getValue().toJson().toString());
+                this.writeJsonElement(writer, entry.getValue().toJson());
             }
             writer.endObject();
             writer.flush();
         }
+    }
+
+    private void writeJsonElement(JsonWriter writer, JsonElement jsonElement) throws IOException {
+        if (jsonElement.isJsonObject()) {
+            this.writeJsonObject(writer, jsonElement.getAsJsonObject());
+        } else if (jsonElement.isJsonArray()) {
+            this.writeJsonArray(writer, jsonElement.getAsJsonArray());
+        } else {
+            writer.jsonValue(jsonElement.toString());
+        }
+    }
+
+    private void writeJsonObject(JsonWriter writer, JsonObject jsonObject) throws IOException {
+        writer.beginObject();
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+            writer.name(entry.getKey());
+            this.writeJsonElement(writer, entry.getValue());
+        }
+        writer.endObject();
+    }
+
+    private void writeJsonArray(JsonWriter writer, JsonArray jsonArray) throws IOException {
+        writer.beginArray();
+        for (JsonElement jsonElement : jsonArray) {
+            this.writeJsonElement(writer, jsonElement);
+        }
+        writer.endArray();
     }
 
     public T getConfig() {
