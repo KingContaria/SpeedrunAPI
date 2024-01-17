@@ -2,7 +2,6 @@ package org.mcsr.speedrunapi.config.option;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -51,7 +50,7 @@ public class ShortOption extends WholeNumberOption<Short> {
                 this.setter.invoke(this.configStorage, value);
                 return;
             }
-            this.option.setShort(this.configStorage, (short) MathHelper.clamp(value, this.getMin(), this.getMax()));
+            this.option.setShort(this.configStorage, (short) Math.max(this.getMin(), Math.min(this.getMax(), value)));
         } catch (ReflectiveOperationException e) {
             throw new SpeedrunConfigAPIException(e);
         }
