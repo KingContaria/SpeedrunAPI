@@ -1,6 +1,5 @@
 package org.mcsr.speedrunapi.config.screen.widgets.option;
 
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.config.option.FractionalNumberOption;
 
@@ -26,7 +25,7 @@ public class FractionalNumberOptionSliderWidget<T extends Number> extends Number
 
     @Override
     protected void updateMessage() {
-        this.setMessage(new LiteralText(String.valueOf(Math.round(this.option.get().doubleValue() * 100.0) / 100.0)));
+        this.setMessage(this.option.getText());
     }
 
     @Override

@@ -68,11 +68,12 @@ public class EnumOption extends FieldBasedOption<Enum> {
     }
 
     @Override
-    public AbstractButtonWidget createWidget() {
+    public @NotNull AbstractButtonWidget createWidget() {
         return new EnumOptionButtonWidget(this, 0, 0);
     }
 
-    public Text getText() {
+    @Override
+    public @NotNull Text getText() {
         Enum value = this.get();
         if (value instanceof EnumTextProvider) {
             return ((EnumTextProvider) value).toText();

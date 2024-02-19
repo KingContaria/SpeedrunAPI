@@ -5,5 +5,9 @@
   "speedrunapi.config.speedrunapi.option.anEnum": "Countdown",
   "speedrunapi.config.speedrunapi.option.anEnum.description": "But in Twitch emotes, yaaayyyyy!",
   "speedrunapi.config.speedrunapi.category.fillers": "2 boolean options",
-  "speedrunapi.config.speedrunapi.category.storage": "Example Option Storage"
+  "speedrunapi.config.speedrunapi.category.storage": "Example Option Storage",
+  "speedrunapi.config.speedrunapi.option.aBooleanConfigOption.value.true": ":)",
+  "speedrunapi.config.speedrunapi.option.aBooleanConfigOption.value.false": ":(",
+  "speedrunapi.config.speedrunapi.option.anIntegerConfigOption.value": "Silliness Levels: %s",
+  "speedrunapi.config.speedrunapi.option.anIntegerConfigOption.value.44": "Silliness Overload!!!"
 }

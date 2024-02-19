@@ -77,10 +77,12 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         return this.option.getName();
     }
 
+    @Override
     public @Nullable String getCategory() {
         return this.category;
     }
 
+    @Override
     public void setCategory(@Nullable String category) {
         this.category = category;
     }
@@ -101,9 +103,6 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
 
     @Override
     public @Nullable Text getDescription() {
-        if (this.option.isAnnotationPresent(Config.Description.None.class)) {
-            return null;
-        }
         Config.Description description = this.option.getAnnotation(Config.Description.class);
         if (description != null) {
             return new TranslatableText(description.value());

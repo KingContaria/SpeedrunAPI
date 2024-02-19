@@ -2,6 +2,7 @@ package org.mcsr.speedrunapi.config.option;
 
 import com.google.gson.JsonElement;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -76,7 +77,7 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
     }
 
     @Override
-    public AbstractButtonWidget createWidget() {
+    public @NotNull AbstractButtonWidget createWidget() {
         if (this.createWidgetFunction == null) {
             throw new UnsupportedOperationException("No widget supplier given for " + this.getID() + " in " + this.getModID() + "config.");
         }

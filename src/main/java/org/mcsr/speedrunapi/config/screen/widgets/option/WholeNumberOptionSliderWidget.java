@@ -1,6 +1,5 @@
 package org.mcsr.speedrunapi.config.screen.widgets.option;
 
-import net.minecraft.text.LiteralText;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.config.option.WholeNumberOption;
 
@@ -24,7 +23,7 @@ public class WholeNumberOptionSliderWidget<T extends Number> extends NumberOptio
 
     @Override
     protected void updateMessage() {
-        this.setMessage(new LiteralText(this.option.get().toString()));
+        this.setMessage(this.option.getText());
     }
 
     @Override

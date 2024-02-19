@@ -71,7 +71,7 @@ public class StringOption extends FieldBasedOption<String> {
     }
 
     @Override
-    public AbstractButtonWidget createWidget() {
+    public @NotNull AbstractButtonWidget createWidget() {
         return new StringOptionTextFieldWidget(this, 0, 0);
     }
 

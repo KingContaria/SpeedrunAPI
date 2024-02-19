@@ -53,9 +53,7 @@ public class ExampleConfig implements SpeedrunConfig {
     @Config.Category("fillers")
     public boolean isTrue = false;
 
-    // @Config.Description.None is an optional annotation for options to remove the default description of "speedrunapi.config.<modid>.option.<option>.description"
     @Config.Category("fillers")
-    @Config.Description.None
     public boolean isFalse = true;
 
     // this object implements the SpeedrunConfigStorage interface, making it so that all the fields in the object get turned into options
