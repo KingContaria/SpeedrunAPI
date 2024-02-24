@@ -6,7 +6,12 @@
 	"description": "API for MCSR mods, providing a Config API, selected Fabric API modules and MixinExtras.",
 
 	"authors": [
-		"contaria"
+		{
+			"name": "contaria",
+			"contact": {
+				"homepage": "https://github.com/KingContaria/"
+			}
+		}
 	],
 	"contact": {
 		"sources": "https://github.com/KingContaria/SpeedrunAPI"

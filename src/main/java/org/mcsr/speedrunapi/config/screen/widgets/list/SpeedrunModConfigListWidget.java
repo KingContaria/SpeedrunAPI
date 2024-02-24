@@ -3,6 +3,7 @@ package org.mcsr.speedrunapi.config.screen.widgets.list;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -12,20 +13,20 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import org.mcsr.speedrunapi.config.screen.SpeedrunModConfigsScreen;
+import org.mcsr.speedrunapi.config.screen.widgets.TextWidget;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Map;
 
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
 
@@ -73,6 +74,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private final ModMetadata mod;
         private final SpeedrunConfigScreenProvider configScreenProvider;
         private final Identifier icon;
+        private final TextWidget title;
         private boolean hasIcon;
         private long lastPress;
 
@@ -81,6 +83,21 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             this.mod = this.modContainer.getMetadata();
             this.configScreenProvider = configScreenProvider;
             this.icon = new Identifier("speedrunapi", "mods/" + this.mod.getId() + "/icon");
+
+            MutableText name = new LiteralText(this.mod.getName());
+            MutableText authors = new LiteralText(" by ").styled(style -> style.withColor(Formatting.GRAY).withItalic(true));
+            boolean shouldAddComma = false;
+            for (Person person : this.mod.getAuthors()) {
+                LiteralText author = new LiteralText(person.getName());
+                person.getContact().get("homepage").ifPresent(link -> author.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link)).withFormatting(Formatting.UNDERLINE).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, author.copy().styled(style1 -> style1.withColor(Formatting.GREEN))))));
+                if (shouldAddComma) {
+                    authors.append(new LiteralText(", "));
+                }
+                authors = authors.append(author);
+                shouldAddComma = true;
+            }
+            name = name.append(authors);
+            this.title = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, name, null);
 
             this.registerIcon();
         }
@@ -103,13 +120,24 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         @SuppressWarnings("deprecation")
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            Text name = new LiteralText(this.mod.getName());
             Text description = new LiteralText(this.mod.getDescription());
 
             MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
 
-            textRenderer.draw(matrices, name, (float)(x + 32 + 3), (float)(y + 1), 0xFFFFFF);
+            this.title.x = x + 32 + 3;
+            this.title.y = y + 1;
+
+            Text hoveredComponent = this.title.getTextComponentAtPosition(mouseX, mouseY);
+            if (hoveredComponent instanceof MutableText && hoveredComponent.getStyle().getClickEvent() != null) {
+                TextColor originalColor = hoveredComponent.getStyle().getColor();
+                ((MutableText) hoveredComponent).styled(style -> style.withColor(Formatting.WHITE));
+                this.title.render(matrices, mouseX, mouseY, tickDelta);
+                ((MutableText) hoveredComponent).styled(style -> style.withColor(originalColor));
+            } else {
+                this.title.render(matrices, mouseX, mouseY, tickDelta);
+            }
+
             textRenderer.drawTrimmed(description, (x + 32 + 3), (y + textRenderer.fontHeight + 3), entryWidth - 32 - 6, 0x808080);
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -130,6 +158,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             SpeedrunModConfigListWidget.this.setSelected(this);
+            if (this.title.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
             if (mouseX - SpeedrunModConfigListWidget.this.getRowLeft() <= 32.0) {
                 this.openConfig();
                 return true;

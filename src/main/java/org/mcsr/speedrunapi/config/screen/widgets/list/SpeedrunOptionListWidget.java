@@ -12,7 +12,7 @@ import net.minecraft.text.TranslatableText;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
-import org.mcsr.speedrunapi.config.screen.widgets.option.OptionTextWidget;
+import org.mcsr.speedrunapi.config.screen.widgets.TextWidget;
 
 import java.util.*;
 
@@ -63,11 +63,11 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
     public class OptionEntry extends OptionListEntry {
 
-        private final OptionTextWidget<?> text;
+        private final TextWidget text;
         private final AbstractButtonWidget button;
 
         public OptionEntry(SpeedrunOption<?> option) {
-            this.text = new OptionTextWidget<>(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option);
+            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription());
             this.button = option.createWidget();
         }
 

@@ -4,7 +4,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Style;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidget;
 
@@ -42,5 +44,9 @@ public class SpeedrunModConfigsScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return super.keyPressed(keyCode, scanCode, modifiers) || this.list.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public void e(MatrixStack matrices, @Nullable Style style, int i, int j) {
+        this.renderTextHoverEffect(matrices, style, i, j);
     }
 }
