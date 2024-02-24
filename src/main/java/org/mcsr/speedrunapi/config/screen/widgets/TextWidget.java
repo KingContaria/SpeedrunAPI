@@ -38,6 +38,19 @@ public class TextWidget implements Drawable, Element {
         return false;
     }
 
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.textRenderer.draw(matrices, this.text, this.x, this.y, 0xFFFFFF);
+        if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
+            this.screen.renderTooltip(matrices, this.textRenderer.wrapLines(this.tooltip, 200), mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return mouseX > this.x && mouseX < this.x + this.textRenderer.getWidth(this.text) && mouseY > this.y && mouseY < this.y + this.textRenderer.fontHeight;
+    }
+
     public Text getTextComponentAtPosition(double x, double y) {
         if (this.isMouseOver(x, y)) {
             return this.getTextComponentAtPositionInternal(this.text, 0, this.textRenderer.getWidth(this.text.copy()), x, y);
@@ -61,16 +74,7 @@ public class TextWidget implements Drawable, Element {
         return null;
     }
 
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.textRenderer.draw(matrices, this.text, this.x, this.y, 0xFFFFFF);
-        if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
-            this.screen.renderTooltip(matrices, this.textRenderer.wrapLines(this.tooltip, 200), mouseX, mouseY);
-        }
-    }
-
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX > this.x && mouseX < this.x + this.textRenderer.getWidth(this.text) && mouseY > this.y && mouseY < this.y + this.textRenderer.fontHeight;
+    public int getWidth() {
+        return this.textRenderer.getWidth(this.text);
     }
 }

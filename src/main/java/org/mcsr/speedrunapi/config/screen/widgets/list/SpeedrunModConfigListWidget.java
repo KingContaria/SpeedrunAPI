@@ -74,7 +74,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private final ModMetadata mod;
         private final SpeedrunConfigScreenProvider configScreenProvider;
         private final Identifier icon;
-        private final TextWidget title;
+        private final TextWidget name;
+        private final TextWidget authors;
+        private final Text description;
         private boolean hasIcon;
         private long lastPress;
 
@@ -84,20 +86,21 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             this.configScreenProvider = configScreenProvider;
             this.icon = new Identifier("speedrunapi", "mods/" + this.mod.getId() + "/icon");
 
-            MutableText name = new LiteralText(this.mod.getName());
+            this.name = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, new LiteralText(this.mod.getName()), null);
             MutableText authors = new LiteralText(" by ").styled(style -> style.withColor(Formatting.GRAY).withItalic(true));
             boolean shouldAddComma = false;
             for (Person person : this.mod.getAuthors()) {
                 LiteralText author = new LiteralText(person.getName());
-                person.getContact().get("homepage").ifPresent(link -> author.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link)).withFormatting(Formatting.UNDERLINE).setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, author.copy().styled(style1 -> style1.withColor(Formatting.GREEN))))));
+                person.getContact().get("homepage").ifPresent(link -> author.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link)).withFormatting(Formatting.UNDERLINE)));
                 if (shouldAddComma) {
                     authors.append(new LiteralText(", "));
                 }
                 authors = authors.append(author);
                 shouldAddComma = true;
             }
-            name = name.append(authors);
-            this.title = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, name, null);
+            this.authors = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, authors, null);
+
+            this.description = new LiteralText(this.mod.getDescription());
 
             this.registerIcon();
         }
@@ -120,25 +123,26 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         @SuppressWarnings("deprecation")
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            Text description = new LiteralText(this.mod.getDescription());
-
             MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
 
-            this.title.x = x + 32 + 3;
-            this.title.y = y + 1;
+            this.name.x = x + 32 + 3;
+            this.name.y = y + 1;
+            this.name.render(matrices, mouseX, mouseY, tickDelta);
 
-            Text hoveredComponent = this.title.getTextComponentAtPosition(mouseX, mouseY);
+            this.authors.x = x + entryWidth - this.authors.getWidth() - 5;
+            this.authors.y = y + 1;
+            Text hoveredComponent = this.authors.getTextComponentAtPosition(mouseX, mouseY);
             if (hoveredComponent instanceof MutableText && hoveredComponent.getStyle().getClickEvent() != null) {
                 TextColor originalColor = hoveredComponent.getStyle().getColor();
                 ((MutableText) hoveredComponent).styled(style -> style.withColor(Formatting.WHITE));
-                this.title.render(matrices, mouseX, mouseY, tickDelta);
+                this.authors.render(matrices, mouseX, mouseY, tickDelta);
                 ((MutableText) hoveredComponent).styled(style -> style.withColor(originalColor));
             } else {
-                this.title.render(matrices, mouseX, mouseY, tickDelta);
+                this.authors.render(matrices, mouseX, mouseY, tickDelta);
             }
 
-            textRenderer.drawTrimmed(description, (x + 32 + 3), (y + textRenderer.fontHeight + 3), entryWidth - 32 - 6, 0x808080);
+            textRenderer.drawTrimmed(this.description, (x + 32 + 3), (y + textRenderer.fontHeight + 3), entryWidth - 32 - 6, 0x808080);
 
             RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -158,7 +162,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             SpeedrunModConfigListWidget.this.setSelected(this);
-            if (this.title.mouseClicked(mouseX, mouseY, button)) {
+            if (this.authors.mouseClicked(mouseX, mouseY, button)) {
                 return true;
             }
             if (mouseX - SpeedrunModConfigListWidget.this.getRowLeft() <= 32.0) {
