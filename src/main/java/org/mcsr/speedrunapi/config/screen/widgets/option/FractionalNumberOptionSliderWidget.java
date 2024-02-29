@@ -35,7 +35,7 @@ public class FractionalNumberOptionSliderWidget<T extends Number> extends Number
 
     @Override
     protected void updateValue() {
-        this.value = ((double) this.option.get() - this.option.getMin()) / (this.option.getMax() - this.option.getMin());
+        this.value = (this.option.get().doubleValue() - this.option.getMin()) / (this.option.getMax() - this.option.getMin());
         this.updateMessage();
     }
 }
