@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 public class SpeedrunConfigScreen extends Screen {
 
     private final SpeedrunConfigContainer<?> config;
+    @Nullable
     private final Predicate<InputUtil.Key> inputListener;
     private final Screen parent;
     private SpeedrunOptionListWidget list;
