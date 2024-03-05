@@ -45,7 +45,7 @@ public class SpeedrunConfigScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.inputListener.test(InputUtil.fromKeyCode(keyCode, scanCode))) {
+        if (this.inputListener != null && this.inputListener.test(InputUtil.fromKeyCode(keyCode, scanCode))) {
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -53,7 +53,7 @@ public class SpeedrunConfigScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.inputListener.test(InputUtil.Type.MOUSE.createFromCode(button))) {
+        if (this.inputListener != null && this.inputListener.test(InputUtil.Type.MOUSE.createFromCode(button))) {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
