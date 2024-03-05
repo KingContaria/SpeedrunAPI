@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Language;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
@@ -36,7 +37,11 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.addEntry(new OptionEntry(option));
         }
         for (Map.Entry<String, Set<SpeedrunOption<?>>> category : categorizedOptions.entrySet()) {
-            this.addEntry(new OptionCategoryEntry(new TranslatableText("speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey())));
+            String categoryTranslation = "speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey();
+            if (!Language.getInstance().hasTranslation(categoryTranslation) && Language.getInstance().hasTranslation(category.getKey())) {
+                categoryTranslation = category.getKey();
+            }
+            this.addEntry(new OptionCategoryEntry(new TranslatableText(categoryTranslation)));
             for (SpeedrunOption<?> option : category.getValue()) {
                 this.addEntry(new OptionEntry(option));
             }
