@@ -1,12 +1,15 @@
 package org.mcsr.speedrunapi.config.api;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 
 import java.io.File;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Provides a custom config screen, can also be used by mods using their own config system to show up in the config list.
@@ -51,6 +54,18 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
 
     @Override
     default @NotNull Screen createConfigScreen(Screen parent) {
-        return SpeedrunConfigAPI.createDefaultModConfigScreen(this.modID(), parent);
+        return SpeedrunConfigAPI.createDefaultModConfigScreen(this.modID(), this.createInputListener(), parent);
+    }
+
+    /**
+     * Mod Authors can override this method to add custom key or mouse press functionality to their config screen.
+     * <p>
+     * Creates a {@link Predicate} that listens for inputs on the default config screen.
+     * Returning {@code true} prevents the input from being sent to the screen.
+     *
+     * @return Returns an input listener for the default config screen.
+     */
+    default @Nullable Predicate<InputUtil.Key> createInputListener() {
+        return null;
     }
 }

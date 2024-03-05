@@ -9,6 +9,7 @@ import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Predicate;
 
 public final class SpeedrunConfigAPI {
 
@@ -141,6 +143,9 @@ public final class SpeedrunConfigAPI {
         return config;
     }
 
+    /**
+     * @return Returns the config directory for MCSR mods.
+     */
     public static Path getConfigDir() {
         if (!Files.exists(CONFIG_DIR)) {
             try {
@@ -152,6 +157,9 @@ public final class SpeedrunConfigAPI {
         return CONFIG_DIR;
     }
 
+    /**
+     * @return Returns the global config directory for MCSR mods.
+     */
     public static Path getGlobalConfigDir() {
         if (!Files.exists(GLOBAL_CONFIG_DIR)) {
             try {
@@ -238,8 +246,8 @@ public final class SpeedrunConfigAPI {
         return configScreenProviders;
     }
 
-    public static Screen createDefaultModConfigScreen(String modID, Screen parent) {
-        return new SpeedrunConfigScreen(getConfig(modID), parent);
+    public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
+        return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
     }
 
     public static class CustomOption {
