@@ -72,7 +72,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         private final AbstractButtonWidget button;
 
         public OptionEntry(SpeedrunOption<?> option) {
-            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription());
+            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.top, SpeedrunOptionListWidget.this.bottom);
             this.button = option.createWidget();
         }
 
@@ -81,11 +81,13 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.text.x = x + 5;
             int y_offset = (20 - SpeedrunOptionListWidget.this.client.textRenderer.fontHeight) / 2;
             this.text.y = y + 5 + y_offset;
-            this.text.render(matrices, mouseX, mouseY, tickDelta);
+            this.text.renderText(matrices);
 
             this.button.x = x + entryWidth - this.button.getWidth() - 5;
             this.button.y = y + 5;
             this.button.render(matrices, mouseX, mouseY, tickDelta);
+
+            this.text.renderTooltip(matrices, mouseX, mouseY);
         }
 
         @Override

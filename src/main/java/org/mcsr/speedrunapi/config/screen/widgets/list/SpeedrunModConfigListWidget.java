@@ -86,7 +86,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             this.configScreenProvider = configScreenProvider;
             this.icon = new Identifier("speedrunapi", "mods/" + this.mod.getId() + "/icon");
 
-            this.name = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, new LiteralText(this.mod.getName()), null);
+            this.name = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, new LiteralText(this.mod.getName()));
             MutableText authors = new LiteralText(" by ").styled(style -> style.withColor(Formatting.GRAY).withItalic(true));
             boolean shouldAddComma = false;
             for (Person person : this.mod.getAuthors()) {
@@ -98,7 +98,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 authors = authors.append(author);
                 shouldAddComma = true;
             }
-            this.authors = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, authors, null);
+            this.authors = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, authors);
 
             this.description = new LiteralText(this.mod.getDescription());
 

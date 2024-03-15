@@ -5,9 +5,12 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class TextWidget implements Drawable, Element {
 
@@ -17,14 +20,27 @@ public class TextWidget implements Drawable, Element {
     private final Text text;
     @Nullable
     private final Text tooltip;
+    private final int minTooltipY;
+    private final int maxTooltipY;
+
     public int x;
     public int y;
 
+    public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text) {
+        this(screen, textRenderer, text, null);
+    }
+
     public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text, @Nullable Text tooltip) {
+        this(screen, textRenderer, text, tooltip, 0, screen.height);
+    }
+
+    public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text, @Nullable Text tooltip, int minTooltipY, int maxTooltipY) {
         this.screen = screen;
         this.textRenderer = textRenderer;
         this.text = text;
         this.tooltip = tooltip;
+        this.minTooltipY = minTooltipY;
+        this.maxTooltipY = maxTooltipY;
     }
 
     @Override
@@ -40,9 +56,22 @@ public class TextWidget implements Drawable, Element {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderText(matrices);
+        this.renderTooltip(matrices, mouseX, mouseY);
+    }
+
+    public void renderText(MatrixStack matrices) {
         this.textRenderer.draw(matrices, this.text, this.x, this.y, 0xFFFFFF);
+    }
+
+    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
         if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
-            this.screen.renderTooltip(matrices, this.textRenderer.wrapLines(this.tooltip, 200), mouseX, mouseY);
+            List<StringRenderable> tooltip = this.textRenderer.wrapLines(this.tooltip, 200);
+            int height = tooltip.size() * 10;
+            int y = mouseY;
+            y = Math.min(y, this.maxTooltipY - height);
+            y = Math.max(y, this.minTooltipY - height);
+            this.screen.renderTooltip(matrices, tooltip, mouseX, y);
         }
     }
 
