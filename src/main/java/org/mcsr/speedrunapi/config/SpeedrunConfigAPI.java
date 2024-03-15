@@ -186,7 +186,7 @@ public final class SpeedrunConfigAPI {
 
     /**
      * Wraps the result of {@link SpeedrunConfigAPI#getConfigValue} in an {@link Optional}.
-     * Returns {@link Optional#empty} if a {@link NoSuchConfigException} is thrown.
+     * Returns {@link Optional#empty} if a {@link NoSuchConfigException} is thrown or the option is null.
      * <p>
      * This will not catch any other {@link SpeedrunConfigAPIException}'s that may be thrown.
      *
@@ -198,7 +198,7 @@ public final class SpeedrunConfigAPI {
      */
     public static Optional<Object> getConfigValueOptionally(String modID, String option) {
         try {
-            return Optional.of(getConfigValue(modID, option));
+            return Optional.ofNullable(getConfigValue(modID, option));
         } catch (NoSuchConfigException e) {
             return Optional.empty();
         }
