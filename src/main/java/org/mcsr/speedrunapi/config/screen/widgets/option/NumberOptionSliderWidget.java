@@ -14,5 +14,15 @@ public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extend
         this.updateValue();
     }
 
+    @Override
+    protected void updateMessage() {
+        this.setMessage(this.option.getText());
+    }
+
+    @Override
+    protected void applyValue() {
+        this.option.setFromSliderValue(this.value);
+    }
+
     protected abstract void updateValue();
 }
