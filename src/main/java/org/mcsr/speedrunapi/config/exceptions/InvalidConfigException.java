@@ -1,7 +1,6 @@
 package org.mcsr.speedrunapi.config.exceptions;
 
 public class InvalidConfigException extends SpeedrunConfigAPIException {
-
     public InvalidConfigException() {
     }
 

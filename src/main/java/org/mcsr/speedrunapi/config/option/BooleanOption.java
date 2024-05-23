@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.exceptions.ReflectionConfigException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidget;
 
 import java.lang.reflect.Field;
@@ -34,7 +34,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
             }
             return this.option.getBoolean(this.configStorage);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to get value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
             }
             this.option.setBoolean(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 

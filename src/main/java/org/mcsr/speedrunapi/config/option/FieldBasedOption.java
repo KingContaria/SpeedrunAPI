@@ -10,7 +10,7 @@ import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.exceptions.ReflectionConfigException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -120,7 +120,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
             }
             this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 }

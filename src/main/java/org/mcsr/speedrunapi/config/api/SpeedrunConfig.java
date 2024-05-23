@@ -30,7 +30,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      *
      * @return Returns a {@link Map} of all of this configs {@link SpeedrunOption}'s mapped to their ID's.
      */
-    default Map<String, SpeedrunOption<?>> init() {
+    default Map<String, SpeedrunOption<?>> init() throws ReflectiveOperationException {
         return this.init(this);
     }
 

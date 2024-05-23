@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
+import org.mcsr.speedrunapi.config.exceptions.ReflectionConfigException;
 import org.mcsr.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
 
 import java.lang.reflect.Field;
@@ -25,7 +26,7 @@ public class StringOption extends FieldBasedOption<String> {
 
         this.maxLength = option.getAnnotation(Config.Strings.MaxChars.class);
         if (this.getMaxLength() <= 0) {
-            throw new SpeedrunConfigAPIException("Max String length cannot be 0 or less!");
+            throw new InvalidConfigException("Max String length cannot be 0 or less!");
         }
     }
 
@@ -37,7 +38,7 @@ public class StringOption extends FieldBasedOption<String> {
             }
             return (String) this.option.get(this.configStorage);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to get value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 
@@ -53,7 +54,7 @@ public class StringOption extends FieldBasedOption<String> {
             }
             this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 

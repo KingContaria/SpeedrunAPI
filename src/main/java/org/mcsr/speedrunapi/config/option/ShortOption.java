@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.exceptions.ReflectionConfigException;
 
 import java.lang.reflect.Field;
 
@@ -25,7 +25,7 @@ public class ShortOption extends WholeNumberOption<Short> {
             }
             return this.option.getShort(this.configStorage);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to get value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 
@@ -54,7 +54,7 @@ public class ShortOption extends WholeNumberOption<Short> {
             }
             this.option.setShort(this.configStorage, (short) Math.max(this.getMin(), Math.min(this.getMax(), value)));
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 

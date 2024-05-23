@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
+import org.mcsr.speedrunapi.config.exceptions.ReflectionConfigException;
 
 import java.lang.reflect.Field;
 
@@ -40,7 +40,7 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
             }
             return this.getFunction.get(this, this.config, this.configStorage, this.option);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to get value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 
@@ -53,7 +53,7 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
             }
             this.setFunction.set(this, this.config, this.configStorage, this.option, value);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException(e);
+            throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
     }
 

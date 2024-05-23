@@ -17,6 +17,7 @@ import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
+import org.mcsr.speedrunapi.config.exceptions.InitializeConfigException;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
 import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
@@ -65,21 +66,21 @@ public final class SpeedrunConfigAPI {
                 CustomValue screen = customObject.get("screen");
                 if (screen != null) {
                     if (config != null) {
-                        throw new SpeedrunConfigAPIException("");
+                        throw new InitializeConfigException("Tried to provide both a SpeedrunConfig and a SpeedrunConfigContainer for " + modID + ".");
                     }
                     Class<?> screenProviderClass = Class.forName(screen.getAsString());
                     if (SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
                         CUSTOM_CONFIG_SCREENS.put(modID, (SpeedrunConfigScreenProvider) constructClass(screenProviderClass));
                     } else {
-                        throw new SpeedrunConfigAPIException("Provided config screen provider class from " + modID + " does not implement SpeedrunConfigScreenProvider.");
+                        throw new InitializeConfigException("Provided config screen provider class from " + modID + " does not implement SpeedrunConfigScreenProvider.");
                     }
                 }
             } catch (ClassCastException e) {
-                throw new SpeedrunConfigAPIException("Faulty fabric.mod.json values from " + modID + ".", e);
+                throw new InitializeConfigException("Faulty fabric.mod.json values from " + modID + ".", e);
             } catch (ClassNotFoundException e) {
-                throw new SpeedrunConfigAPIException("Provided class from " + modID + " does not exist.", e);
+                throw new InitializeConfigException("Provided class from " + modID + " does not exist.", e);
             } catch (ReflectiveOperationException e) {
-                throw new SpeedrunConfigAPIException(e);
+                throw new InitializeConfigException("Failed to initialize config for " + modID + ".", e);
             }
         }
     }
@@ -113,7 +114,7 @@ public final class SpeedrunConfigAPI {
         String modID = mod.getMetadata().getId();
 
         if (CONFIGS.containsKey(modID)) {
-            throw new SpeedrunConfigAPIException("Config for " + modID + " is already registered!");
+            throw new InitializeConfigException("Config for " + modID + " is already registered!");
         }
 
         try {
@@ -125,7 +126,7 @@ public final class SpeedrunConfigAPI {
             CONFIGS.put(modID, container);
             config.finishInitialization(container);
         } catch (ReflectiveOperationException e) {
-            throw new SpeedrunConfigAPIException("Failed to build config for " + modID, e);
+            throw new InitializeConfigException("Failed to build config for " + modID + ".", e);
         }
     }
     
@@ -138,7 +139,7 @@ public final class SpeedrunConfigAPI {
     private static SpeedrunConfigContainer<?> getConfig(String modID) throws NoSuchConfigException {
         SpeedrunConfigContainer<?> config = CONFIGS.get(modID);
         if (config == null) {
-            throw new NoSuchConfigException();
+            throw new NoSuchConfigException("No config found for mod id " + modID + ".");
         }
         return config;
     }
@@ -241,7 +242,7 @@ public final class SpeedrunConfigAPI {
     @ApiStatus.Internal
     public static Map<ModContainer, SpeedrunConfigScreenProvider> getModConfigScreenProviders() {
         Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new TreeMap<>(Comparator.comparing(mod -> mod.getMetadata().getName()));
-        CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(SpeedrunConfigAPIException::new), configScreenProvider));
+        CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(IllegalStateException::new), configScreenProvider));
         CONFIGS.forEach((modID, config) -> configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig()));
         return configScreenProviders;
     }
@@ -304,9 +305,6 @@ public final class SpeedrunConfigAPI {
             }
 
             public SpeedrunOption<T> build() {
-                if (this.fromJson == null || this.toJson == null) {
-                    throw new SpeedrunConfigAPIException("No (de-)serialization set for custom option " + this.optionField.getName() + " in " + this.config.modID() + " config.");
-                }
                 return create(this.config, this.configStorage, this.optionField, this.idPrefix, this.getter, this.setter, this.fromJson, this.toJson, this.createWidget);
             }
         }

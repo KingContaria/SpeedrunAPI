@@ -3,8 +3,7 @@ package org.mcsr.speedrunapi.config.api;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
-import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
-import org.mcsr.speedrunapi.config.exceptions.UnsupportedConfigException;
+import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.option.*;
 
 import java.lang.reflect.Field;
@@ -19,9 +18,9 @@ public interface SpeedrunConfigStorage {
      * @param optionIDPrefix - ID Prefixes for the generated options.
      * @return Returns a {@link Map} of all of this config storages {@link SpeedrunOption}'s mapped to their ID's.
      *
-     * @throws UnsupportedConfigException If any fields type is not supported, and it does not have an {@link Config.Ignored} annotation.
+     * @throws InvalidConfigException If any fields type is not supported, and is not annotated with {@link Config.Ignored}.
      */
-    default Map<String, SpeedrunOption<?>> init(SpeedrunConfig config, String... optionIDPrefix) {
+    default Map<String, SpeedrunOption<?>> init(SpeedrunConfig config, String... optionIDPrefix) throws ReflectiveOperationException {
         Map<String, SpeedrunOption<?>> options = new LinkedHashMap<>();
 
         List<Class<?>> classes = new ArrayList<>();
@@ -43,35 +42,31 @@ public interface SpeedrunConfigStorage {
                     continue;
                 }
 
-                if (SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type)) {
-                    try {
-                        field.setAccessible(true);
-
-                        String[] updatedOptionIDPrefix = new String[optionIDPrefix.length + 1];
-                        System.arraycopy(optionIDPrefix, 0, updatedOptionIDPrefix, 0, optionIDPrefix.length);
-                        updatedOptionIDPrefix[updatedOptionIDPrefix.length - 1] = field.getName();
-
-                        Map<String, SpeedrunOption<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, updatedOptionIDPrefix);
-
-                        Config.Category category = field.getAnnotation(Config.Category.class);
-                        if (category != null) {
-                            for (SpeedrunOption<?> o : configDataOptions.values()) {
-                                if (o.getCategory() == null) {
-                                    o.setCategory(category.value());
-                                }
-                            }
-                        }
-                        options.putAll(configDataOptions);
-                    } catch (IllegalAccessException | NullPointerException e) {
-                        throw new SpeedrunConfigAPIException(e);
-                    }
-                } else {
+                if (!(SpeedrunConfigStorage.class.isAssignableFrom(type) && !SpeedrunConfig.class.isAssignableFrom(type))) {
                     String id = field.getName();
                     if (optionIDPrefix.length != 0) {
                         id = String.join(":", optionIDPrefix) + ":" + id;
                     }
-                    throw new UnsupportedConfigException("Option " + id + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
+                    throw new InvalidConfigException("Option " + id + " is of an unsupported type (" + type + ") in " + config.modID() + " config.");
                 }
+
+                field.setAccessible(true);
+
+                String[] updatedOptionIDPrefix = new String[optionIDPrefix.length + 1];
+                System.arraycopy(optionIDPrefix, 0, updatedOptionIDPrefix, 0, optionIDPrefix.length);
+                updatedOptionIDPrefix[updatedOptionIDPrefix.length - 1] = field.getName();
+
+                Map<String, SpeedrunOption<?>> configDataOptions = ((SpeedrunConfigStorage) field.get(this)).init(config, updatedOptionIDPrefix);
+
+                Config.Category category = field.getAnnotation(Config.Category.class);
+                if (category != null) {
+                    for (SpeedrunOption<?> o : configDataOptions.values()) {
+                        if (o.getCategory() == null) {
+                            o.setCategory(category.value());
+                        }
+                    }
+                }
+                options.putAll(configDataOptions);
             }
         }
         return options;

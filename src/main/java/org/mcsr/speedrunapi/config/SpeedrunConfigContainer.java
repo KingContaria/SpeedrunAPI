@@ -26,7 +26,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     private final ModContainer mod;
     private final Map<String, SpeedrunOption<?>> options;
 
-    SpeedrunConfigContainer(T config, ModContainer mod) {
+    SpeedrunConfigContainer(T config, ModContainer mod) throws ReflectiveOperationException {
         this.config = config;
         this.mod = mod;
         this.options = Collections.synchronizedMap(config.init());
