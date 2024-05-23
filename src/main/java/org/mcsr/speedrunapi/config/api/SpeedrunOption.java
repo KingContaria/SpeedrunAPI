@@ -1,6 +1,7 @@
 package org.mcsr.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -106,6 +107,7 @@ public interface SpeedrunOption<T> {
     void fromJson(JsonElement jsonElement);
 
     /**
+     * @apiNote If this returns {@code null}, the option is not saved to the config file. To save a null value return {@link JsonNull#INSTANCE}.
      * @return Returns a {@link JsonElement} representing the value of this option.
      */
     JsonElement toJson();

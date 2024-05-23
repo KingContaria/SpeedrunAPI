@@ -72,8 +72,11 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         try (JsonWriter writer = SpeedrunConfigAPI.GSON.newJsonWriter(new FileWriter(configFile))) {
             writer.beginObject();
             for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
-                writer.name(entry.getKey());
-                this.writeJsonElement(writer, entry.getValue().toJson());
+                JsonElement value = entry.getValue().toJson();
+                if (value != null) {
+                    writer.name(entry.getKey());
+                    this.writeJsonElement(writer, value);
+                }
             }
             writer.endObject();
             writer.flush();
