@@ -34,13 +34,13 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         try {
             this.load();
         } catch (IOException | JsonParseException e) {
-            SpeedrunAPI.LOGGER.warn("Failed to load config file for {}.", this.mod.getMetadata().getId(), e);
+            SpeedrunAPI.LOGGER.warn("Failed to load config file for {}.", this.config.modID(), e);
         }
 
         try {
             this.save();
         } catch (IOException e) {
-            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}.", this.mod.getMetadata().getId(), e);
+            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}.", this.config.modID(), e);
         }
     }
 
@@ -59,11 +59,13 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
                     try {
                         option.fromJson(entry.getValue());
                     } catch (ClassCastException | IllegalStateException e) {
-                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.mod.getMetadata().getId());
+                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.config.modID());
                     }
                 }
             }
         }
+
+        this.config.finishLoading();
     }
 
     public void save() throws IOException {
@@ -81,6 +83,8 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             writer.endObject();
             writer.flush();
         }
+
+        this.config.finishSaving();
     }
 
     private void writeJsonElement(JsonWriter writer, JsonElement jsonElement) throws IOException {
@@ -125,7 +129,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public SpeedrunOption<?> getOption(String name) throws NoSuchConfigException {
         SpeedrunOption<?> option = this.options.get(name);
         if (option == null) {
-            throw new NoSuchConfigException("Could not find option \"" + name + "\" in " + this.mod.getMetadata().getId() + " config.");
+            throw new NoSuchConfigException("Could not find option \"" + name + "\" in " + this.config.modID() + " config.");
         }
         return option;
     }

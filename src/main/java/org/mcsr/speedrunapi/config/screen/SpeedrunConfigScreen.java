@@ -71,7 +71,7 @@ public class SpeedrunConfigScreen extends Screen {
         try {
             this.config.save();
         } catch (IOException e) {
-            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}", this.config.getModContainer().getMetadata().getId());
+            SpeedrunAPI.LOGGER.warn("Failed to save config file for {}.", this.config.getConfig().modID());
         }
     }
 }

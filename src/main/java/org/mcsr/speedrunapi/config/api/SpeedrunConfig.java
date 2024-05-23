@@ -43,6 +43,22 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     }
 
     /**
+     * Gets called when the config has successfully finished loading.
+     *
+     * @apiNote The config may or may not have finished initialization at this point.
+     */
+    default void finishLoading() {
+    }
+
+    /**
+     * Gets called when the config has successfully finished saving.
+     *
+     * @apiNote The config may or may not have finished initialization at this point.
+     */
+    default void finishSaving() {
+    }
+
+    /**
      * Mod Authors can override this method to change the config file location, for example to add global config files.
      *
      * @apiNote The directory of the returned file gets created by this method.
