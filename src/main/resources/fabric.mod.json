@@ -14,7 +14,8 @@
 		}
 	],
 	"contact": {
-		"sources": "https://github.com/KingContaria/SpeedrunAPI"
+		"sources": "https://github.com/KingContaria/SpeedrunAPI",
+		"issues": "https://github.com/KingContaria/SpeedrunAPI/issues"
 	},
 
 	"license": "MIT",
@@ -28,12 +29,6 @@
 		"main": [
 			"org.mcsr.speedrunapi.SpeedrunAPI"
 		]
-	},
-
-	"custom": {
-		"speedrunapi": {
-			"config": "org.mcsr.speedrunapi.config.example.ExampleConfig"
-		}
 	},
 
 	"mixins": [
