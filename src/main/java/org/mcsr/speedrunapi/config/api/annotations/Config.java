@@ -1,6 +1,5 @@
 package org.mcsr.speedrunapi.config.api.annotations;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionSliderWidget;
@@ -41,18 +40,6 @@ public class Config {
          * @return Returns the translation key for the annotated option's description.
          */
         String value();
-
-        /**
-         * This annotation was used to remove the description used in the config screen for the annotated option.
-         * It has been replaced by simply checking if a translation for the description exists, if not no description will be used.
-         * This annotation is now redundant and for removal.
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval
-        @Retention(RetentionPolicy.RUNTIME)
-        @Target(ElementType.FIELD)
-        @interface None {
-        }
     }
 
     /**
