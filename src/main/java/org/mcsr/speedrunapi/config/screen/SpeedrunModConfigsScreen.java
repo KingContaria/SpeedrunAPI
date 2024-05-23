@@ -14,7 +14,7 @@ public class SpeedrunModConfigsScreen extends Screen {
     private SpeedrunModConfigListWidget list;
 
     public SpeedrunModConfigsScreen(Screen parent) {
-        super(new TranslatableText("speedrunapi.gui.speedrunConfig.title"));
+        super(new TranslatableText("speedrunapi.gui.config.title"));
         this.parent = parent;
     }
 
