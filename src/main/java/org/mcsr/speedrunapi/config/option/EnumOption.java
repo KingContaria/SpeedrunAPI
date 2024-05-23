@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -15,6 +16,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 import java.lang.reflect.Field;
 
 @SuppressWarnings("rawtypes")
+@ApiStatus.Internal
 public class EnumOption extends FieldBasedOption<Enum> {
 
     public EnumOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {

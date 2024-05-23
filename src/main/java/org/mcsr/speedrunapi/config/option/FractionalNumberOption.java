@@ -3,6 +3,7 @@ package org.mcsr.speedrunapi.config.option;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -14,6 +15,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWi
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public abstract class FractionalNumberOption<T extends Number> extends NumberOption<T> {
 
     @NotNull

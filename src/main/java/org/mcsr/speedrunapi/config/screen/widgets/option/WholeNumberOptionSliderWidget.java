@@ -1,8 +1,10 @@
 package org.mcsr.speedrunapi.config.screen.widgets.option;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.config.option.WholeNumberOption;
 
+@ApiStatus.Internal
 public class WholeNumberOptionSliderWidget<T extends Number> extends NumberOptionSliderWidget<WholeNumberOption<T>> {
 
     public WholeNumberOptionSliderWidget(WholeNumberOption<T> option, int x, int y) {

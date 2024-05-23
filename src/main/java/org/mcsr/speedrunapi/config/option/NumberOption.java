@@ -1,11 +1,13 @@
 package org.mcsr.speedrunapi.config.option;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.annotations.Config;
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public abstract class NumberOption<T extends Number> extends FieldBasedOption<T> {
 
     protected final boolean useTextField;

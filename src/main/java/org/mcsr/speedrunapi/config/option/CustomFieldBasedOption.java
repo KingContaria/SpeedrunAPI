@@ -2,6 +2,7 @@ package org.mcsr.speedrunapi.config.option;
 
 import com.google.gson.JsonElement;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
@@ -11,6 +12,7 @@ import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
 
     private final SpeedrunConfigAPI.CustomOption.Getter<T> getFunction;

@@ -18,6 +18,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.SpeedrunAPI;
@@ -32,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+@ApiStatus.Internal
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
 
     private static final Identifier NO_MOD_ICON = new Identifier("textures/misc/unknown_server.png");

@@ -1,6 +1,7 @@
 package org.mcsr.speedrunapi.config.option;
 
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -12,6 +13,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.WholeNumberOptionSlider
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public abstract class WholeNumberOption<T extends Number> extends NumberOption<T> {
 
     @NotNull

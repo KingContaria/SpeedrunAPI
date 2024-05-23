@@ -10,6 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
@@ -17,6 +18,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.TextWidget;
 
 import java.util.*;
 
+@ApiStatus.Internal
 public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionListEntry> {
 
     private final SpeedrunConfigScreen parent;

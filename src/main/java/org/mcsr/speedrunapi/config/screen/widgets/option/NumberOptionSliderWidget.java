@@ -2,8 +2,10 @@ package org.mcsr.speedrunapi.config.screen.widgets.option;
 
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.text.LiteralText;
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.option.NumberOption;
 
+@ApiStatus.Internal
 public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
 
     protected final T option;

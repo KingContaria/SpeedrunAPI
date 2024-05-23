@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -13,6 +14,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidg
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public class BooleanOption extends FieldBasedOption<Boolean> {
 
     public BooleanOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {

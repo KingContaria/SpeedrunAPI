@@ -6,7 +6,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class IconButtonWidget extends ButtonWidget {
 
     private final Identifier texture;

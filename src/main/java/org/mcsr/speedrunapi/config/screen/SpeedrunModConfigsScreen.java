@@ -5,9 +5,11 @@ import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 import org.mcsr.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidget;
 
+@ApiStatus.Internal
 public class SpeedrunModConfigsScreen extends Screen {
 
     private final Screen parent;

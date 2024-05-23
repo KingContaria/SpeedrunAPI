@@ -2,6 +2,7 @@ package org.mcsr.speedrunapi.config.option;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -9,6 +10,7 @@ import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public class FloatOption extends FractionalNumberOption<Float> {
 
     public FloatOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {

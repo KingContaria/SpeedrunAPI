@@ -3,6 +3,7 @@ package org.mcsr.speedrunapi.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -13,6 +14,7 @@ import org.mcsr.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWi
 
 import java.lang.reflect.Field;
 
+@ApiStatus.Internal
 public class StringOption extends FieldBasedOption<String> {
 
     @Nullable

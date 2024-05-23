@@ -6,9 +6,11 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.ApiStatus;
 import org.mcsr.speedrunapi.config.option.NumberOption;
 import org.mcsr.speedrunapi.config.screen.widgets.IconButtonWidget;
 
+@ApiStatus.Internal
 public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {
 
     private static final Identifier APPLYTEXTURE = new Identifier("textures/gui/container/beacon.png");

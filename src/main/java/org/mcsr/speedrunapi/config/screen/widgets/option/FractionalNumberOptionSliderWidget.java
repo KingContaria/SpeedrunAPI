@@ -1,8 +1,10 @@
 package org.mcsr.speedrunapi.config.screen.widgets.option;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 import org.mcsr.speedrunapi.config.option.FractionalNumberOption;
 
+@ApiStatus.Internal
 public class FractionalNumberOptionSliderWidget<T extends Number> extends NumberOptionSliderWidget<FractionalNumberOption<T>> {
 
     public FractionalNumberOptionSliderWidget(FractionalNumberOption<T> option, int x, int y) {
