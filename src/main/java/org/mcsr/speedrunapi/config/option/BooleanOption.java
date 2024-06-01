@@ -62,11 +62,6 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
     }
 
     @Override
-    public boolean hasWidget() {
-        return true;
-    }
-
-    @Override
     public @NotNull AbstractButtonWidget createWidget() {
         return new BooleanOptionButtonWidget(this, 0, 0);
     }

@@ -48,11 +48,6 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     }
 
     @Override
-    public boolean hasWidget() {
-        return true;
-    }
-
-    @Override
     public @NotNull AbstractButtonWidget createWidget() {
         if (this.useTextField) {
             return new NumberOptionTextFieldWidget<>(this, 0, 0);

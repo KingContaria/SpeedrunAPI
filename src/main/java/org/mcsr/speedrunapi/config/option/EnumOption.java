@@ -65,11 +65,6 @@ public class EnumOption extends FieldBasedOption<Enum> {
     }
 
     @Override
-    public boolean hasWidget() {
-        return true;
-    }
-
-    @Override
     public @NotNull AbstractButtonWidget createWidget() {
         return new EnumOptionButtonWidget(this, 0, 0);
     }

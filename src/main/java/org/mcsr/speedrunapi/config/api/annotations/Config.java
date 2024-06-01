@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 public class Config {
 
     /**
-     * Optional annotation that sets the name used in the config screen for the annotated option.
+     * Sets the name used in the config screen for the annotated option.
      * <p>
      * If an option is not using this annotation, "speedrunapi.config.modid.option.theOption" will be used as the translation key instead.
      */
@@ -28,7 +28,7 @@ public class Config {
     }
 
     /**
-     * Optional annotation that sets the description used in the config screen for the annotated option.
+     * Sets the description used in the config screen for the annotated option.
      * <p>
      * If an option is not using this annotation, "speedrunapi.config.modid.option.theOption.description" will be used as the translation key instead.
      */
@@ -43,7 +43,7 @@ public class Config {
     }
 
     /**
-     * Optional annotation that sets the category the used in the config screen for the annotated option.
+     * Sets the category used in the config screen for the annotated option.
      * <p>
      * The translation key used for the category name will be "speedrunapi.config.modid.category.theCategory".
      */
@@ -55,6 +55,16 @@ public class Config {
          * @return Returns the id of the config category.
          */
         String value();
+    }
+
+    /**
+     * Hides an option from the config screen.
+     * <p>
+     * The field will not be available from the {@link SpeedrunConfigScreen}, but will be saved in the config file.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface Hide {
     }
 
     /**

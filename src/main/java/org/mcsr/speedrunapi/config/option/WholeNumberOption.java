@@ -40,11 +40,6 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     }
 
     @Override
-    public boolean hasWidget() {
-        return true;
-    }
-
-    @Override
     public @NotNull AbstractButtonWidget createWidget() {
         if (this.useTextField) {
             return new NumberOptionTextFieldWidget<>(this, 0, 0);

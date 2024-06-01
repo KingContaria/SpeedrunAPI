@@ -22,9 +22,16 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     protected final SpeedrunConfigStorage configStorage;
     protected final Field option;
 
+    private final String[] idPrefix;
+
+    @Nullable
+    private final String name;
+    @Nullable
+    private final String description;
     @Nullable
     protected String category;
-    private final String[] idPrefix;
+
+    private final boolean hide;
 
     @Nullable
     protected final Method getter;
@@ -38,10 +45,26 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         this.option.setAccessible(true);
         this.idPrefix = idPrefix;
 
+        Config.Name name = option.getAnnotation(Config.Name.class);
+        if (name != null) {
+            this.name = name.value();
+        } else {
+            this.name = null;
+        }
+
+        Config.Description description = option.getAnnotation(Config.Description.class);
+        if (description != null) {
+            this.description = description.value();
+        } else {
+            this.description = null;
+        }
+
         Config.Category category = option.getAnnotation(Config.Category.class);
         if (category != null) {
             this.category = category.value();
         }
+
+        this.hide = option.getAnnotation(Config.Hide.class) != null;
 
         Method getter = null;
         Method setter = null;
@@ -51,11 +74,11 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
                 try {
                     getter = this.configStorage.getClass().getDeclaredMethod(access.getter());
                     if (!getter.getReturnType().equals(option.getType())) {
-                        throw new InvalidConfigException("Provided getter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + ".");
+                        throw new InvalidConfigException("Provided getter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + " config (" + this.configStorage.getClass().getName() + ").");
                     }
                     getter.setAccessible(true);
                 } catch (NoSuchMethodException e) {
-                    throw new InvalidConfigException("Provided getter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + ".", e);
+                    throw new InvalidConfigException("Provided getter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + " config (" + this.configStorage.getClass().getName() + ").", e);
                 }
             }
             if (!access.setter().isEmpty()) {
@@ -63,7 +86,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
                     setter = this.configStorage.getClass().getDeclaredMethod(access.setter(), option.getType());
                     setter.setAccessible(true);
                 } catch (NoSuchMethodException e) {
-                    throw new InvalidConfigException("Provided setter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + ".", e);
+                    throw new InvalidConfigException("Provided setter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + " config (" + this.configStorage.getClass().getName() + ").", e);
                 }
             }
         }
@@ -96,18 +119,16 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
 
     @Override
     public @NotNull Text getName() {
-        Config.Name name = this.option.getAnnotation(Config.Name.class);
-        if (name != null) {
-            return new TranslatableText(name.value());
+        if (this.name != null) {
+            return new TranslatableText(this.name);
         }
         return SpeedrunOption.super.getName();
     }
 
     @Override
     public @Nullable Text getDescription() {
-        Config.Description description = this.option.getAnnotation(Config.Description.class);
-        if (description != null) {
-            return new TranslatableText(description.value());
+        if (this.description != null) {
+            return new TranslatableText(this.description);
         }
         return SpeedrunOption.super.getDescription();
     }
@@ -122,5 +143,10 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         } catch (ReflectiveOperationException e) {
             throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
+    }
+
+    @Override
+    public boolean hasWidget() {
+        return !this.hide;
     }
 }

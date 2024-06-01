@@ -75,7 +75,7 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
 
     @Override
     public boolean hasWidget() {
-        return this.createWidgetFunction != null;
+        return super.hasWidget() && this.createWidgetFunction != null;
     }
 
     @Override

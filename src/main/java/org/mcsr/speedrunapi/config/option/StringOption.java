@@ -19,12 +19,18 @@ import java.lang.reflect.Field;
 public class StringOption extends FieldBasedOption<String> {
 
     @Nullable
-    private final Config.Strings.MaxChars maxLength;
+    private final Integer maxChars;
 
     public StringOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
         super(config, configStorage, option, idPrefix);
 
-        this.maxLength = option.getAnnotation(Config.Strings.MaxChars.class);
+        Config.Strings.MaxChars maxChars = option.getAnnotation(Config.Strings.MaxChars.class);
+        if (maxChars != null) {
+            this.maxChars = maxChars.value();
+        } else {
+            this.maxChars = null;
+        }
+
         if (this.getMaxLength() <= 0) {
             throw new InvalidConfigException("Max String length cannot be 0 or less!");
         }
@@ -69,16 +75,11 @@ public class StringOption extends FieldBasedOption<String> {
     }
 
     @Override
-    public boolean hasWidget() {
-        return true;
-    }
-
-    @Override
     public @NotNull AbstractButtonWidget createWidget() {
         return new StringOptionTextFieldWidget(this, 0, 0);
     }
 
     public int getMaxLength() {
-        return this.maxLength != null ? this.maxLength.value() : Integer.MAX_VALUE;
+        return this.maxChars != null ? this.maxChars : Integer.MAX_VALUE;
     }
 }
