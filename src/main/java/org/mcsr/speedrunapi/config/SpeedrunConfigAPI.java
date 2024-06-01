@@ -268,8 +268,8 @@ public final class SpeedrunConfigAPI {
             private Getter<T> getter = (option, config, configStorage, optionField) -> (T) optionField.get(configStorage);
             private Setter<T> setter = (option, config, configStorage, optionField, value) -> optionField.set(configStorage, value);
             @SuppressWarnings("unchecked")
-            private Deserializer<T> fromJson = (option, config, configStorage, optionField, jsonElement) -> option.set((T) GSON.fromJson(jsonElement, optionField.getDeclaringClass()));
-            private Serializer<T> toJson = (option, config, configStorage, optionField) -> GSON.toJsonTree(option.get(), optionField.getDeclaringClass());
+            private Deserializer<T> fromJson = (option, config, configStorage, optionField, jsonElement) -> option.set((T) GSON.fromJson(jsonElement, optionField.getType()));
+            private Serializer<T> toJson = (option, config, configStorage, optionField) -> GSON.toJsonTree(option.get(), optionField.getType());
             @Nullable
             private WidgetProvider<T> createWidget;
 
