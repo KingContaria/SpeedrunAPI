@@ -84,4 +84,24 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     default @Nullable Predicate<InputUtil.Key> createInputListener() {
         return null;
     }
+
+     /**
+     * Mod Authors can override this method to dynamically hide categories from the default config screen.
+     *
+     * @param category - The categories ID.
+     * @return Returns {@code true} if the given category should be shown on the config screen.
+     */
+    default boolean shouldShowCategory(String category) {
+        return true;
+    }
+
+    /**
+     * Mod Authors can override this method to dynamically hide options from the default config screen.
+     *
+     * @param option - The options ID.
+     * @return Returns {@code true} if the given option should be shown on the config screen.
+     */
+    default boolean shouldShowOption(String option) {
+        return true;
+    }
 }

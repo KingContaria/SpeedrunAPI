@@ -247,6 +247,7 @@ public final class SpeedrunConfigAPI {
         return configScreenProviders;
     }
 
+    @ApiStatus.Internal
     public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
         return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
     }

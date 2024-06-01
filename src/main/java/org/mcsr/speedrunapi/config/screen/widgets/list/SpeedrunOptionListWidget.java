@@ -29,7 +29,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         Map<String, Set<SpeedrunOption<?>>> categorizedOptions = new LinkedHashMap<>();
         for (SpeedrunOption<?> option : config.getOptions()) {
-            if (!option.hasWidget()) {
+            if (!option.hasWidget() || !config.getConfig().shouldShowOption(option.getID())) {
                 continue;
             }
             if (option.getCategory() != null) {
@@ -39,6 +39,9 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.addEntry(new OptionEntry(option));
         }
         for (Map.Entry<String, Set<SpeedrunOption<?>>> category : categorizedOptions.entrySet()) {
+            if (!config.getConfig().shouldShowCategory(category.getKey())) {
+                continue;
+            }
             String categoryTranslation = "speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey();
             if (!Language.getInstance().hasTranslation(categoryTranslation) && Language.getInstance().hasTranslation(category.getKey())) {
                 categoryTranslation = category.getKey();
