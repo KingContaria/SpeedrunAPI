@@ -2,5 +2,6 @@
   "speedrunapi.gui.config.button": "Mod Configs",
   "speedrunapi.gui.config.title": "Speedrun API - Mod Configs",
   "speedrunapi.gui.config.noConfigs": "§7There is no mods to configure here :(",
-  "speedrunapi.gui.config.unavailable": "This Config is unavailable right now!"
+  "speedrunapi.gui.config.unavailable": "This Config is unavailable right now!",
+  "speedrunapi.gui.config.search": "Search for options"
 }

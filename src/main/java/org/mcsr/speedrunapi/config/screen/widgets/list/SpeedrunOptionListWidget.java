@@ -21,14 +21,26 @@ import java.util.*;
 @ApiStatus.Internal
 public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionListEntry> {
     private final SpeedrunConfigScreen parent;
+    private final SpeedrunConfigContainer<?> config;
 
-    public SpeedrunOptionListWidget(SpeedrunConfigContainer<?> config, SpeedrunConfigScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
+    public SpeedrunOptionListWidget(SpeedrunConfigScreen parent, SpeedrunConfigContainer<?> config, MinecraftClient client, int width, int height, int top, int bottom, String filter) {
         super(client, width, height, top, bottom, 30);
         this.parent = parent;
+        this.config = config;
+        this.updateEntries(filter);
+    }
+
+    public void updateEntries(String filter) {
+        this.clearEntries();
+
+        filter = filter.toLowerCase(Locale.ENGLISH);
 
         Map<String, Set<SpeedrunOption<?>>> categorizedOptions = new LinkedHashMap<>();
-        for (SpeedrunOption<?> option : config.getOptions()) {
-            if (!option.hasWidget() || !config.getConfig().shouldShowOption(option.getID())) {
+        for (SpeedrunOption<?> option : this.config.getOptions()) {
+            if (!filter.isEmpty() && !option.getName().getString().toLowerCase(Locale.ENGLISH).contains(filter)) {
+                 continue;
+            }
+            if (!option.hasWidget() || !this.config.getConfig().shouldShowOption(option.getID())) {
                 continue;
             }
             if (option.getCategory() != null) {
@@ -37,11 +49,12 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             }
             this.addEntry(new OptionEntry(option));
         }
+
         for (Map.Entry<String, Set<SpeedrunOption<?>>> category : categorizedOptions.entrySet()) {
-            if (!config.getConfig().shouldShowCategory(category.getKey())) {
+            if (!this.config.getConfig().shouldShowCategory(category.getKey())) {
                 continue;
             }
-            String categoryTranslation = "speedrunapi.config." + config.getModContainer().getMetadata().getId() + ".category." + category.getKey();
+            String categoryTranslation = "speedrunapi.config." + this.config.getModContainer().getMetadata().getId() + ".category." + category.getKey();
             if (!Language.getInstance().hasTranslation(categoryTranslation) && Language.getInstance().hasTranslation(category.getKey())) {
                 categoryTranslation = category.getKey();
             }
@@ -50,6 +63,13 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
                 this.addEntry(new OptionEntry(option));
             }
         }
+
+        this.setScrollAmount(0.0);
+    }
+
+    public void adjustTop(int top) {
+        //this.height += this.top - top;
+        this.top = top;
     }
 
     @Override
