@@ -17,7 +17,6 @@ import java.lang.reflect.Method;
 
 @ApiStatus.Internal
 public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
-
     protected final SpeedrunConfig config;
     protected final SpeedrunConfigStorage configStorage;
     protected final Field option;

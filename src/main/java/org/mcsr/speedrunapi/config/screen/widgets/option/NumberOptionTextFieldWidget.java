@@ -12,15 +12,15 @@ import org.mcsr.speedrunapi.config.screen.widgets.IconButtonWidget;
 
 @ApiStatus.Internal
 public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {
+    private static final Identifier APPLY_TEXTURE = new Identifier("textures/gui/container/beacon.png");
 
-    private static final Identifier APPLYTEXTURE = new Identifier("textures/gui/container/beacon.png");
     private final NumberOption<?> option;
     private final ButtonWidget applyButton;
 
     public NumberOptionTextFieldWidget(T option, int x, int y) {
         super(MinecraftClient.getInstance().textRenderer, x, y, 125, 20, LiteralText.EMPTY);
         this.option = option;
-        this.applyButton = new IconButtonWidget(APPLYTEXTURE, 90, 222, 256, 256, x + 130, y, button -> this.apply());
+        this.applyButton = new IconButtonWidget(APPLY_TEXTURE, 90, 222, 256, 256, x + 130, y, button -> this.apply());
         this.updateText();
         this.setChangedListener(string -> this.applyButton.active = !this.option.get().toString().equals(string));
     }

@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;
 
 public class SpeedrunAPI implements PreLaunchEntrypoint, ModInitializer {
-
     public static final Logger LOGGER = LogManager.getLogger();
 
     @Override

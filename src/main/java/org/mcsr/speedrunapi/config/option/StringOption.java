@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public class StringOption extends FieldBasedOption<String> {
-
     @Nullable
     private final Integer maxChars;
 

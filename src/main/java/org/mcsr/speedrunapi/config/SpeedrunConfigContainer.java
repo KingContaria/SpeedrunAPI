@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Map;
 
 public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
-
     private final T config;
     private final ModContainer mod;
     private final Map<String, SpeedrunOption<?>> options;

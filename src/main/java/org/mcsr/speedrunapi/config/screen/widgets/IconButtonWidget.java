@@ -10,7 +10,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class IconButtonWidget extends ButtonWidget {
-
     private final Identifier texture;
     private final int u;
     private final int v;

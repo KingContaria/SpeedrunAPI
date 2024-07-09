@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public abstract class NumberOption<T extends Number> extends FieldBasedOption<T> {
-
     protected final boolean useTextField;
 
     public NumberOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {

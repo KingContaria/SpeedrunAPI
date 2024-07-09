@@ -20,7 +20,6 @@ import java.util.*;
 
 @ApiStatus.Internal
 public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionListEntry> {
-
     private final SpeedrunConfigScreen parent;
 
     public SpeedrunOptionListWidget(SpeedrunConfigContainer<?> config, SpeedrunConfigScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {

@@ -11,7 +11,6 @@ import org.mcsr.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidg
 
 @ApiStatus.Internal
 public class SpeedrunModConfigsScreen extends Screen {
-
     private final Screen parent;
     private SpeedrunModConfigListWidget list;
 

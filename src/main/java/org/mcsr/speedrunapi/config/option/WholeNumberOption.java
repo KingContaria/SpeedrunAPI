@@ -15,7 +15,6 @@ import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public abstract class WholeNumberOption<T extends Number> extends NumberOption<T> {
-
     @NotNull
     protected final Config.Numbers.Whole.Bounds bounds;
     @Nullable

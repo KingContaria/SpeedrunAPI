@@ -7,7 +7,6 @@ import org.mcsr.speedrunapi.config.option.NumberOption;
 
 @ApiStatus.Internal
 public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
-
     protected final T option;
 
     public NumberOptionSliderWidget(T option, int x, int y, double value) {

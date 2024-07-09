@@ -15,7 +15,6 @@ import java.util.List;
 
 @ApiStatus.Internal
 public class TextWidget implements Drawable, Element {
-
     private final Screen screen;
     private final TextRenderer textRenderer;
     @NotNull

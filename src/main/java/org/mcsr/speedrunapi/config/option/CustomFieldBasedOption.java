@@ -14,7 +14,6 @@ import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
-
     private final SpeedrunConfigAPI.CustomOption.Getter<T> getFunction;
     private final SpeedrunConfigAPI.CustomOption.Setter<T> setFunction;
     private final SpeedrunConfigAPI.CustomOption.Deserializer<T> fromJsonFunction;

@@ -35,7 +35,6 @@ import java.util.Map;
 
 @ApiStatus.Internal
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
-
     private static final Identifier NO_MOD_ICON = new Identifier("textures/misc/unknown_server.png");
     private static final Identifier EDIT_MOD_CONFIG = new Identifier("textures/gui/world_selection.png");
 

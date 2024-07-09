@@ -34,14 +34,16 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class SpeedrunConfigAPI {
-
     private static final EnumMap<InitializeOn.InitPoint, Map<ModContainer, Class<? extends SpeedrunConfig>>> CONFIGS_TO_INITIALIZE = new EnumMap<>(InitializeOn.InitPoint.class);
     private static final Map<String, SpeedrunConfigContainer<?>> CONFIGS = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
+
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("mcsr");
     private static final Path GLOBAL_CONFIG_DIR = Paths.get(System.getProperty("user.home")).resolve(".mcsr").resolve("config");
+
     static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
+    @SuppressWarnings("unchecked")
     @ApiStatus.Internal
     public static void initialize() {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
@@ -146,8 +148,11 @@ public final class SpeedrunConfigAPI {
 
     /**
      * @return Returns the config directory for MCSR mods.
+     *
+     * @implNote Creates the directory if it doesn't currently exist.
+     * @throws SpeedrunConfigAPIException If an {@link IOException} occurs while trying to create the directory.
      */
-    public static Path getConfigDir() {
+    public static Path getConfigDir() throws SpeedrunConfigAPIException {
         if (!Files.exists(CONFIG_DIR)) {
             try {
                 Files.createDirectories(CONFIG_DIR);
@@ -160,8 +165,11 @@ public final class SpeedrunConfigAPI {
 
     /**
      * @return Returns the global config directory for MCSR mods.
+     *
+     * @implNote Creates the directory if it doesn't currently exist.
+     * @throws SpeedrunConfigAPIException If an {@link IOException} occurs while trying to create the directory.
      */
-    public static Path getGlobalConfigDir() {
+    public static Path getGlobalConfigDir() throws SpeedrunConfigAPIException {
         if (!Files.exists(GLOBAL_CONFIG_DIR)) {
             try {
                 Files.createDirectories(GLOBAL_CONFIG_DIR);
@@ -197,6 +205,7 @@ public final class SpeedrunConfigAPI {
      *
      * @see SpeedrunConfigAPI#getConfigValue
      */
+    @SuppressWarnings("unused")
     public static Optional<Object> getConfigValueOptionally(String modID, String option) {
         try {
             return Optional.ofNullable(getConfigValue(modID, option));
@@ -230,6 +239,7 @@ public final class SpeedrunConfigAPI {
      *
      * @see SpeedrunConfigAPI#setConfigValue 
      */
+    @SuppressWarnings("unused")
     public static boolean setConfigValueOptionally(String modID, String option, Object value) {
         try {
             setConfigValue(modID, option, value);
@@ -252,6 +262,7 @@ public final class SpeedrunConfigAPI {
         return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
     }
 
+    @SuppressWarnings("unused")
     public static class CustomOption {
 
         public static <T> SpeedrunOption<T> create(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String[] idPrefix, Getter<T> getter, Setter<T> setter, Deserializer<T> fromJson, Serializer<T> toJson, @Nullable WidgetProvider<T> createWidget) {

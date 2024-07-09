@@ -17,7 +17,6 @@ import java.util.function.Predicate;
 
 @ApiStatus.Internal
 public class SpeedrunConfigScreen extends Screen {
-
     private final SpeedrunConfigContainer<?> config;
     @Nullable
     private final Predicate<InputUtil.Key> inputListener;

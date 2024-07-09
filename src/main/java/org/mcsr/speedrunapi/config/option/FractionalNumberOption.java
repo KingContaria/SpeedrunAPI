@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 
 @ApiStatus.Internal
 public abstract class FractionalNumberOption<T extends Number> extends NumberOption<T> {
-
     @NotNull
     protected final Config.Numbers.Fractional.Bounds bounds;
 

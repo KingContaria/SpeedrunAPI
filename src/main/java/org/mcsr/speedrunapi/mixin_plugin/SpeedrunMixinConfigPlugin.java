@@ -16,7 +16,6 @@ import java.util.Set;
  * - Automatically disables mixins in the "the.mods.mixinPackage.compat.modid" package if the targeted mod isn't present.
  */
 public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
-
     protected String mixinPackage;
 
     @Override
