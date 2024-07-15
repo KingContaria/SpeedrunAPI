@@ -74,12 +74,12 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
     @Override
     public int getRowWidth() {
-        return 300;
+        return Math.min(this.width, 320);
     }
 
     @Override
     protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 32;
+        return super.getScrollbarPositionX() + 42;
     }
 
     @Override
