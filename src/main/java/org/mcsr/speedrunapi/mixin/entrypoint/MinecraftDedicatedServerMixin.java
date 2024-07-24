@@ -1,4 +1,4 @@
-package org.mcsr.speedrunapi.mixin;
+package org.mcsr.speedrunapi.mixin.entrypoint;
 
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import org.mcsr.speedrunapi.config.SpeedrunConfigAPI;

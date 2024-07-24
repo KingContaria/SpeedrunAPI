@@ -6,11 +6,12 @@
     "defaultRequire": 1
   },
   "client": [
-    "MinecraftClientMixin",
-    "OptionsScreenMixin"
+    "entrypoint.MinecraftClientMixin",
+    "gui.OptionsScreenMixin",
+    "resourceloader.DefaultResourcePackMixin"
   ],
   "server": [
-    "MinecraftDedicatedServerMixin"
+    "entrypoint.MinecraftDedicatedServerMixin"
   ],
   "plugin": "org.mcsr.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
 }
