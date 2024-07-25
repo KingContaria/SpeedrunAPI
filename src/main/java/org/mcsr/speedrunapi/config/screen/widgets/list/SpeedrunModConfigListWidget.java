@@ -84,7 +84,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         protected final ModContainer modContainer;
         protected final ModMetadata mod;
         protected final Identifier icon;
-        protected final TextWidget name;
+        protected final Text name;
+        protected final Text version;
         @Nullable
         protected final TextWidget authors;
         protected final List<StringRenderable> description;
@@ -95,7 +96,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             this.mod = this.modContainer.getMetadata();
             this.icon = new Identifier("speedrunapi", "mods/" + this.mod.getId() + "/icon");
 
-            this.name = new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, new LiteralText(this.mod.getName()));
+            this.name = new LiteralText(this.mod.getName());
+            this.version = new LiteralText(this.mod.getVersion().getFriendlyString().split("\\+")[0]).formatted(Formatting.GRAY);
             this.authors = this.createAuthorsText(this.mod.getAuthors());
             this.description = this.createDescription(this.mod.getDescription());
 
@@ -150,9 +152,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
 
-            this.name.x = x + 32 + 3;
-            this.name.y = y + 1;
-            this.name.render(matrices, mouseX, mouseY, tickDelta);
+            textRenderer.draw(matrices, this.name, x + 32 + 3, y + 1, 0xFFFFFF);
+            textRenderer.draw(matrices, this.version, x + 32 + 3 + textRenderer.getWidth(this.name) + 4, y + 1, 0xFFFFFF);
 
             if (this.authors != null) {
                 this.authors.x = x + entryWidth - this.authors.getWidth() - 5;
