@@ -68,6 +68,13 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
         return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
     }
 
+    /**
+     * @return Returns {@code true} if this config should show a config screen on the SpeedrunAPI Mod Configs menu.
+     */
+    default boolean hasConfigScreen() {
+        return true;
+    }
+
     @Override
     default @NotNull Screen createConfigScreen(Screen parent) {
         return SpeedrunConfigAPI.createDefaultModConfigScreen(this.modID(), this.createInputListener(), parent);

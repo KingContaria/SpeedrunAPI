@@ -253,7 +253,11 @@ public final class SpeedrunConfigAPI {
     public static Map<ModContainer, SpeedrunConfigScreenProvider> getModConfigScreenProviders() {
         Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new TreeMap<>(Comparator.comparing(mod -> mod.getMetadata().getName()));
         CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(IllegalStateException::new), configScreenProvider));
-        CONFIGS.forEach((modID, config) -> configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig()));
+        CONFIGS.forEach((modID, config) -> {
+                if (config.getConfig().hasConfigScreen()) {
+                    configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig());
+                }
+        });
         return configScreenProviders;
     }
 
