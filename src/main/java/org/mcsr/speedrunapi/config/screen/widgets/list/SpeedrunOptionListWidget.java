@@ -11,6 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.mcsr.speedrunapi.config.SpeedrunConfigContainer;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
@@ -22,6 +23,9 @@ import java.util.*;
 public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionListWidget.OptionListEntry> {
     private final SpeedrunConfigScreen parent;
     private final SpeedrunConfigContainer<?> config;
+
+    @Nullable
+    private TextWidget tooltipToRender;
 
     public SpeedrunOptionListWidget(SpeedrunConfigScreen parent, SpeedrunConfigContainer<?> config, MinecraftClient client, int width, int height, int top, int bottom, String filter) {
         super(client, width, height, top, bottom, 30);
@@ -68,8 +72,16 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
     }
 
     public void adjustTop(int top) {
-        //this.height += this.top - top;
         this.top = top;
+    }
+
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        super.render(matrices, mouseX, mouseY, delta);
+        if (this.tooltipToRender != null) {
+            this.tooltipToRender.renderTooltip(matrices, mouseX, mouseY);
+            this.tooltipToRender = null;
+        }
     }
 
     @Override
@@ -111,7 +123,9 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.button.y = y + 5;
             this.button.render(matrices, mouseX, mouseY, tickDelta);
 
-            this.text.renderTooltip(matrices, mouseX, mouseY);
+            if (this.isMouseOver(mouseX, mouseY) && this.text.isMouseOver(mouseX, mouseY)) {
+                SpeedrunOptionListWidget.this.tooltipToRender = this.text;
+            }
         }
 
         @Override
