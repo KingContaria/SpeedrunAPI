@@ -56,6 +56,9 @@ public class SpeedrunConfigScreen extends Screen {
         this.searchField.setChangedListener(string -> this.list.updateEntries(string));
         this.addChild(this.searchField);
         this.list = new SpeedrunOptionListWidget(this, this.config, this.client, this.width, this.height, 25, this.height - 32, this.searchField.getText());
+        if (this.searchFieldOpen) {
+            this.list.adjustTop(50);
+        }
         this.addChild(this.list);
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
     }
