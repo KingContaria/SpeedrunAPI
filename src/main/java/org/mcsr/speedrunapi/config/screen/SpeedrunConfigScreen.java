@@ -51,6 +51,7 @@ public class SpeedrunConfigScreen extends Screen {
 
     @Override
     protected void init() {
+        assert this.client != null;
         this.searchField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 25, 200, 20, this.searchField, new TranslatableText("speedrunapi.gui.config.search"));
         this.searchField.setVisible(this.searchFieldOpen);
         this.searchField.setChangedListener(string -> this.list.updateEntries(string));
@@ -61,6 +62,7 @@ public class SpeedrunConfigScreen extends Screen {
         }
         this.addChild(this.list);
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
+        this.client.keyboard.enableRepeatEvents(true);
     }
 
     @Override
@@ -100,6 +102,8 @@ public class SpeedrunConfigScreen extends Screen {
 
     @Override
     public void removed() {
+        assert this.client != null;
+        this.client.keyboard.enableRepeatEvents(false);
         try {
             this.config.save();
         } catch (IOException e) {
