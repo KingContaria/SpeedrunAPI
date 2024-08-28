@@ -46,7 +46,9 @@ public final class SpeedrunConfigAPI {
     @SuppressWarnings("unchecked")
     @ApiStatus.Internal
     public static void initialize() {
-        for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+        List<ModContainer> mods = new ArrayList<>(FabricLoader.getInstance().getAllMods());
+        mods.sort(Comparator.comparing(modContainer -> modContainer.getMetadata().getId()));
+        for (ModContainer mod : mods) {
             ModMetadata metadata = mod.getMetadata();
             String modID = metadata.getId();
             try {
@@ -59,10 +61,11 @@ public final class SpeedrunConfigAPI {
                 CustomValue config = customObject.get("config");
                 if (config != null) {
                     Class<?> configClass = Class.forName(config.getAsString());
-                    if (SpeedrunConfig.class.isAssignableFrom(configClass)) {
-                        InitializeOn initializeOn = configClass.getAnnotation(InitializeOn.class);
-                        CONFIGS_TO_INITIALIZE.computeIfAbsent(initializeOn != null ? initializeOn.value() : InitializeOn.InitPoint.ONINITIALIZE, initPoint -> new HashMap<>()).put(mod, (Class<? extends SpeedrunConfig>) configClass);
+                    if (!SpeedrunConfig.class.isAssignableFrom(configClass)) {
+                        throw new InitializeConfigException("Provided config class from " + modID + " does not implement SpeedrunConfig.");
                     }
+                    InitializeOn initializeOn = configClass.getAnnotation(InitializeOn.class);
+                    CONFIGS_TO_INITIALIZE.computeIfAbsent(initializeOn != null ? initializeOn.value() : InitializeOn.InitPoint.ONINITIALIZE, initPoint -> new LinkedHashMap<>()).put(mod, (Class<? extends SpeedrunConfig>) configClass);
                 }
 
                 CustomValue screen = customObject.get("screen");
@@ -71,11 +74,10 @@ public final class SpeedrunConfigAPI {
                         throw new InitializeConfigException("Tried to provide both a SpeedrunConfig and a SpeedrunConfigContainer for " + modID + ".");
                     }
                     Class<?> screenProviderClass = Class.forName(screen.getAsString());
-                    if (SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
-                        CUSTOM_CONFIG_SCREENS.put(modID, (SpeedrunConfigScreenProvider) constructClass(screenProviderClass));
-                    } else {
+                    if (!SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
                         throw new InitializeConfigException("Provided config screen provider class from " + modID + " does not implement SpeedrunConfigScreenProvider.");
                     }
+                    CUSTOM_CONFIG_SCREENS.put(modID, (SpeedrunConfigScreenProvider) constructClass(screenProviderClass));
                 }
             } catch (ClassCastException e) {
                 throw new InitializeConfigException("Faulty fabric.mod.json values from " + modID + ".", e);
