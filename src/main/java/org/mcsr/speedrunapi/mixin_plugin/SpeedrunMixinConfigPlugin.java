@@ -1,6 +1,7 @@
 package org.mcsr.speedrunapi.mixin_plugin;
 
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -32,8 +33,13 @@ public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         String compatPackage = this.mixinPackage + ".compat.";
         if (mixinClassName.startsWith(compatPackage)) {
-            String mod = mixinClassName.replaceFirst(compatPackage, "").split("\\.", 2)[0];
-            return FabricLoader.getInstance().isModLoaded(mod);
+            String modid = mixinClassName.replaceFirst(compatPackage, "").split("\\.", 2)[0];
+            for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+                if (mod.getMetadata().getId().replaceAll("-", "_").equals(modid)) {
+                    return true;
+                }
+            }
+            return false;
         }
         return true;
     }
