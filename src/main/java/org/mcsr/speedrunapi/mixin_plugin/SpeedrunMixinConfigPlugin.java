@@ -38,6 +38,11 @@ public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
                 if (mod.getMetadata().getId().replaceAll("-", "_").equals(modid)) {
                     return true;
                 }
+                for (String provided : mod.getMetadata().getProvides()) {
+                    if (provided.replaceAll("-", "_").equals(modid)) {
+                        return true;
+                    }
+                }
             }
             return false;
         }
