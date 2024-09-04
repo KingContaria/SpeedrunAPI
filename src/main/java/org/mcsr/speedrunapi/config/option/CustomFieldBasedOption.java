@@ -21,8 +21,8 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
     @Nullable
     private final SpeedrunConfigAPI.CustomOption.WidgetProvider<T> createWidgetFunction;
 
-    public CustomFieldBasedOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String[] idPrefix, SpeedrunConfigAPI.CustomOption.Getter<T> getter, SpeedrunConfigAPI.CustomOption.Setter<T> setter, SpeedrunConfigAPI.CustomOption.Deserializer<T> fromJson, SpeedrunConfigAPI.CustomOption.Serializer<T> toJson, @Nullable SpeedrunConfigAPI.CustomOption.WidgetProvider<T> createWidget) {
-        super(config, configStorage, option, idPrefix);
+    public CustomFieldBasedOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String[] idPrefix, SpeedrunConfigAPI.CustomOption.Getter<T> getter, SpeedrunConfigAPI.CustomOption.Setter<T> setter, SpeedrunConfigAPI.CustomOption.Deserializer<T> fromJson, SpeedrunConfigAPI.CustomOption.Serializer<T> toJson, @Nullable SpeedrunConfigAPI.CustomOption.WidgetProvider<T> createWidget, boolean hasDefault) {
+        super(config, configStorage, option, hasDefault, idPrefix);
         this.getFunction = getter;
         this.setFunction = setter;
         this.fromJsonFunction = fromJson;

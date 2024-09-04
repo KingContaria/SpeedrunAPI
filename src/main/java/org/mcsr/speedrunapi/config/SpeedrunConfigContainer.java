@@ -64,6 +64,9 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         this.config.finishSaving();
     }
 
+    /**
+     * @since 1.1
+     */
     public void fromJson(JsonObject jsonObject) {
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
             SpeedrunOption<?> option = this.options.get(entry.getKey());
@@ -77,6 +80,9 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         }
     }
 
+    /**
+     * @since 1.1
+     */
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {

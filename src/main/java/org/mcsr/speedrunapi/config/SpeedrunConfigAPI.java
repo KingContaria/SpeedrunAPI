@@ -270,9 +270,12 @@ public final class SpeedrunConfigAPI {
 
     @SuppressWarnings("unused")
     public static class CustomOption {
-
         public static <T> SpeedrunOption<T> create(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String[] idPrefix, Getter<T> getter, Setter<T> setter, Deserializer<T> fromJson, Serializer<T> toJson, @Nullable WidgetProvider<T> createWidget) {
-            return new CustomFieldBasedOption<>(config, configStorage, optionField, idPrefix, getter, setter, fromJson, toJson, createWidget);
+            return new CustomFieldBasedOption<>(config, configStorage, optionField, idPrefix, getter, setter, fromJson, toJson, createWidget, false);
+        }
+
+        public static <T> SpeedrunOption<T> create(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String[] idPrefix, Getter<T> getter, Setter<T> setter, Deserializer<T> fromJson, Serializer<T> toJson, @Nullable WidgetProvider<T> createWidget, boolean hasDefault) {
+            return new CustomFieldBasedOption<>(config, configStorage, optionField, idPrefix, getter, setter, fromJson, toJson, createWidget, hasDefault);
         }
 
         public static class Builder<T> {
@@ -289,6 +292,7 @@ public final class SpeedrunConfigAPI {
             private Serializer<T> toJson = (option, config, configStorage, optionField) -> GSON.toJsonTree(option.get(), optionField.getType());
             @Nullable
             private WidgetProvider<T> createWidget;
+            private boolean hasDefault = false;
 
             public Builder(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField, String... idPrefix) {
                 this.config = config;
@@ -322,8 +326,13 @@ public final class SpeedrunConfigAPI {
                 return this;
             }
 
+            public Builder<T> hasDefault() {
+                this.hasDefault = true;
+                return this;
+            }
+
             public SpeedrunOption<T> build() {
-                return create(this.config, this.configStorage, this.optionField, this.idPrefix, this.getter, this.setter, this.fromJson, this.toJson, this.createWidget);
+                return create(this.config, this.configStorage, this.optionField, this.idPrefix, this.getter, this.setter, this.fromJson, this.toJson, this.createWidget, this.hasDefault);
             }
         }
 

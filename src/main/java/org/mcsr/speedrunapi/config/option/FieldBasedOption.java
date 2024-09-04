@@ -37,7 +37,15 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Nullable
     protected final Method setter;
 
+    private final boolean hasDefault;
+    @Nullable
+    private final T defaultValue;
+
     public FieldBasedOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, String... idPrefix) {
+        this(config, configStorage, option, true, idPrefix);
+    }
+
+    public FieldBasedOption(SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field option, boolean hasDefault, String... idPrefix) {
         this.config = config;
         this.configStorage = configStorage;
         this.option = option;
@@ -91,6 +99,9 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         }
         this.getter = getter;
         this.setter = setter;
+
+        this.hasDefault = hasDefault;
+        this.defaultValue = hasDefault ? this.get() : null;
     }
 
     @Override
@@ -142,6 +153,19 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         } catch (ReflectiveOperationException e) {
             throw new ReflectionConfigException("Failed to set value for option " + this.getID() + " in " + this.getModID() + "config.", e);
         }
+    }
+
+    @Override
+    public boolean hasDefault() {
+        return this.hasDefault;
+    }
+
+    @Override
+    public T getDefault() {
+        if (this.hasDefault) {
+            return this.defaultValue;
+        }
+        return SpeedrunOption.super.getDefault();
     }
 
     @Override

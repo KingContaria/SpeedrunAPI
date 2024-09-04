@@ -102,6 +102,23 @@ public interface SpeedrunOption<T> {
     void setUnsafely(Object value) throws ClassCastException;
 
     /**
+     * @return Returns true if the option has a default value.
+     * @see SpeedrunOption#getDefault
+     * @since 1.1
+     */
+    default boolean hasDefault() {
+        return false;
+    }
+
+    /**
+     * @return Returns the default value of this option.
+     * @since 1.1
+     */
+    default T getDefault() {
+        throw new UnsupportedOperationException("SpeedrunOption does not have a default value!");
+    }
+
+    /**
      * Sets the value of this option from a {@link JsonElement}.
      */
     void fromJson(JsonElement jsonElement);
