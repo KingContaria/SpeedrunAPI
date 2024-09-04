@@ -1,11 +1,9 @@
 package org.mcsr.speedrunapi.config;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import net.fabricmc.loader.api.ModContainer;
 import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
@@ -14,8 +12,9 @@ import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -51,17 +50,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         }
 
         try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new FileReader(configFile))) {
-            JsonObject configJson = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
-            for (Map.Entry<String, JsonElement> entry : configJson.entrySet()) {
-                SpeedrunOption<?> option = this.options.get(entry.getKey());
-                if (option != null) {
-                    try {
-                        option.fromJson(entry.getValue());
-                    } catch (ClassCastException | IllegalStateException e) {
-                        SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.config.modID());
-                    }
-                }
-            }
+            this.fromJson(SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class));
         }
 
         this.config.finishLoading();
@@ -70,47 +59,33 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public void save() throws IOException {
         File configFile = this.config.getConfigFile();
 
-        try (JsonWriter writer = SpeedrunConfigAPI.GSON.newJsonWriter(new FileWriter(configFile))) {
-            writer.beginObject();
-            for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
-                JsonElement value = entry.getValue().toJson();
-                if (value != null) {
-                    writer.name(entry.getKey());
-                    this.writeJsonElement(writer, value);
-                }
-            }
-            writer.endObject();
-            writer.flush();
-        }
+        Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(this.toJson()).getBytes(StandardCharsets.UTF_8));
 
         this.config.finishSaving();
     }
 
-    private void writeJsonElement(JsonWriter writer, JsonElement jsonElement) throws IOException {
-        if (jsonElement.isJsonObject()) {
-            this.writeJsonObject(writer, jsonElement.getAsJsonObject());
-        } else if (jsonElement.isJsonArray()) {
-            this.writeJsonArray(writer, jsonElement.getAsJsonArray());
-        } else {
-            writer.jsonValue(jsonElement.toString());
-        }
-    }
-
-    private void writeJsonObject(JsonWriter writer, JsonObject jsonObject) throws IOException {
-        writer.beginObject();
+    public void fromJson(JsonObject jsonObject) {
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-            writer.name(entry.getKey());
-            this.writeJsonElement(writer, entry.getValue());
+            SpeedrunOption<?> option = this.options.get(entry.getKey());
+            if (option != null) {
+                try {
+                    option.fromJson(entry.getValue());
+                } catch (ClassCastException | IllegalStateException e) {
+                    SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.config.modID());
+                }
+            }
         }
-        writer.endObject();
     }
 
-    private void writeJsonArray(JsonWriter writer, JsonArray jsonArray) throws IOException {
-        writer.beginArray();
-        for (JsonElement jsonElement : jsonArray) {
-            this.writeJsonElement(writer, jsonElement);
+    public JsonObject toJson() {
+        JsonObject jsonObject = new JsonObject();
+        for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
+            JsonElement value = entry.getValue().toJson();
+            if (value != null) {
+                jsonObject.add(entry.getKey(), value);
+            }
         }
-        writer.endArray();
+        return jsonObject;
     }
 
     public T getConfig() {
