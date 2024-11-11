@@ -8,7 +8,7 @@
   "client": [
     "entrypoint.MinecraftClientMixin",
     "gui.OptionsScreenMixin",
-    "resourceloader.DefaultResourcePackMixin"
+    "resourceloader.DefaultClientResourcePackMixin"
   ],
   "server": [
     "entrypoint.MinecraftDedicatedServerMixin"
