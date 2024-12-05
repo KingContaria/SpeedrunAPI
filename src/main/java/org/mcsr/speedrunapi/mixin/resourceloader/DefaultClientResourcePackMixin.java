@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
 @Mixin(DefaultClientResourcePack.class)
@@ -44,7 +45,7 @@ public abstract class DefaultClientResourcePackMixin {
 
                 Set<String> namespaces = new HashSet<>();
                 try (Stream<Path> stream = Files.list(assets)) {
-                    stream.filter(Files::isDirectory).forEach(path -> namespaces.add(path.getFileName().toString()));
+                    stream.filter(Files::isDirectory).forEach(path -> namespaces.add(path.getFileName().toString().replaceAll(Matcher.quoteReplacement("[/\\]"), "")));
                 } catch (IOException e) {
                     SpeedrunAPI.LOGGER.error("SpeedrunAPI failed to check resources for mod: {}", mod.getMetadata().getId());
                 }
