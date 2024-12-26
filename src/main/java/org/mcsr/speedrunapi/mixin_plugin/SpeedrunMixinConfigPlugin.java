@@ -2,6 +2,7 @@ package org.mcsr.speedrunapi.mixin_plugin;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -33,18 +34,18 @@ public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         // ensure we do not force apply any mixin when the target class isn't present, otherwise causing a crash
         if (SpeedrunMixinConfigPlugin.class.getClassLoader().getResource(targetClassName.replace('.', '/') + ".class") == null) {
-            System.out.println("target class " + targetClassName + " for mixin " + mixinClassName + " not found");
+            SpeedrunAPI.LOGGER.warn("target class {} for mixin {} not found", targetClassName, mixinClassName);
             return false;
         }
         String compatPackage = this.mixinPackage + ".compat.";
         if (mixinClassName.startsWith(compatPackage)) {
-            String modid = mixinClassName.replaceFirst(compatPackage.replace(".", "\\."), "").split("\\.", 2)[0];
+            String modid = mixinClassName.substring(compatPackage.length()).split("\\.", 2)[0];
             for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-                if (mod.getMetadata().getId().replaceAll("-", "_").equals(modid)) {
+                if (mod.getMetadata().getId().replace('-', '_').equals(modid)) {
                     return true;
                 }
                 for (String provided : mod.getMetadata().getProvides()) {
-                    if (provided.replaceAll("-", "_").equals(modid)) {
+                    if (provided.replace('-', '_').equals(modid)) {
                         return true;
                     }
                 }
