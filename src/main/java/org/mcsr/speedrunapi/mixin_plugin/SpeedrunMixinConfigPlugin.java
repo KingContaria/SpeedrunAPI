@@ -31,9 +31,14 @@ public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        // ensure we do not force apply any mixin when the target class isn't present, otherwise causing a crash
+        if (SpeedrunMixinConfigPlugin.class.getClassLoader().getResource(targetClassName.replace('.', '/') + ".class") == null) {
+            System.out.println("target class " + targetClassName + " for mixin " + mixinClassName + " not found");
+            return false;
+        }
         String compatPackage = this.mixinPackage + ".compat.";
         if (mixinClassName.startsWith(compatPackage)) {
-            String modid = mixinClassName.replaceFirst(compatPackage, "").split("\\.", 2)[0];
+            String modid = mixinClassName.replaceFirst(compatPackage.replace(".", "\\."), "").split("\\.", 2)[0];
             for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
                 if (mod.getMetadata().getId().replaceAll("-", "_").equals(modid)) {
                     return true;
