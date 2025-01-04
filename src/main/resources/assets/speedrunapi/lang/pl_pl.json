@@ -1,0 +1,7 @@
+{
+  "speedrunapi.gui.config.button": "Konfiguracje Modów",
+  "speedrunapi.gui.config.title": "Konfiguracje Modów - Speedrun API",
+  "speedrunapi.gui.config.noConfigs": "§7Nie ma tu żadnych modów do konfiguracji :(",
+  "speedrunapi.gui.config.unavailable": "Ta konfiguracja jest teraz niedostępna!",
+  "speedrunapi.gui.config.search": "Wyszukaj opcji"
+}
