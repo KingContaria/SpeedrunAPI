@@ -36,6 +36,8 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     protected final Method getter;
     @Nullable
     protected final Method setter;
+    @Nullable
+    protected final Method textGetter;
 
     private final boolean hasDefault;
     @Nullable
@@ -99,6 +101,18 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         }
         this.getter = getter;
         this.setter = setter;
+
+        Method textGetter = null;
+        Config.Text text = option.getAnnotation(Config.Text.class);
+        if (text != null) {
+            try {
+                textGetter = this.configStorage.getClass().getDeclaredMethod(text.getter(), option.getType());
+            } catch (NoSuchMethodException e) {
+                throw new InvalidConfigException("Provided text getter method for \"" + this.getID() + "\" does not exist in " + this.getModID() + " config (" + this.configStorage.getClass().getName() + ").", e);
+            }
+            textGetter.setAccessible(true);
+        }
+        this.textGetter = textGetter;
 
         this.hasDefault = hasDefault;
         this.defaultValue = hasDefault ? this.get() : null;
@@ -171,5 +185,17 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Override
     public boolean hasWidget() {
         return !this.hide;
+    }
+
+    @Override
+    public @NotNull Text getText() {
+        try {
+            if (this.textGetter != null) {
+                return (Text) this.textGetter.invoke(this.configStorage, this.get());
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new ReflectionConfigException("Failed to get text for option " + this.getID() + " in " + this.getModID() + "config.", e);
+        }
+        return SpeedrunOption.super.getText();
     }
 }
