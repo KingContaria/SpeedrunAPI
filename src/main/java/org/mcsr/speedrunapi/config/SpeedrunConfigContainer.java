@@ -3,12 +3,14 @@ package org.mcsr.speedrunapi.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.ModContainer;
 import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
 import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
+import org.mcsr.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -23,11 +25,13 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     private final T config;
     private final ModContainer mod;
     private final Map<String, SpeedrunOption<?>> options;
+    private final int dataVersion;
 
     SpeedrunConfigContainer(T config, ModContainer mod) throws ReflectiveOperationException {
         this.config = config;
         this.mod = mod;
         this.options = Collections.synchronizedMap(config.init());
+        this.dataVersion = config.getDataVersion();
 
         try {
             this.load();
@@ -49,8 +53,14 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             return;
         }
 
+        this.config.preLoad();
+
         try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new FileReader(configFile))) {
-            this.fromJson(SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class));
+            JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
+            int dataVersion = jsonObject.has("dataVersion") ? jsonObject.remove("dataVersion").getAsInt() : 0;
+
+            this.config.onLoad(jsonObject, dataVersion);
+            this.fromJson(jsonObject);
         }
 
         this.config.finishLoading();
@@ -59,9 +69,33 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public void save() throws IOException {
         File configFile = this.config.getConfigFile();
 
-        Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(this.toJson()).getBytes(StandardCharsets.UTF_8));
+        this.config.preSave();
+
+        JsonObject jsonObject = this.toJson();
+        this.config.onSave(jsonObject);
+        jsonObject = this.addMetadata(jsonObject);
+
+        Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(jsonObject).getBytes(StandardCharsets.UTF_8));
 
         this.config.finishSaving();
+    }
+
+    private JsonObject addMetadata(JsonObject jsonObject) {
+        JsonObject result = new JsonObject();
+
+        // add internal SpeedrunAPI metadata
+        result.add(".dataVersion", new JsonPrimitive(this.dataVersion));
+
+        // check and re-add entries from original jsonObject
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith(".")) {
+                throw new SpeedrunConfigAPIException("Invalid config entry: " + key + " (Entries starting with '.' are reserved for SpeedrunAPI internals)");
+            }
+            result.add(key, entry.getValue());
+        }
+
+        return result;
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.mcsr.speedrunapi.config.api;
 
+import com.google.gson.JsonObject;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +44,40 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     }
 
     /**
+     * Gets called before the config starts loading.
+     *
+     * @apiNote The config may or may not have finished initialization at this point.
+     */
+    default void preLoad() {
+    }
+
+    /**
+     * Gets called after the config has been loaded from disk, and before it loads the options from JSON.
+     * This method may be used to convert older versions of the config file or.
+     *
+     * @param jsonObject - The config JSON that is about to be loaded.
+     * @param dataVersion - The data version this JSON was saved as.
+     */
+    default void onLoad(JsonObject jsonObject, int dataVersion) {
+    }
+
+    /**
      * Gets called when the config has successfully finished loading.
      *
      * @apiNote The config may or may not have finished initialization at this point.
      */
     default void finishLoading() {
+    }
+
+    /**
+     * Gets called before the config starts saving.
+     *
+     * @apiNote The config may or may not have finished initialization at this point.
+     */
+    default void preSave() {
+    }
+
+    default void onSave(JsonObject jsonObject) {
     }
 
     /**
@@ -66,6 +96,10 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      */
     default File getConfigFile() {
         return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
+    }
+
+    default int getDataVersion() {
+        return 0;
     }
 
     /**
