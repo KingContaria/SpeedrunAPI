@@ -28,6 +28,21 @@ public class Config {
     }
 
     /**
+     * Optional annotation that sets a text getter to customize the display of the option value.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public @interface Text {
+        /**
+         * The method needs to be declared in the same {@link SpeedrunConfig} class as the annotated option.
+         * It has to take one paramter of the annotated option's type and returns {@link net.minecraft.text.Text}.
+         *
+         * @return Returns the name (not including parameters) of the Getter method that should be used for the annotated option.
+         */
+        String getter();
+    }
+
+    /**
      * Sets the description used in the config screen for the annotated option.
      * <p>
      * If an option is not using this annotation, "speedrunapi.config.modid.option.theOption.description" will be used as the translation key instead.
