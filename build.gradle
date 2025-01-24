@@ -23,11 +23,11 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// MixinSquared
-	include(implementation(annotationProcessor "com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixinsquared}"))
+	include(api(annotationProcessor "com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixinsquared}"))
 
 	// Fabric API
 	//include(modImplementation "net.fabricmc.fabric-api:fabric-key-binding-api-v1:1.0.36+fb8d95da77")
-	include(modImplementation "com.github.tildejustin:key-binding-api:a41fc49671")
+	include(modApi "com.github.tildejustin:key-binding-api:a41fc49671")
 	//include(modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.2.7+c668f41583")
 }
 
