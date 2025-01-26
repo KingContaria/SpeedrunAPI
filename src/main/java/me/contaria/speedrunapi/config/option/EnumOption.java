@@ -3,15 +3,15 @@ package me.contaria.speedrunapi.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
+import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.option.EnumTextProvider;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
+import me.contaria.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
-import me.contaria.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 
 import java.lang.reflect.Field;
 

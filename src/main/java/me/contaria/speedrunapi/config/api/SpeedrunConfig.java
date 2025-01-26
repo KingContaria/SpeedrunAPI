@@ -1,12 +1,12 @@
 package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonObject;
+import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
+import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
-import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 
 import java.io.File;
 import java.util.Map;
@@ -55,7 +55,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      * Gets called after the config has been loaded from disk, and before it loads the options from JSON.
      * This method may be used to convert older versions of the config file or.
      *
-     * @param jsonObject - The config JSON that is about to be loaded.
+     * @param jsonObject  - The config JSON that is about to be loaded.
      * @param dataVersion - The data version this JSON was saved as.
      */
     default void onLoad(JsonObject jsonObject, int dataVersion) {
@@ -91,8 +91,8 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     /**
      * Mod Authors can override this method to change the config file location, for example to add global config files.
      *
-     * @apiNote The directory of the returned file gets created by this method.
      * @return Returns the file the config should be saved to.
+     * @apiNote The directory of the returned file gets created by this method.
      */
     default File getConfigFile() {
         return SpeedrunConfigAPI.getConfigDir().resolve(this.modID() + ".json").toFile();
@@ -126,7 +126,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
         return null;
     }
 
-     /**
+    /**
      * Mod Authors can override this method to dynamically hide categories from the default config screen.
      *
      * @param category - The categories ID.

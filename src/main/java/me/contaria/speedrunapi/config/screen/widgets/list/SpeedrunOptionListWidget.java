@@ -1,7 +1,9 @@
 package me.contaria.speedrunapi.config.screen.widgets.list;
 
 import com.google.common.collect.ImmutableList;
+import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import me.contaria.speedrunapi.config.api.SpeedrunOption;
+import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
@@ -14,8 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
-import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 
 import java.util.*;
 
@@ -42,7 +42,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         Map<String, Set<SpeedrunOption<?>>> categorizedOptions = new LinkedHashMap<>();
         for (SpeedrunOption<?> option : this.config.getOptions()) {
             if (!filter.isEmpty() && !option.getName().getString().toLowerCase(Locale.ENGLISH).contains(filter)) {
-                 continue;
+                continue;
             }
             if (!option.hasWidget() || !this.config.getConfig().shouldShowOption(option.getID())) {
                 continue;

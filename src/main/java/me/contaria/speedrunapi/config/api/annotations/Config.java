@@ -2,11 +2,11 @@ package me.contaria.speedrunapi.config.api.annotations;
 
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
+import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionSliderWidget;
 import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.minecraft.client.MinecraftClient;
-import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionSliderWidget;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

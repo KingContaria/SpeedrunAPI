@@ -1,6 +1,7 @@
 package me.contaria.speedrunapi.config.screen;
 
 import me.contaria.speedrunapi.SpeedrunAPI;
+import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,7 +13,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 
 import java.io.IOException;
 import java.util.function.Predicate;

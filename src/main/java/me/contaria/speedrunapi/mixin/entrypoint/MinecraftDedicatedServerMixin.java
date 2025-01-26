@@ -1,7 +1,7 @@
 package me.contaria.speedrunapi.mixin.entrypoint;
 
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
+import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

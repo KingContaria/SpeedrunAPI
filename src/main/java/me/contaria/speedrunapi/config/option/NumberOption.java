@@ -1,9 +1,9 @@
 package me.contaria.speedrunapi.config.option;
 
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
+import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import org.jetbrains.annotations.ApiStatus;
-import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 
 import java.lang.reflect.Field;
 

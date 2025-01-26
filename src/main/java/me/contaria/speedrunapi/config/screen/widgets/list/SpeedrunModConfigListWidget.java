@@ -2,6 +2,8 @@ package me.contaria.speedrunapi.config.screen.widgets.list;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.contaria.speedrunapi.SpeedrunAPI;
+import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
+import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
@@ -25,8 +27,6 @@ import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
-import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
-import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 
 import java.io.IOException;
 import java.io.InputStream;

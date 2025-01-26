@@ -19,7 +19,8 @@ public interface SpeedrunOption<T> {
     /**
      * @return Returns this options category on the config screen.
      */
-    @Nullable String getCategory();
+    @Nullable
+    String getCategory();
 
     /**
      * Sets this options category.
@@ -123,8 +124,8 @@ public interface SpeedrunOption<T> {
     void fromJson(JsonElement jsonElement);
 
     /**
-     * @apiNote If this returns {@code null}, the option is not saved to the config file. To save a null value return {@link JsonNull#INSTANCE}.
      * @return Returns a {@link JsonElement} representing the value of this option.
+     * @apiNote If this returns {@code null}, the option is not saved to the config file. To save a null value return {@link JsonNull#INSTANCE}.
      */
     JsonElement toJson();
 
@@ -142,5 +143,6 @@ public interface SpeedrunOption<T> {
      *
      * @return Returns a new {@link AbstractButtonWidget} to be added to the config screen.
      */
-    @NotNull AbstractButtonWidget createWidget();
+    @NotNull
+    AbstractButtonWidget createWidget();
 }

@@ -164,7 +164,7 @@ public final class SpeedrunConfigAPI {
             throw new InitializeConfigException("Failed to build config for " + modID + ".", e);
         }
     }
-    
+
     private static <T> T constructClass(Class<T> aClass) throws ReflectiveOperationException {
         Constructor<T> constructor = aClass.getDeclaredConstructor();
         constructor.setAccessible(true);
@@ -181,9 +181,8 @@ public final class SpeedrunConfigAPI {
 
     /**
      * @return Returns the config directory for MCSR mods.
-     *
-     * @implNote Creates the directory if it doesn't currently exist.
      * @throws SpeedrunConfigAPIException If an {@link IOException} occurs while trying to create the directory.
+     * @implNote Creates the directory if it doesn't currently exist.
      */
     public static Path getConfigDir() throws SpeedrunConfigAPIException {
         if (!Files.exists(CONFIG_DIR)) {
@@ -198,9 +197,8 @@ public final class SpeedrunConfigAPI {
 
     /**
      * @return Returns the global config directory for MCSR mods.
-     *
-     * @implNote Creates the directory if it doesn't currently exist.
      * @throws SpeedrunConfigAPIException If an {@link IOException} occurs while trying to create the directory.
+     * @implNote Creates the directory if it doesn't currently exist.
      */
     public static Path getGlobalConfigDir() throws SpeedrunConfigAPIException {
         if (!Files.exists(GLOBAL_CONFIG_DIR)) {
@@ -216,10 +214,9 @@ public final class SpeedrunConfigAPI {
     /**
      * Retrieves the requested option's value from the {@link SpeedrunConfig} linked to the given mod ID.
      *
-     * @param modID - The mod ID of the mod owning the option.
+     * @param modID  - The mod ID of the mod owning the option.
      * @param option - The name of the option.
      * @return Returns the option's value.
-     *
      * @throws NoSuchConfigException - If the given mod does not exist, does not provide a {@link SpeedrunConfig} or does not have the requested option.
      */
     public static Object getConfigValue(String modID, String option) throws NoSuchConfigException {
@@ -232,10 +229,9 @@ public final class SpeedrunConfigAPI {
      * <p>
      * This will not catch any other {@link SpeedrunConfigAPIException}'s that may be thrown.
      *
-     * @param modID - The mod ID of the mod owning the option.
+     * @param modID  - The mod ID of the mod owning the option.
      * @param option - The name of the option.
      * @return Returns an {@link Optional} of the option's value.
-     *
      * @see SpeedrunConfigAPI#getConfigValue
      */
     @SuppressWarnings("unused")
@@ -250,10 +246,9 @@ public final class SpeedrunConfigAPI {
     /**
      * Sets the requested option's value from the {@link SpeedrunConfig} linked to the given mod ID.
      *
-     * @param modID - The mod ID of the mod owning the option.
+     * @param modID  - The mod ID of the mod owning the option.
      * @param option - The name of the option.
-     * @param value - The value to set the option to.
-     *
+     * @param value  - The value to set the option to.
      * @throws NoSuchConfigException - If the given mod does not exist, does not provide a {@link SpeedrunConfig} or does not have the requested option.
      */
     public static void setConfigValue(String modID, String option, Object value) throws NoSuchConfigException {
@@ -266,11 +261,10 @@ public final class SpeedrunConfigAPI {
      * <p>
      * This will not catch any other {@link SpeedrunConfigAPIException}'s that may be thrown.
      *
-     * @param modID - The mod ID of the mod owning the option.
+     * @param modID  - The mod ID of the mod owning the option.
      * @param option - The name of the option.
-     * @param value - The value to set the option to.
-     *
-     * @see SpeedrunConfigAPI#setConfigValue 
+     * @param value  - The value to set the option to.
+     * @see SpeedrunConfigAPI#setConfigValue
      */
     @SuppressWarnings("unused")
     public static boolean setConfigValueOptionally(String modID, String option, Object value) {
@@ -287,9 +281,9 @@ public final class SpeedrunConfigAPI {
         Map<ModContainer, SpeedrunConfigScreenProvider> configScreenProviders = new TreeMap<>(Comparator.comparing(mod -> mod.getMetadata().getName()));
         CUSTOM_CONFIG_SCREENS.forEach((modID, configScreenProvider) -> configScreenProviders.put(FabricLoader.getInstance().getModContainer(modID).orElseThrow(IllegalStateException::new), configScreenProvider));
         CONFIGS.forEach((modID, config) -> {
-                if (config.getConfig().hasConfigScreen()) {
-                    configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig());
-                }
+            if (config.getConfig().hasConfigScreen()) {
+                configScreenProviders.putIfAbsent(config.getModContainer(), config.getConfig());
+            }
         });
         return configScreenProviders;
     }

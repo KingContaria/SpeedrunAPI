@@ -1,5 +1,6 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
+import me.contaria.speedrunapi.config.option.NumberOption;
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +10,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
-import me.contaria.speedrunapi.config.option.NumberOption;
 
 @ApiStatus.Internal
 public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {

@@ -1,12 +1,12 @@
 package me.contaria.speedrunapi.mixin.gui;
 
+import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.options.OptionsScreen;
 import net.minecraft.text.Text;
-import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -1,7 +1,7 @@
 package me.contaria.speedrunapi.config.api.option;
 
-import net.minecraft.text.Text;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
+import net.minecraft.text.Text;
 
 /**
  * Provides names to be used for {@link Enum} option values in the {@link SpeedrunConfigScreen}.

@@ -1,10 +1,10 @@
 package me.contaria.speedrunapi.config.api;
 
+import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.option.*;
 import org.jetbrains.annotations.Nullable;
-import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -15,10 +15,9 @@ public interface SpeedrunConfigStorage {
     /**
      * Creates the {@link SpeedrunOption}'s for this config storage.
      *
-     * @param config - The config the options are being generated from.
+     * @param config         - The config the options are being generated from.
      * @param optionIDPrefix - ID Prefixes for the generated options.
      * @return Returns a {@link Map} of all of this config storages {@link SpeedrunOption}'s mapped to their ID's.
-     *
      * @throws InvalidConfigException If any fields type is not supported, and is not annotated with {@link Config.Ignored}.
      */
     default Map<String, SpeedrunOption<?>> init(SpeedrunConfig config, String... optionIDPrefix) throws ReflectiveOperationException {
@@ -78,8 +77,8 @@ public interface SpeedrunConfigStorage {
      * <p>
      * Mod authors can override this method to add support for custom field types using a {@link SpeedrunConfigAPI.CustomOption.Builder}.
      *
-     * @param field - The field in this class that is being parsed.
-     * @param config - The config the option is being generated from.
+     * @param field    - The field in this class that is being parsed.
+     * @param config   - The config the option is being generated from.
      * @param idPrefix - ID Prefixes for the generated option.
      * @return A {@link SpeedrunOption} for the field or null if the field type is not supported.
      */

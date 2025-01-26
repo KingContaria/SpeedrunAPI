@@ -3,15 +3,15 @@ package me.contaria.speedrunapi.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
+import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
+import me.contaria.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
-import me.contaria.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
 
 import java.lang.reflect.Field;
 
