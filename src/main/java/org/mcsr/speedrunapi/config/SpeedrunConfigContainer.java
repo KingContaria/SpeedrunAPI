@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.ModContainer;
+import org.jetbrains.annotations.NotNull;
 import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
@@ -146,5 +147,25 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             throw new NoSuchConfigException("Could not find option \"" + name + "\" in " + this.config.modID() + " config.");
         }
         return option;
+    }
+
+    static final class Uninitialized<T extends SpeedrunConfig> implements Comparable<Uninitialized<T>> {
+        final Class<T> config;
+        final ModContainer mod;
+        final int priority;
+
+        Uninitialized(Class<T> config, ModContainer mod, int priority) {
+            this.config = config;
+            this.mod = mod;
+            this.priority = priority;
+        }
+
+        @Override
+        public int compareTo(@NotNull SpeedrunConfigContainer.Uninitialized<T> o) {
+            if (this.priority != o.priority) {
+                return this.priority > o.priority ? 1 : -1;
+            }
+            return this.mod.getMetadata().getId().compareTo(o.mod.getMetadata().getId());
+        }
     }
 }

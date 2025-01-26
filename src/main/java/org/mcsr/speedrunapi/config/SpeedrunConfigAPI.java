@@ -12,11 +12,12 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.mcsr.speedrunapi.SpeedrunAPI;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfigStorage;
 import org.mcsr.speedrunapi.config.api.SpeedrunOption;
-import org.mcsr.speedrunapi.config.api.annotations.InitializeOn;
+import org.mcsr.speedrunapi.config.api.annotations.Config;
 import org.mcsr.speedrunapi.config.exceptions.InitializeConfigException;
 import org.mcsr.speedrunapi.config.exceptions.InvalidConfigException;
 import org.mcsr.speedrunapi.config.exceptions.NoSuchConfigException;
@@ -34,7 +35,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class SpeedrunConfigAPI {
-    private static final EnumMap<InitializeOn.InitPoint, Map<ModContainer, Class<? extends SpeedrunConfig>>> CONFIGS_TO_INITIALIZE = new EnumMap<>(InitializeOn.InitPoint.class);
+    private static final EnumMap<Config.InitPoint, TreeSet<SpeedrunConfigContainer.Uninitialized<?>>> CONFIGS_TO_INITIALIZE = new EnumMap<>(Config.InitPoint.class);
     private static final Map<String, SpeedrunConfigContainer<?>> CONFIGS = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, SpeedrunConfigScreenProvider> CUSTOM_CONFIG_SCREENS = Collections.synchronizedMap(new HashMap<>());
 
@@ -46,9 +47,14 @@ public final class SpeedrunConfigAPI {
     @SuppressWarnings("unchecked")
     @ApiStatus.Internal
     public static void initialize() {
+        TreeSet<SpeedrunConfigContainer.Uninitialized<?>> test = new TreeSet<>();
+        Random random = new Random();
+
         List<ModContainer> mods = new ArrayList<>(FabricLoader.getInstance().getAllMods());
         mods.sort(Comparator.comparing(modContainer -> modContainer.getMetadata().getId()));
         for (ModContainer mod : mods) {
+            test.add(new SpeedrunConfigContainer.Uninitialized<>(null, mod, random.nextInt(2000)));
+
             ModMetadata metadata = mod.getMetadata();
             String modID = metadata.getId();
             try {
@@ -64,14 +70,34 @@ public final class SpeedrunConfigAPI {
                     if (!SpeedrunConfig.class.isAssignableFrom(configClass)) {
                         throw new InitializeConfigException("Provided config class from " + modID + " does not implement SpeedrunConfig.");
                     }
-                    InitializeOn initializeOn = configClass.getAnnotation(InitializeOn.class);
-                    CONFIGS_TO_INITIALIZE.computeIfAbsent(initializeOn != null ? initializeOn.value() : InitializeOn.InitPoint.ONINITIALIZE, initPoint -> new LinkedHashMap<>()).put(mod, (Class<? extends SpeedrunConfig>) configClass);
+
+                    Config configAnnotation = configClass.getAnnotation(Config.class);
+
+                    Config.InitPoint init;
+                    int priority;
+                    if (configAnnotation != null) {
+                        init = configAnnotation.init();
+                        priority = configAnnotation.priority();
+                    } else {
+                        init = Config.InitPoint.ONINITIALIZE;
+                        priority = 1000;
+                    }
+
+                    CONFIGS_TO_INITIALIZE.computeIfAbsent(
+                            init, key -> new TreeSet<>()
+                    ).add(
+                            new SpeedrunConfigContainer.Uninitialized<>(
+                                    (Class<? extends SpeedrunConfig>) configClass,
+                                    mod,
+                                    priority
+                            )
+                    );
                 }
 
                 CustomValue screen = customObject.get("screen");
                 if (screen != null) {
                     if (config != null) {
-                        throw new InitializeConfigException("Tried to provide both a SpeedrunConfig and a SpeedrunConfigContainer for " + modID + ".");
+                        throw new InitializeConfigException("Tried to provide both a SpeedrunConfig and a SpeedrunConfigScreenProvider for " + modID + ".");
                     }
                     Class<?> screenProviderClass = Class.forName(screen.getAsString());
                     if (!SpeedrunConfigScreenProvider.class.isAssignableFrom(screenProviderClass)) {
@@ -87,34 +113,39 @@ public final class SpeedrunConfigAPI {
                 throw new InitializeConfigException("Failed to initialize config for " + modID + ".", e);
             }
         }
+
+        for (SpeedrunConfigContainer.Uninitialized<?> t : test) {
+            SpeedrunAPI.LOGGER.warn("id = {} ({})", t.mod.getMetadata().getId(), t.priority);
+        }
     }
 
     @ApiStatus.Internal
     public static void onPreLaunch() {
         initialize();
 
-        registerConfigsForInitPoint(InitializeOn.InitPoint.PRELAUNCH);
+        registerConfigsForInitPoint(Config.InitPoint.PRELAUNCH);
     }
 
     @ApiStatus.Internal
     public static void onInitialize() {
-        registerConfigsForInitPoint(InitializeOn.InitPoint.ONINITIALIZE);
+        registerConfigsForInitPoint(Config.InitPoint.ONINITIALIZE);
     }
 
     @ApiStatus.Internal
     public static void onPostLaunch() {
-        registerConfigsForInitPoint(InitializeOn.InitPoint.POSTLAUNCH);
+        registerConfigsForInitPoint(Config.InitPoint.POSTLAUNCH);
     }
 
-    private static void registerConfigsForInitPoint(InitializeOn.InitPoint initPoint) {
-        Map<ModContainer, Class<? extends SpeedrunConfig>> configsToInitialize = CONFIGS_TO_INITIALIZE.get(initPoint);
+    private static void registerConfigsForInitPoint(Config.InitPoint initPoint) {
+        Set<SpeedrunConfigContainer.Uninitialized<?>> configsToInitialize = CONFIGS_TO_INITIALIZE.get(initPoint);
         if (configsToInitialize != null) {
             configsToInitialize.forEach(SpeedrunConfigAPI::register);
             configsToInitialize.clear();
         }
     }
 
-    private static <T extends SpeedrunConfig> void register(ModContainer mod, Class<T> configClass) {
+    private static <T extends SpeedrunConfig> void register(SpeedrunConfigContainer.Uninitialized<T> configUninitialized) {
+        ModContainer mod = configUninitialized.mod;
         String modID = mod.getMetadata().getId();
 
         if (CONFIGS.containsKey(modID)) {
@@ -122,7 +153,7 @@ public final class SpeedrunConfigAPI {
         }
 
         try {
-            T config = constructClass(configClass);
+            T config = constructClass(configUninitialized.config);
             SpeedrunConfigContainer<T> container = new SpeedrunConfigContainer<>(config, mod);
             if (!modID.equals(container.getConfig().modID())) {
                 throw new InvalidConfigException("The provided SpeedrunConfig's mod ID (" + container.getConfig().modID() + ") doesn't match the providers mod ID (" + modID + ").");

@@ -1,5 +1,8 @@
 package org.mcsr.speedrunapi.config.api.annotations;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.minecraft.client.MinecraftClient;
 import org.mcsr.speedrunapi.config.api.SpeedrunConfig;
 import org.mcsr.speedrunapi.config.screen.SpeedrunConfigScreen;
 import org.mcsr.speedrunapi.config.screen.widgets.option.NumberOptionSliderWidget;
@@ -10,7 +13,38 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-public class Config {
+/**
+ * Optional annotation for {@link SpeedrunConfig}'s to specify certain options before the config is instantiated.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Config {
+
+    /**
+     * @return When to create the {@link SpeedrunConfig} instance (default {@link InitPoint#ONINITIALIZE}).
+     */
+    InitPoint init() default InitPoint.ONINITIALIZE;
+
+    /**
+     * @return The priority the {@link SpeedrunConfig} should have during loading, higher priority will be loaded later (default {@code 1000}).
+     */
+    int priority() default 1000;
+
+    enum InitPoint {
+        /**
+         * Activates on {@link PreLaunchEntrypoint#onPreLaunch()}.
+         */
+        PRELAUNCH,
+
+        /**
+         * Activates on {@link ModInitializer#onInitialize()}.
+         */
+        ONINITIALIZE,
+
+        /**
+         * Activates when {@link MinecraftClient} finishes initialization.
+         */
+        POSTLAUNCH
+    }
 
     /**
      * Sets the name used in the config screen for the annotated option.
@@ -19,7 +53,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Name {
+    @interface Name {
 
         /**
          * @return Returns the translation key for the annotated option's name.
@@ -32,7 +66,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Text {
+    @interface Text {
         /**
          * The method needs to be declared in the same {@link SpeedrunConfig} class as the annotated option.
          * It has to take one paramter of the annotated option's type and returns {@link net.minecraft.text.Text}.
@@ -49,7 +83,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Description {
+    @interface Description {
 
         /**
          * @return Returns the translation key for the annotated option's description.
@@ -64,7 +98,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Category {
+    @interface Category {
 
         /**
          * @return Returns the id of the config category.
@@ -79,7 +113,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Hide {
+    @interface Hide {
     }
 
     /**
@@ -87,7 +121,7 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Access {
+    @interface Access {
 
         /**
          * The method needs to be declared in the same {@link SpeedrunConfig} class as the annotated option.
@@ -113,10 +147,10 @@ public class Config {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public @interface Ignored {
+    @interface Ignored {
     }
 
-    public static class Numbers {
+    class Numbers {
 
         public static class Fractional {
 
@@ -230,7 +264,7 @@ public class Config {
         }
     }
 
-    public static class Strings {
+    class Strings {
 
         /**
          * Optional annotation for {@link String} options.
