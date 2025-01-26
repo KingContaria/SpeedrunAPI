@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public interface SpeedrunConfigStorage {
@@ -31,7 +32,7 @@ public interface SpeedrunConfigStorage {
 
         for (Class<?> clas : classes) {
             for (Field field : clas.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Config.Ignored.class)) {
+                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(Config.Ignored.class)) {
                     continue;
                 }
 
