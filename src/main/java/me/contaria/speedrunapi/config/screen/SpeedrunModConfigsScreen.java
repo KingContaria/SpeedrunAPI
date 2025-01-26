@@ -2,11 +2,11 @@ package me.contaria.speedrunapi.config.screen;
 
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidget;
+import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -15,7 +15,7 @@ public class SpeedrunModConfigsScreen extends Screen {
     private SpeedrunModConfigListWidget list;
 
     public SpeedrunModConfigsScreen(Screen parent) {
-        super(new TranslatableText("speedrunapi.gui.config.title"));
+        super(TextUtil.translatable("speedrunapi.gui.config.title"));
         this.parent = parent;
     }
 

@@ -1,7 +1,7 @@
 package me.contaria.speedrunapi.config.option;
 
+import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -144,7 +144,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Override
     public @NotNull Text getName() {
         if (this.name != null) {
-            return new TranslatableText(this.name);
+            return TextUtil.translatable(this.name);
         }
         return SpeedrunOption.super.getName();
     }
@@ -152,7 +152,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Override
     public @Nullable Text getDescription() {
         if (this.description != null) {
-            return new TranslatableText(this.description);
+            return TextUtil.translatable(this.description);
         }
         return SpeedrunOption.super.getDescription();
     }

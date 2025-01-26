@@ -2,10 +2,9 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
+import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ public interface SpeedrunOption<T> {
      * @return Returns the name of this option.
      */
     default @NotNull Text getName() {
-        return new TranslatableText("speedrunapi.config." + this.getModID() + ".option." + this.getID());
+        return TextUtil.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID());
     }
 
     /**
@@ -49,7 +48,7 @@ public interface SpeedrunOption<T> {
         Language language = Language.getInstance();
         String description = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".description";
         if (language.hasTranslation(description)) {
-            return new TranslatableText(description);
+            return TextUtil.translatable(description);
         }
         return null;
     }
@@ -63,10 +62,10 @@ public interface SpeedrunOption<T> {
         String value = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value";
         String valueSpecified = value + "." + this.get();
         if (language.hasTranslation(valueSpecified)) {
-            return new TranslatableText(valueSpecified);
+            return TextUtil.translatable(valueSpecified);
         }
         if (language.hasTranslation(value)) {
-            return new TranslatableText(value, this.get());
+            return TextUtil.translatable(value, this.get());
         }
         return this.getDefaultText();
     }
@@ -76,7 +75,7 @@ public interface SpeedrunOption<T> {
      * @see SpeedrunOption#getText
      */
     default @NotNull Text getDefaultText() {
-        return new LiteralText(this.getString());
+        return TextUtil.literal(this.getString());
     }
 
     /**

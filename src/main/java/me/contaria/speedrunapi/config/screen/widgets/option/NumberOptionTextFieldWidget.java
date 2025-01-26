@@ -1,6 +1,7 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
+import me.contaria.speedrunapi.util.IdentifierUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -12,7 +13,7 @@ import me.contaria.speedrunapi.config.option.NumberOption;
 
 @ApiStatus.Internal
 public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {
-    private static final Identifier APPLY_TEXTURE = new Identifier("textures/gui/container/beacon.png");
+    private static final Identifier APPLY_TEXTURE = IdentifierUtil.ofVanilla("textures/gui/container/beacon.png");
 
     private final NumberOption<?> option;
     private final ButtonWidget applyButton;

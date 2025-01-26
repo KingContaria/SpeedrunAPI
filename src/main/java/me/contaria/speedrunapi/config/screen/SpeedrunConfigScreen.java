@@ -2,14 +2,13 @@ package me.contaria.speedrunapi.config.screen;
 
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
+import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -30,7 +29,7 @@ public class SpeedrunConfigScreen extends Screen {
     private boolean searchFieldOpen;
 
     public SpeedrunConfigScreen(SpeedrunConfigContainer<?> config, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
-        super(new LiteralText(config.getModContainer().getMetadata().getName()));
+        super(TextUtil.literal(config.getModContainer().getMetadata().getName()));
         this.config = config;
         this.inputListener = inputListener;
         this.parent = parent;
@@ -52,7 +51,7 @@ public class SpeedrunConfigScreen extends Screen {
     @Override
     protected void init() {
         assert this.client != null;
-        this.searchField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 25, 200, 20, this.searchField, new TranslatableText("speedrunapi.gui.config.search"));
+        this.searchField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 25, 200, 20, this.searchField, TextUtil.translatable("speedrunapi.gui.config.search"));
         this.searchField.setVisible(this.searchFieldOpen);
         this.searchField.setChangedListener(string -> this.list.updateEntries(string));
         this.addChild(this.searchField);

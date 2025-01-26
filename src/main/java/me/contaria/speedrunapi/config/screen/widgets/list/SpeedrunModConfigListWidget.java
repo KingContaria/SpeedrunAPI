@@ -3,6 +3,8 @@ package me.contaria.speedrunapi.config.screen.widgets.list;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
+import me.contaria.speedrunapi.util.IdentifierUtil;
+import me.contaria.speedrunapi.util.TextUtil;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
@@ -35,8 +37,8 @@ import java.util.Map;
 
 @ApiStatus.Internal
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
-    private static final Identifier NO_MOD_ICON = new Identifier("textures/misc/unknown_server.png");
-    private static final Identifier EDIT_MOD_CONFIG = new Identifier("textures/gui/world_selection.png");
+    private static final Identifier NO_MOD_ICON = IdentifierUtil.ofVanilla("textures/misc/unknown_server.png");
+    private static final Identifier EDIT_MOD_CONFIG = IdentifierUtil.ofVanilla("textures/gui/world_selection.png");
 
     private final SpeedrunModConfigsScreen parent;
 
@@ -94,10 +96,10 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         public ModEntry(ModContainer mod) {
             this.modContainer = mod;
             this.mod = this.modContainer.getMetadata();
-            this.icon = new Identifier("speedrunapi", "mods/" + this.mod.getId() + "/icon");
+            this.icon = IdentifierUtil.of("speedrunapi", "mods/" + this.mod.getId() + "/icon");
 
-            this.name = new LiteralText(this.mod.getName());
-            this.version = new LiteralText(this.mod.getVersion().getFriendlyString().split("\\+")[0]).formatted(Formatting.GRAY);
+            this.name = TextUtil.literal(this.mod.getName());
+            this.version = TextUtil.literal(this.mod.getVersion().getFriendlyString().split("\\+")[0]).formatted(Formatting.GRAY);
             this.authors = this.createAuthorsText(this.mod.getAuthors());
             this.description = this.createDescription(this.mod.getDescription());
 
@@ -108,13 +110,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             if (authors == null || authors.isEmpty()) {
                 return null;
             }
-            MutableText text = new LiteralText(" by ").styled(style -> style.withColor(Formatting.GRAY).withItalic(true));
+            MutableText text = TextUtil.literal(" by ").styled(style -> style.withColor(Formatting.GRAY).withItalic(true));
             boolean shouldAddComma = false;
             for (Person person : this.mod.getAuthors()) {
-                LiteralText author = new LiteralText(person.getName());
+                MutableText author = TextUtil.literal(person.getName());
                 person.getContact().get("homepage").ifPresent(link -> author.styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link)).withFormatting(Formatting.UNDERLINE)));
                 if (shouldAddComma) {
-                    text.append(new LiteralText(", "));
+                    text.append(TextUtil.literal(", "));
                 }
                 text = text.append(author);
                 shouldAddComma = true;
@@ -211,9 +213,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             this.configScreenProvider = configScreenProvider;
             String configUnavailableKey = "speedrunapi.config." + this.mod.getId() + ".unavailable";
             if (Language.getInstance().hasTranslation(configUnavailableKey)) {
-                this.unavailableTooltip = new TranslatableText(configUnavailableKey);
+                this.unavailableTooltip = TextUtil.translatable(configUnavailableKey);
             } else {
-                this.unavailableTooltip = new TranslatableText("speedrunapi.gui.config.unavailable");
+                this.unavailableTooltip = TextUtil.translatable("speedrunapi.gui.config.unavailable");
             }
         }
 
@@ -268,7 +270,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
     }
 
     public class NoModConfigsEntry extends ModConfigListEntry {
-        private final Text text = new TranslatableText("speedrunapi.gui.config.noConfigs");
+        private final Text text = TextUtil.translatable("speedrunapi.gui.config.noConfigs");
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
