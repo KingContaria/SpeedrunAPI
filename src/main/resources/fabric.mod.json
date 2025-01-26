@@ -20,10 +20,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"preLaunch": [
-			"org.mcsr.speedrunapi.SpeedrunAPI"
+			"me.contaria.speedrunapi.SpeedrunAPI"
 		],
 		"main": [
-			"org.mcsr.speedrunapi.SpeedrunAPI"
+			"me.contaria.speedrunapi.SpeedrunAPI"
 		]
 	},
 	"mixins": [

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "org.mcsr.speedrunapi.mixin",
+  "package": "me.contaria.speedrunapi.mixin",
   "compatibilityLevel": "JAVA_8",
   "injectors": {
     "defaultRequire": 1
@@ -13,5 +13,5 @@
   "server": [
     "entrypoint.MinecraftDedicatedServerMixin"
   ],
-  "plugin": "org.mcsr.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
+  "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
 }
