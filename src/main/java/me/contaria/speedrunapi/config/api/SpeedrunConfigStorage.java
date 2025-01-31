@@ -31,7 +31,11 @@ public interface SpeedrunConfigStorage {
 
         for (Class<?> clas : classes) {
             for (Field field : clas.getDeclaredFields()) {
-                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(Config.Ignored.class)) {
+                if (field.isAnnotationPresent(Config.Ignored.class)) {
+                    continue;
+                }
+
+                if (!config.shouldParseStaticFields() && Modifier.isStatic(field.getModifiers())) {
                     continue;
                 }
 

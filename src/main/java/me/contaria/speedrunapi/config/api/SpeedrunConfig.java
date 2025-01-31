@@ -145,4 +145,11 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     default boolean shouldShowOption(String option) {
         return true;
     }
+
+    /**
+     * @return If static fields in the {@link SpeedrunConfig} or any related {@link SpeedrunConfigStorage} should be parsed as options.
+     */
+    default boolean shouldParseStaticFields() {
+        return false;
+    }
 }
