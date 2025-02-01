@@ -1,11 +1,11 @@
 package me.contaria.speedrunapi.config.screen.widgets;
 
+import me.contaria.speedrunapi.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -20,7 +20,7 @@ public class IconButtonWidget extends ButtonWidget {
     private final Text title;
 
     public IconButtonWidget(Identifier texture, int x, int y, PressAction onPress) {
-        this(texture, 0, 0, 16, 16, x, y, LiteralText.EMPTY, onPress);
+        this(texture, 0, 0, 16, 16, x, y, TextUtil.empty(), onPress);
     }
 
     public IconButtonWidget(Identifier texture, int x, int y, Text title, PressAction onPress) {
@@ -28,11 +28,11 @@ public class IconButtonWidget extends ButtonWidget {
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, PressAction onPress) {
-        this(texture, u, v, textureWidth, textureHeight, x, y, LiteralText.EMPTY, onPress);
+        this(texture, u, v, textureWidth, textureHeight, x, y, TextUtil.empty(), onPress);
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, Text title, PressAction onPress) {
-        super(x, y, 20, 20, LiteralText.EMPTY, onPress);
+        super(x, y, 20, 20, TextUtil.empty(), onPress);
         this.texture = texture;
         this.u = u;
         this.v = v;
