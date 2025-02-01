@@ -1,6 +1,6 @@
 package me.contaria.speedrunapi.config.screen.widgets.list;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
@@ -165,12 +165,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 yOffset += textRenderer.fontHeight;
             }
 
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+            GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
 
             client.getTextureManager().bindTexture(this.hasIcon ? this.icon : NO_MOD_ICON);
-            RenderSystem.enableBlend();
+            GlStateManager.enableBlend();
             DrawableHelper.blit(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
-            RenderSystem.disableBlend();
+            GlStateManager.disableBlend();
 
             if (client.options.touchscreen || hovered) {
                 this.renderIfHovered(x, y, mouseX, mouseY);
@@ -213,7 +213,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
             SpeedrunModConfigListWidget.this.minecraft.getTextureManager().bindTexture(EDIT_MOD_CONFIG);
             DrawableHelper.fill(x, y, x + 32, y + 32, -1601138544);
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+            GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
             int textureOffset = mouseX - x < 32 ? 32 : 0;
             DrawableHelper.blit(x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
 
