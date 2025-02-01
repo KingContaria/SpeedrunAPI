@@ -23,7 +23,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
 
     @Override
     public @NotNull Text getDefaultText() {
-        return ScreenTexts.getToggleText(this.get());
+        return ScreenTexts.onOrOff(this.get());
     }
 
     @Override

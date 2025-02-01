@@ -55,8 +55,9 @@ public abstract class DefaultClientResourcePackMixin {
             method = "<init>",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/resource/DefaultResourcePack;<init>([Ljava/lang/String;)V"
-            )
+                    target = "Lnet/minecraft/resource/DefaultResourcePack;<init>(Lnet/minecraft/resource/metadata/PackResourceMetadata;[Ljava/lang/String;)V"
+            ),
+            index = 1
     )
     private static String[] initModsToNamespaces(String[] namespaces) {
         if (HAS_FABRIC_RESOURCE_LOADER) {

@@ -9,6 +9,7 @@ import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
@@ -133,6 +134,11 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         public List<? extends Element> children() {
             return ImmutableList.of(this.text, this.button);
         }
+
+        @Override
+        public List<? extends Selectable> selectableChildren() {
+            return ImmutableList.of(this.button);
+        }
     }
 
     public class OptionCategoryEntry extends OptionListEntry {
@@ -144,13 +150,18 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         }
 
         @Override
+        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            DrawableHelper.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        }
+
+        @Override
         public List<? extends Element> children() {
             return ImmutableList.of();
         }
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public List<? extends Selectable> selectableChildren() {
+            return ImmutableList.of();
         }
     }
 }

@@ -14,6 +14,7 @@ import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.NativeImage;
@@ -58,6 +59,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             }
             this.addEntry(new ModEntry(mod));
         }
+
  */
 
         if (this.children().isEmpty()) {
@@ -77,7 +79,11 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
     @Override
     public ModConfigListEntry getFocused() {
-        return this.getSelected();
+        return this.getSelectedOrNull();
+    }
+
+    @Override
+    public void appendNarrations(NarrationMessageBuilder builder) {
     }
 
     public abstract static class ModConfigListEntry extends EntryListWidget.Entry<ModConfigListEntry> {
@@ -134,10 +140,6 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         private void registerIcon() {
-            if (SpeedrunModConfigListWidget.this.client.getTextureManager().getTexture(this.icon) != null) {
-                this.hasIcon = true;
-                return;
-            }
             this.mod.getIconPath(32).flatMap(this.modContainer::findPath).ifPresent(iconPath -> {
                 try (InputStream inputStream = Files.newInputStream(iconPath)) {
                     SpeedrunModConfigListWidget.this.client.getTextureManager().registerTexture(this.icon, new NativeImageBackedTexture(NativeImage.read(inputStream)));
@@ -149,7 +151,6 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
@@ -177,9 +178,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 yOffset += textRenderer.fontHeight;
             }
 
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-            client.getTextureManager().bindTexture(this.hasIcon ? this.icon : NO_MOD_ICON);
+            RenderSystem.setShaderTexture(0, this.hasIcon ? this.icon : NO_MOD_ICON);
             RenderSystem.enableBlend();
             DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
             RenderSystem.disableBlend();
@@ -220,13 +221,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         @Override
-        @SuppressWarnings("deprecation")
         protected void renderIfHovered(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
 
             SpeedrunModConfigListWidget.this.client.getTextureManager().bindTexture(EDIT_MOD_CONFIG);
             DrawableHelper.fill(matrices, x, y, x + 32, y + 32, -1601138544);
-            RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             int textureOffset = mouseX - x < 32 ? 32 : 0;
             DrawableHelper.drawTexture(matrices, x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
 
@@ -264,7 +264,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 return false;
             }
             SpeedrunModConfigListWidget.this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f));
-            SpeedrunModConfigListWidget.this.client.openScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
+            SpeedrunModConfigListWidget.this.client.setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
             return true;
         }
     }

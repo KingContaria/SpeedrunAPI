@@ -55,21 +55,19 @@ public class SpeedrunConfigScreen extends Screen {
         this.searchField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 25, 200, 20, this.searchField, TextUtil.translatable("speedrunapi.gui.config.search"));
         this.searchField.setVisible(this.searchFieldOpen);
         this.searchField.setChangedListener(string -> this.list.updateEntries(string));
-        this.addChild(this.searchField);
         this.list = new SpeedrunOptionListWidget(this, this.config, this.client, this.width, this.height, 25, this.height - 32, this.searchField.getText());
         if (this.searchFieldOpen) {
             this.list.adjustTop(50);
         }
-        this.addChild(this.list);
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
+        this.addDrawableChild(this.list);
+        this.addDrawableChild(this.searchField);
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
         this.client.keyboard.setRepeatEvents(true);
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
-        this.list.render(matrices, mouseX, mouseY, delta);
-        this.searchField.render(matrices, mouseX, mouseY, delta);
         DrawableHelper.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 10, 0xFFFFFF);
         super.render(matrices, mouseX, mouseY, delta);
     }
@@ -97,7 +95,7 @@ public class SpeedrunConfigScreen extends Screen {
     @Override
     public void onClose() {
         assert this.client != null;
-        this.client.openScreen(this.parent);
+        this.client.setScreen(this.parent);
     }
 
     @Override
