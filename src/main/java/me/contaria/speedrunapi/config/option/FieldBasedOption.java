@@ -162,6 +162,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
         try {
             if (this.setter != null) {
                 this.setter.invoke(this.configStorage, value);
+                return;
             }
             this.option.set(this.configStorage, value);
         } catch (ReflectiveOperationException e) {
