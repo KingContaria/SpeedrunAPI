@@ -53,8 +53,8 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Text
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
-        this.applyButton.x = this.x + 130;
-        this.applyButton.y = this.y;
+        this.applyButton.setX(this.getX() + 130);
+        this.applyButton.setY(this.getY());
         this.applyButton.render(matrices, mouseX, mouseY, delta);
     }
 

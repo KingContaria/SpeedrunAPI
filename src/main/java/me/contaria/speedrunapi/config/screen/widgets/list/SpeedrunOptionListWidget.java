@@ -95,11 +95,13 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
     protected int getScrollbarPositionX() {
         return super.getScrollbarPositionX() + 42;
     }
-
+/*
     @Override
     protected void moveSelection(EntryListWidget.MoveDirection direction) {
         this.moveSelectionIf(direction, entry -> !(entry instanceof OptionCategoryEntry));
     }
+
+ */
 
     public abstract static class OptionListEntry extends ElementListWidget.Entry<OptionListEntry> {
     }
@@ -121,8 +123,8 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.text.y = y + 5 + y_offset;
             this.text.renderText(matrices);
 
-            this.button.x = x + entryWidth - this.button.getWidth() - 5;
-            this.button.y = y + 5;
+            this.button.setX(x + entryWidth - this.button.getWidth() - 5);
+            this.button.setY(y + 5);
             this.button.render(matrices, mouseX, mouseY, tickDelta);
 
             if (this.isMouseOver(mouseX, mouseY) && this.text.isMouseOver(mouseX, mouseY)) {
@@ -151,7 +153,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
 
         @Override

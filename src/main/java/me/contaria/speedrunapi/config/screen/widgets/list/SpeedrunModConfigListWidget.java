@@ -185,7 +185,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
             RenderSystem.disableBlend();
 
-            if (client.options.touchscreen || hovered) {
+            if (client.options.getTouchscreen().getValue() || hovered) {
                 this.renderIfHovered(matrices, x, y, mouseX, mouseY);
             }
         }
@@ -274,7 +274,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredText(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

@@ -81,6 +81,15 @@ public class TextWidget implements Drawable, Element {
         return mouseX > this.x && mouseX < this.x + this.textRenderer.getWidth(this.text) && mouseY > this.y && mouseY < this.y + this.textRenderer.fontHeight;
     }
 
+    @Override
+    public void setFocused(boolean focused) {
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
+
     public Text getTextComponentAtPosition(double x, double y) {
         if (this.isMouseOver(x, y)) {
             return this.getTextComponentAtPositionInternal(this.text, 0, this.textRenderer.getWidth(this.text.copy()), x, y);

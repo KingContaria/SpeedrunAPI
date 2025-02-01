@@ -4,6 +4,8 @@ import me.contaria.speedrunapi.config.option.EnumOption;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Supplier;
+
 @ApiStatus.Internal
 public class EnumOptionButtonWidget extends ButtonWidget {
 
@@ -13,6 +15,6 @@ public class EnumOptionButtonWidget extends ButtonWidget {
             Enum<?>[] enumConstants = current.getClass().getEnumConstants();
             option.set(enumConstants[(current.ordinal() + 1) % enumConstants.length]);
             button.setMessage(option.getText());
-        });
+        }, Supplier::get);
     }
 }

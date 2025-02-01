@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.function.Supplier;
+
 @ApiStatus.Internal
 public class IconButtonWidget extends ButtonWidget {
     private final Identifier texture;
@@ -32,7 +34,7 @@ public class IconButtonWidget extends ButtonWidget {
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, Text title, PressAction onPress) {
-        super(x, y, 20, 20, TextUtil.empty(), onPress);
+        super(x, y, 20, 20, TextUtil.empty(), onPress, Supplier::get);
         this.texture = texture;
         this.u = u;
         this.v = v;
@@ -45,11 +47,9 @@ public class IconButtonWidget extends ButtonWidget {
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.renderButton(matrices, mouseX, mouseY, delta);
         RenderSystem.setShaderTexture(0, this.texture);
-        DrawableHelper.drawTexture(matrices, this.x + 2, this.y + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
-    }
-
-    @Override
-    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
-        DrawableHelper.drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, this.title, this.x + this.getWidth() / 2, this.y - 15, 16777215);
+        DrawableHelper.drawTexture(matrices, this.getX() + 2, this.getY() + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
+        if (this.isMouseOver(mouseX, mouseY)) {
+            DrawableHelper.drawCenteredTextWithShadow(matrices, MinecraftClient.getInstance().textRenderer, this.title, this.getX() + this.getWidth() / 2, this.getY() - 15, 16777215);
+        }
     }
 }
