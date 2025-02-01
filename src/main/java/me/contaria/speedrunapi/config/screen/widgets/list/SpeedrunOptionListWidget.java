@@ -27,8 +27,8 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
     @Nullable
     private TextWidget tooltipToRender;
 
-    public SpeedrunOptionListWidget(SpeedrunConfigScreen parent, SpeedrunConfigContainer<?> config, MinecraftClient client, int width, int height, int top, int bottom, String filter) {
-        super(client, width, height, top, bottom, 30);
+    public SpeedrunOptionListWidget(SpeedrunConfigScreen parent, SpeedrunConfigContainer<?> config, MinecraftClient client, int width, int height, int y, String filter) {
+        super(client, width, height, y, 30);
         this.parent = parent;
         this.config = config;
         this.updateEntries(filter);
@@ -71,10 +71,6 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         this.setScrollAmount(0.0);
     }
 
-    public void adjustTop(int top) {
-        this.top = top;
-    }
-
     @Override
     protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderList(context, mouseX, mouseY, delta);
@@ -89,10 +85,6 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         return Math.min(this.width, 320);
     }
 
-    @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 42;
-    }
 /*
     @Override
     protected void moveSelection(EntryListWidget.MoveDirection direction) {
@@ -110,7 +102,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         private final ClickableWidget button;
 
         public OptionEntry(SpeedrunOption<?> option) {
-            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.top, SpeedrunOptionListWidget.this.bottom);
+            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.getY(), SpeedrunOptionListWidget.this.getBottom());
             this.button = option.createWidget();
         }
 

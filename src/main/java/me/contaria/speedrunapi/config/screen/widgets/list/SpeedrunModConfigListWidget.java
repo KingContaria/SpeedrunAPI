@@ -8,7 +8,6 @@ import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
@@ -44,8 +43,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
     private final SpeedrunModConfigsScreen parent;
 
-    public SpeedrunModConfigListWidget(Map<ModContainer, SpeedrunConfigScreenProvider> modConfigScreenProviders, SpeedrunModConfigsScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
-        super(client, width, height, top, bottom, 36);
+    public SpeedrunModConfigListWidget(Map<ModContainer, SpeedrunConfigScreenProvider> modConfigScreenProviders, SpeedrunModConfigsScreen parent, MinecraftClient client, int width, int height, int y) {
+        super(client, width, height, y, 36);
         this.parent = parent;
 
         for (Map.Entry<ModContainer, SpeedrunConfigScreenProvider> config : modConfigScreenProviders.entrySet()) {
@@ -73,17 +72,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
     }
 
     @Override
-    protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 20;
-    }
-
-    @Override
     public ModConfigListEntry getFocused() {
         return this.getSelectedOrNull();
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
 
     public abstract static class ModConfigListEntry extends EntryListWidget.Entry<ModConfigListEntry> {
