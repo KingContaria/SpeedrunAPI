@@ -22,7 +22,7 @@ public abstract class OptionsScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/OptionsScreen;initTabNavigation()V"))
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/OptionsScreen;refreshWidgetPositions()V"))
     private void addSpeedrunConfigButton(CallbackInfo ci) {
         this.configButton = this.addDrawableChild(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 159, 29, TextUtil.translatable("speedrunapi.gui.config.button"), button -> {
             assert this.client != null;
@@ -30,7 +30,7 @@ public abstract class OptionsScreenMixin extends Screen {
         }));
     }
 
-    @Inject(method = "initTabNavigation", at = @At("TAIL"))
+    @Inject(method = "refreshWidgetPositions", at = @At("TAIL"))
     private void resizeSpeedrunConfigButton(CallbackInfo ci) {
         this.configButton.setPosition(this.width / 2 + 159, 29);
     }

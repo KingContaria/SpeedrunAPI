@@ -16,6 +16,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -173,7 +174,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             }
 
             RenderSystem.enableBlend();
-            context.drawTexture(this.hasIcon ? this.icon : NO_MOD_ICON, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
+            context.drawTexture(RenderLayer::getGuiTextured, this.hasIcon ? this.icon : NO_MOD_ICON, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
             RenderSystem.disableBlend();
 
             if (client.options.getTouchscreen().getValue() || hovered) {
@@ -216,7 +217,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             boolean available = this.configScreenProvider.isAvailable();
 
             context.fill(x, y, x + 32, y + 32, -1601138544);
-            context.drawTexture(EDIT_MOD_CONFIG, x, y, available ? 0.0f : 96.0f, mouseX - x < 32 ? 32 : 0, 32, 32, 256, 256);
+            context.drawTexture(RenderLayer::getGuiTextured, EDIT_MOD_CONFIG, x, y, available ? 0.0f : 96.0f, mouseX - x < 32 ? 32 : 0, 32, 32, 256, 256);
 
             if (!available && this.isMouseOver(mouseX, mouseY)) {
                 context.drawOrderedTooltip(SpeedrunModConfigListWidget.this.client.textRenderer, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);

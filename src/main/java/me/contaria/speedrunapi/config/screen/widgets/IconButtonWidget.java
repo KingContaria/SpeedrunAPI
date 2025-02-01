@@ -4,6 +4,7 @@ import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
@@ -44,7 +45,7 @@ public class IconButtonWidget extends ButtonWidget {
     @Override
     public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         super.renderWidget(context, mouseX, mouseY, delta);
-        context.drawTexture(this.texture, this.getX() + 2, this.getY() + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
+        context.drawTexture(RenderLayer::getGuiTextured, this.texture, this.getX() + 2, this.getY() + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
         if (this.isMouseOver(mouseX, mouseY)) {
             context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, this.title, this.getX() + this.getWidth() / 2, this.getY() - 15, 16777215);
         }

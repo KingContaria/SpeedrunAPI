@@ -68,7 +68,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             }
         }
 
-        this.setScrollAmount(0.0);
+        this.setScrollY(0.0);
     }
 
     @Override
