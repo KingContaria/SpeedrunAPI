@@ -8,22 +8,30 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(OptionsScreen.class)
 public abstract class OptionsScreenMixin extends Screen {
+    @Unique
+    private IconButtonWidget configButton;
 
     protected OptionsScreenMixin(Text title) {
         super(title);
     }
 
-    @Inject(method = "init", at = @At("TAIL"))
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/OptionsScreen;initTabNavigation()V"))
     private void addSpeedrunConfigButton(CallbackInfo ci) {
-        this.addDrawableChild(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 160, this.height / 6 - 12, TextUtil.translatable("speedrunapi.gui.config.button"), button -> {
+        this.configButton = this.addDrawableChild(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 159, 29, TextUtil.translatable("speedrunapi.gui.config.button"), button -> {
             assert this.client != null;
             this.client.setScreen(new SpeedrunModConfigsScreen(this));
         }));
+    }
+
+    @Inject(method = "initTabNavigation", at = @At("TAIL"))
+    private void resizeSpeedrunConfigButton(CallbackInfo ci) {
+        this.configButton.setPosition(this.width / 2 + 159, 29);
     }
 }
