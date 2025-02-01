@@ -7,7 +7,7 @@
   },
   "client": [
     "entrypoint.MinecraftClientMixin",
-    "gui.OptionsScreenMixin",
+    "gui.SettingsScreenMixin",
     "resourceloader.DefaultClientResourcePackMixin"
   ],
   "server": [

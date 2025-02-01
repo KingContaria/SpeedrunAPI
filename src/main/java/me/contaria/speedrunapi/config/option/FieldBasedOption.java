@@ -6,8 +6,7 @@ import me.contaria.speedrunapi.config.api.SpeedrunOption;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.text.Text;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -142,17 +141,17 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     }
 
     @Override
-    public @NotNull Text getName() {
+    public @NotNull String getName() {
         if (this.name != null) {
-            return TextUtil.translatable(this.name);
+            return I18n.translate(this.name);
         }
         return SpeedrunOption.super.getName();
     }
 
     @Override
-    public @Nullable Text getDescription() {
+    public @Nullable String getDescription() {
         if (this.description != null) {
-            return TextUtil.translatable(this.description);
+            return I18n.translate(this.description);
         }
         return SpeedrunOption.super.getDescription();
     }
@@ -189,10 +188,10 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     }
 
     @Override
-    public @NotNull Text getText() {
+    public @NotNull String getText() {
         try {
             if (this.textGetter != null) {
-                return (Text) this.textGetter.invoke(this.configStorage, this.get());
+                return (String) this.textGetter.invoke(this.configStorage, this.get());
             }
         } catch (ReflectiveOperationException e) {
             throw new ReflectionConfigException("Failed to get text for option " + this.getID() + " in " + this.getModID() + "config.", e);

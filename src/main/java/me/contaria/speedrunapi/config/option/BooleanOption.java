@@ -6,9 +6,8 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidget;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +21,8 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
     }
 
     @Override
-    public @NotNull Text getDefaultText() {
-        return ScreenTexts.getToggleText(this.get());
+    public @NotNull String getDefaultText() {
+        return I18n.translate(this.get() ? "gui.on" : "gui.off");
     }
 
     @Override

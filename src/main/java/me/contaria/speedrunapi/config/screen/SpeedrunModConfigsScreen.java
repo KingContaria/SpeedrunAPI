@@ -4,9 +4,8 @@ import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -20,24 +19,25 @@ public class SpeedrunModConfigsScreen extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-        this.list.render(matrices, mouseX, mouseY, delta);
-        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 10, 0xFFFFFF);
-        super.render(matrices, mouseX, mouseY, delta);
+    public void render(int mouseX, int mouseY, float delta) {
+        assert this.minecraft != null;
+        this.renderBackground();
+        this.list.render(mouseX, mouseY, delta);
+        this.drawCenteredString(this.minecraft.textRenderer, this.title.asFormattedString(), this.width / 2, 10, 0xFFFFFF);
+        super.render(mouseX, mouseY, delta);
     }
 
     @Override
     public void onClose() {
-        assert this.client != null;
-        this.client.openScreen(this.parent);
+        assert this.minecraft != null;
+        this.minecraft.openScreen(this.parent);
     }
 
     @Override
     protected void init() {
-        this.list = new SpeedrunModConfigListWidget(SpeedrunConfigAPI.getModConfigScreenProviders(), this, this.client, this.width, this.height, 25, this.height - 32);
-        this.addChild(this.list);
-        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
+        this.list = new SpeedrunModConfigListWidget(SpeedrunConfigAPI.getModConfigScreenProviders(), this, this.minecraft, this.width, this.height, 25, this.height - 32);
+        this.children.add(this.list);
+        this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, I18n.translate("gui.done"), button -> this.onClose()));
     }
 
     @Override

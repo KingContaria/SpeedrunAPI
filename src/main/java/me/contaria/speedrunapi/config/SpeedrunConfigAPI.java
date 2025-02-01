@@ -279,7 +279,7 @@ public final class SpeedrunConfigAPI {
     }
 
     @ApiStatus.Internal
-    public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
+    public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.KeyCode> inputListener, Screen parent) {
         return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
     }
 

@@ -1,7 +1,7 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.NumberOption;
-import me.contaria.speedrunapi.util.TextUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.SliderWidget;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -10,7 +10,7 @@ public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extend
     protected final T option;
 
     public NumberOptionSliderWidget(T option, int x, int y, double value) {
-        super(x, y, 150, 20, TextUtil.empty(), value);
+        super(MinecraftClient.getInstance().options, x, y, 150, 20, value);
         this.option = option;
         this.updateValue();
     }

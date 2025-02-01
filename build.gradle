@@ -19,16 +19,16 @@ repositories {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "com.github.RedLime:yarn:$project.yarn_mappings:v2"
+	mappings "net.fabricmc:yarn:$project.yarn_mappings:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// MixinSquared
 	include(api(annotationProcessor "com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixinsquared}"))
 
 	// Fabric API
-	//include(modImplementation "net.fabricmc.fabric-api:fabric-key-binding-api-v1:1.0.36+fb8d95da77")
-	include(modApi "com.github.tildejustin:key-binding-api:a41fc49671")
-	//include(modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.2.7+c668f41583")
+	include(modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_api)) {
+		transitive = false
+	}
 }
 
 processResources {

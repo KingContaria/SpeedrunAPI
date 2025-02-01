@@ -2,10 +2,8 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Language;
+import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,45 +36,43 @@ public interface SpeedrunOption<T> {
     /**
      * @return Returns the name of this option.
      */
-    default @NotNull Text getName() {
-        return TextUtil.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID());
+    default @NotNull String getName() {
+        return I18n.translate("speedrunapi.config." + this.getModID() + ".option." + this.getID());
     }
 
     /**
      * @return Returns the description of this option.
      */
-    default @Nullable Text getDescription() {
-        Language language = Language.getInstance();
+    default @Nullable String getDescription() {
         String description = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".description";
-        if (language.hasTranslation(description)) {
-            return TextUtil.translatable(description);
+        if (I18n.hasTranslation(description)) {
+            return I18n.translate(description);
         }
         return null;
     }
 
     /**
-     * @return Returns the value of this option as a {@link Text}.
+     * @return Returns the value of this option as a String.
      * @see SpeedrunOption#getDefaultText
      */
-    default @NotNull Text getText() {
-        Language language = Language.getInstance();
+    default @NotNull String getText() {
         String value = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value";
         String valueSpecified = value + "." + this.get();
-        if (language.hasTranslation(valueSpecified)) {
-            return TextUtil.translatable(valueSpecified);
+        if (I18n.hasTranslation(valueSpecified)) {
+            return I18n.translate(valueSpecified);
         }
-        if (language.hasTranslation(value)) {
-            return TextUtil.translatable(value, this.get());
+        if (I18n.hasTranslation(value)) {
+            return I18n.translate(value, this.get());
         }
         return this.getDefaultText();
     }
 
     /**
-     * @return Returns the default {@link Text} returned by {@link SpeedrunOption#getText}.
+     * @return Returns the default String returned by {@link SpeedrunOption#getText}.
      * @see SpeedrunOption#getText
      */
-    default @NotNull Text getDefaultText() {
-        return TextUtil.literal(this.getString());
+    default @NotNull String getDefaultText() {
+        return this.getString();
     }
 
     /**

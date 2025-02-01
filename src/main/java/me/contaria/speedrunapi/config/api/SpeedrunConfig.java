@@ -122,7 +122,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      *
      * @return Returns an input listener for the default config screen.
      */
-    default @Nullable Predicate<InputUtil.Key> createInputListener() {
+    default @Nullable Predicate<InputUtil.KeyCode> createInputListener() {
         return null;
     }
 

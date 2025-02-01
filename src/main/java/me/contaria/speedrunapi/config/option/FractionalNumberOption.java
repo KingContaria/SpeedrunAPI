@@ -6,9 +6,7 @@ import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.FractionalNumberOptionSliderWidget;
 import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,8 +19,8 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     protected final Config.Numbers.Fractional.Bounds bounds;
 
     @Override
-    public @NotNull Text getDefaultText() {
-        return TextUtil.literal(String.valueOf(Math.round(this.get().doubleValue() * 100.0) / 100.0));
+    public @NotNull String getDefaultText() {
+        return String.valueOf(Math.round(this.get().doubleValue() * 100.0) / 100.0);
     }
 
     @Nullable
