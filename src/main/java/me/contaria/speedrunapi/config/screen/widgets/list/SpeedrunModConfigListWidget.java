@@ -1,5 +1,6 @@
 package me.contaria.speedrunapi.config.screen.widgets.list;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
@@ -127,8 +128,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private List<OrderedText> createDescription(String description) {
             List<OrderedText> list = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(TextUtil.literal(description), SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
             if (list.size() > 2) {
-                list.set(1, OrderedText.concat(list.get(1), TextUtil.literal("...").asOrderedText()));
-                return list.subList(0, 2);
+                return ImmutableList.of(list.get(0), OrderedText.concat(list.get(1), TextUtil.literal("...").asOrderedText()));
             }
             return list;
         }
