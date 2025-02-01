@@ -1,6 +1,7 @@
 package me.contaria.speedrunapi.config.screen.widgets;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -48,6 +49,6 @@ public class IconButtonWidget extends ButtonWidget {
 
     @Override
     public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
-        this.drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, this.title, this.x + this.getWidth() / 2, this.y - 15, 16777215);
+        DrawableHelper.drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, this.title, this.x + this.getWidth() / 2, this.y - 15, 16777215);
     }
 }

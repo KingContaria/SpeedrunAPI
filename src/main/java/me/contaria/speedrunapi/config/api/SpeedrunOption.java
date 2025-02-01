@@ -3,7 +3,7 @@ package me.contaria.speedrunapi.config.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
@@ -136,13 +136,13 @@ public interface SpeedrunOption<T> {
     boolean hasWidget();
 
     /**
-     * Creates an {@link AbstractButtonWidget} to configure this option on the mods config screen.
+     * Creates an {@link ClickableWidget} to configure this option on the mods config screen.
      * <p>
      * X and y will be set by the config screen and should be left as 0, 0.
      * Width and height should be set to 150, 20 by default to fit the option list widget, unless you know what you're doing.
      *
-     * @return Returns a new {@link AbstractButtonWidget} to be added to the config screen.
+     * @return Returns a new {@link ClickableWidget} to be added to the config screen.
      */
     @NotNull
-    AbstractButtonWidget createWidget();
+    ClickableWidget createWidget();
 }

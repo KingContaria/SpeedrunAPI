@@ -4,6 +4,7 @@ import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
 import me.contaria.speedrunapi.util.TextUtil;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -40,7 +41,7 @@ public class SpeedrunConfigScreen extends Screen {
         this.searchField.setVisible(this.searchFieldOpen);
         if (this.searchFieldOpen) {
             this.setFocused(this.searchField);
-            this.searchField.setSelected(true);
+            //this.searchField.setSelected(true);
             this.list.adjustTop(50);
         } else {
             this.searchField.setText("");
@@ -61,7 +62,7 @@ public class SpeedrunConfigScreen extends Screen {
         }
         this.addChild(this.list);
         this.addButton(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.onClose()));
-        this.client.keyboard.enableRepeatEvents(true);
+        this.client.keyboard.setRepeatEvents(true);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class SpeedrunConfigScreen extends Screen {
         this.renderBackground(matrices);
         this.list.render(matrices, mouseX, mouseY, delta);
         this.searchField.render(matrices, mouseX, mouseY, delta);
-        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 10, 0xFFFFFF);
+        DrawableHelper.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 10, 0xFFFFFF);
         super.render(matrices, mouseX, mouseY, delta);
     }
 
@@ -102,7 +103,7 @@ public class SpeedrunConfigScreen extends Screen {
     @Override
     public void removed() {
         assert this.client != null;
-        this.client.keyboard.enableRepeatEvents(false);
+        this.client.keyboard.setRepeatEvents(false);
         try {
             this.config.save();
         } catch (IOException e) {

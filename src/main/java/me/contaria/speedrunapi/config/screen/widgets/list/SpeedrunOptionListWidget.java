@@ -7,8 +7,9 @@ import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -105,7 +106,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
     public class OptionEntry extends OptionListEntry {
 
         private final TextWidget text;
-        private final AbstractButtonWidget button;
+        private final ClickableWidget button;
 
         public OptionEntry(SpeedrunOption<?> option) {
             this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.top, SpeedrunOptionListWidget.this.bottom);
@@ -149,7 +150,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            SpeedrunOptionListWidget.this.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredText(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

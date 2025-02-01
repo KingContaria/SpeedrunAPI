@@ -90,7 +90,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         protected final Text version;
         @Nullable
         protected final TextWidget authors;
-        protected final List<StringRenderable> description;
+        protected final List<OrderedText> description;
         protected boolean hasIcon;
 
         public ModEntry(ModContainer mod) {
@@ -124,10 +124,10 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             return new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, text);
         }
 
-        private List<StringRenderable> createDescription(String description) {
-            List<StringRenderable> list = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(StringRenderable.plain(description), SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
+        private List<OrderedText> createDescription(String description) {
+            List<OrderedText> list = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(TextUtil.literal(description), SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
             if (list.size() > 2) {
-                list.set(1, StringRenderable.plain(list.get(1).getString() + "..."));
+                list.set(1, OrderedText.concat(list.get(1), TextUtil.literal("...").asOrderedText()));
                 return list.subList(0, 2);
             }
             return list;
@@ -172,7 +172,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             }
 
             int yOffset = 0;
-            for (StringRenderable descriptionLine : this.description) {
+            for (OrderedText descriptionLine : this.description) {
                 textRenderer.draw(matrices, descriptionLine, x + 32 + 3, y + textRenderer.fontHeight + 3 + yOffset, 0x808080);
                 yOffset += textRenderer.fontHeight;
             }
@@ -231,7 +231,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             DrawableHelper.drawTexture(matrices, x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
 
             if (!available && this.isMouseOver(mouseX, mouseY)) {
-                SpeedrunModConfigListWidget.this.parent.renderTooltip(matrices, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
+                SpeedrunModConfigListWidget.this.parent.renderOrderedTooltip(matrices, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
             }
         }
 
@@ -274,7 +274,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            SpeedrunModConfigListWidget.this.drawCenteredText(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredText(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

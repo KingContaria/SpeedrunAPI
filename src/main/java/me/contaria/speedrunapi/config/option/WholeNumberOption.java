@@ -6,7 +6,7 @@ import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 import me.contaria.speedrunapi.config.screen.widgets.option.WholeNumberOptionSliderWidget;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +39,7 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     }
 
     @Override
-    public @NotNull AbstractButtonWidget createWidget() {
+    public @NotNull ClickableWidget createWidget() {
         if (this.useTextField) {
             return new NumberOptionTextFieldWidget<>(this, 0, 0);
         }

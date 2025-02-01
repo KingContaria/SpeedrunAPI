@@ -34,18 +34,12 @@ public abstract class DefaultClientResourcePackMixin {
                 continue;
             }
             mod.findPath("assets").filter(Files::isDirectory).ifPresent(assets -> {
-                try (Stream<Path> stream = Files.list(assets)) {
-                    // skip empty namespace directories
-                    // some mods may have template directories left over
-                    if (!stream.findFirst().isPresent()) {
-                        return;
-                    }
-                } catch (IOException ignored) {
-                }
-
                 Set<String> namespaces = new HashSet<>();
                 try (Stream<Path> stream = Files.list(assets)) {
-                    stream.filter(Files::isDirectory).forEach(path -> namespaces.add(path.getFileName().toString().replaceAll(Matcher.quoteReplacement("[/\\]"), "")));
+                    stream.filter(Files::isDirectory)
+                            .map(path -> path.getFileName().toString().replaceAll(Matcher.quoteReplacement("[/\\]"), ""))
+                            .filter(namespace -> !namespace.equals("minecraft") && !namespace.equals("realms"))
+                            .forEach(namespaces::add);
                 } catch (IOException e) {
                     SpeedrunAPI.LOGGER.error("SpeedrunAPI failed to check resources for mod: {}", mod.getMetadata().getId());
                 }

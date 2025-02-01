@@ -7,7 +7,7 @@ import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.FractionalNumberOptionSliderWidget;
 import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     }
 
     @Override
-    public @NotNull AbstractButtonWidget createWidget() {
+    public @NotNull ClickableWidget createWidget() {
         if (this.useTextField) {
             return new NumberOptionTextFieldWidget<>(this, 0, 0);
         }

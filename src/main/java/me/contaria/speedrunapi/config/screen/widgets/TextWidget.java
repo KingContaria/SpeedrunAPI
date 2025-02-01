@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -67,12 +67,12 @@ public class TextWidget implements Drawable, Element {
 
     public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
         if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
-            List<StringRenderable> tooltip = this.textRenderer.wrapLines(this.tooltip, 200);
+            List<OrderedText> tooltip = this.textRenderer.wrapLines(this.tooltip, 200);
             int height = tooltip.size() * 10;
             int y = mouseY;
             y = Math.min(y, this.maxTooltipY - height);
             y = Math.max(y, this.minTooltipY - height);
-            this.screen.renderTooltip(matrices, tooltip, mouseX, y);
+            this.screen.renderOrderedTooltip(matrices, tooltip, mouseX, y);
         }
     }
 
