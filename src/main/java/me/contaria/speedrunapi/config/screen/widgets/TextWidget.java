@@ -1,10 +1,10 @@
 package me.contaria.speedrunapi.config.screen.widgets;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
@@ -56,23 +56,23 @@ public class TextWidget implements Drawable, Element {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderText(matrices);
-        this.renderTooltip(matrices, mouseX, mouseY);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderText(context);
+        this.renderTooltip(context, mouseX, mouseY);
     }
 
-    public void renderText(MatrixStack matrices) {
-        this.textRenderer.draw(matrices, this.text, this.x, this.y, 0xFFFFFF);
+    public void renderText(DrawContext context) {
+        context.drawText(this.textRenderer, this.text, this.x, this.y, 0xFFFFFF, true);
     }
 
-    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+    public void renderTooltip(DrawContext context, int mouseX, int mouseY) {
         if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
             List<OrderedText> tooltip = this.textRenderer.wrapLines(this.tooltip, 200);
             int height = tooltip.size() * 10;
             int y = mouseY;
             y = Math.min(y, this.maxTooltipY - height);
             y = Math.max(y, this.minTooltipY - height);
-            this.screen.renderOrderedTooltip(matrices, tooltip, mouseX, y);
+            context.drawOrderedTooltip(this.textRenderer, tooltip, mouseX, y);
         }
     }
 

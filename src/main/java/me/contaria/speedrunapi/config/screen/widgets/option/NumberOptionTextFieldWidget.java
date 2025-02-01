@@ -5,9 +5,9 @@ import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -51,11 +51,11 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Text
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
         this.applyButton.setX(this.getX() + 130);
         this.applyButton.setY(this.getY());
-        this.applyButton.render(matrices, mouseX, mouseY, delta);
+        this.applyButton.render(context, mouseX, mouseY, delta);
     }
 
     @Override

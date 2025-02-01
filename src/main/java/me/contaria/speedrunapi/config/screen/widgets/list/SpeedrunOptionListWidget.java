@@ -7,13 +7,11 @@ import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
 import org.jetbrains.annotations.ApiStatus;
@@ -78,10 +76,10 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
+    protected void renderList(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderList(context, mouseX, mouseY, delta);
         if (this.tooltipToRender != null) {
-            this.tooltipToRender.renderTooltip(matrices, mouseX, mouseY);
+            this.tooltipToRender.renderTooltip(context, mouseX, mouseY);
             this.tooltipToRender = null;
         }
     }
@@ -117,15 +115,15 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         }
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             this.text.x = x + 5;
             int y_offset = (20 - SpeedrunOptionListWidget.this.client.textRenderer.fontHeight) / 2;
             this.text.y = y + 5 + y_offset;
-            this.text.renderText(matrices);
+            this.text.renderText(context);
 
             this.button.setX(x + entryWidth - this.button.getWidth() - 5);
             this.button.setY(y + 5);
-            this.button.render(matrices, mouseX, mouseY, tickDelta);
+            this.button.render(context, mouseX, mouseY, tickDelta);
 
             if (this.isMouseOver(mouseX, mouseY) && this.text.isMouseOver(mouseX, mouseY)) {
                 SpeedrunOptionListWidget.this.tooltipToRender = this.text;
@@ -152,8 +150,8 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
         }
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            context.drawCenteredTextWithShadow(SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
 
         @Override

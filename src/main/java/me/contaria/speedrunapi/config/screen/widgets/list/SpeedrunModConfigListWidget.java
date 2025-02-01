@@ -8,18 +8,18 @@ import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
@@ -151,12 +151,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
 
-            textRenderer.draw(matrices, this.name, x + 32 + 3, y + 1, 0xFFFFFF);
-            textRenderer.draw(matrices, this.version, x + 32 + 3 + textRenderer.getWidth(this.name) + 4, y + 1, 0xFFFFFF);
+            context.drawText(textRenderer, this.name, x + 32 + 3, y + 1, 0xFFFFFF, true);
+            context.drawText(textRenderer, this.version, x + 32 + 3 + textRenderer.getWidth(this.name) + 4, y + 1, 0xFFFFFF, true);
 
             if (this.authors != null) {
                 this.authors.x = x + entryWidth - this.authors.getWidth() - 5;
@@ -165,32 +165,29 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 if (hoveredComponent instanceof MutableText && hoveredComponent.getStyle().getClickEvent() != null) {
                     TextColor originalColor = hoveredComponent.getStyle().getColor();
                     ((MutableText) hoveredComponent).styled(style -> style.withColor(Formatting.WHITE));
-                    this.authors.render(matrices, mouseX, mouseY, tickDelta);
+                    this.authors.render(context, mouseX, mouseY, tickDelta);
                     ((MutableText) hoveredComponent).styled(style -> style.withColor(originalColor));
                 } else {
-                    this.authors.render(matrices, mouseX, mouseY, tickDelta);
+                    this.authors.render(context, mouseX, mouseY, tickDelta);
                 }
             }
 
             int yOffset = 0;
             for (OrderedText descriptionLine : this.description) {
-                textRenderer.draw(matrices, descriptionLine, x + 32 + 3, y + textRenderer.fontHeight + 3 + yOffset, 0x808080);
+                context.drawText(textRenderer, descriptionLine, x + 32 + 3, y + textRenderer.fontHeight + 3 + yOffset, 0x808080, true);
                 yOffset += textRenderer.fontHeight;
             }
 
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-            RenderSystem.setShaderTexture(0, this.hasIcon ? this.icon : NO_MOD_ICON);
             RenderSystem.enableBlend();
-            DrawableHelper.drawTexture(matrices, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
+            context.drawTexture(this.hasIcon ? this.icon : NO_MOD_ICON, x, y, 0.0f, 0.0f, 32, 32, 32, 32);
             RenderSystem.disableBlend();
 
             if (client.options.getTouchscreen().getValue() || hovered) {
-                this.renderIfHovered(matrices, x, y, mouseX, mouseY);
+                this.renderIfHovered(context, x, y, mouseX, mouseY);
             }
         }
 
-        protected void renderIfHovered(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+        protected void renderIfHovered(DrawContext context, int x, int y, int mouseX, int mouseY) {
         }
 
         @Override
@@ -221,17 +218,14 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         @Override
-        protected void renderIfHovered(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
+        protected void renderIfHovered(DrawContext context, int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
 
-            SpeedrunModConfigListWidget.this.client.getTextureManager().bindTexture(EDIT_MOD_CONFIG);
-            DrawableHelper.fill(matrices, x, y, x + 32, y + 32, -1601138544);
-            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-            int textureOffset = mouseX - x < 32 ? 32 : 0;
-            DrawableHelper.drawTexture(matrices, x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
+            context.fill(x, y, x + 32, y + 32, -1601138544);
+            context.drawTexture(EDIT_MOD_CONFIG, x, y, available ? 0.0f : 96.0f, mouseX - x < 32 ? 32 : 0, 32, 32, 256, 256);
 
             if (!available && this.isMouseOver(mouseX, mouseY)) {
-                SpeedrunModConfigListWidget.this.parent.renderOrderedTooltip(matrices, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
+                context.drawOrderedTooltip(SpeedrunModConfigListWidget.this.client.textRenderer, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
             }
         }
 
@@ -273,8 +267,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private final Text text = TextUtil.translatable("speedrunapi.gui.config.noConfigs");
 
         @Override
-        public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            context.drawCenteredTextWithShadow(SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }
