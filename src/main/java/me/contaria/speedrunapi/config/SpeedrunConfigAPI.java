@@ -3,7 +3,6 @@ package me.contaria.speedrunapi.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
@@ -47,14 +46,9 @@ public final class SpeedrunConfigAPI {
     @SuppressWarnings("unchecked")
     @ApiStatus.Internal
     public static void initialize() {
-        TreeSet<SpeedrunConfigContainer.Uninitialized<?>> test = new TreeSet<>();
-        Random random = new Random();
-
         List<ModContainer> mods = new ArrayList<>(FabricLoader.getInstance().getAllMods());
         mods.sort(Comparator.comparing(modContainer -> modContainer.getMetadata().getId()));
         for (ModContainer mod : mods) {
-            test.add(new SpeedrunConfigContainer.Uninitialized<>(null, mod, random.nextInt(2000)));
-
             ModMetadata metadata = mod.getMetadata();
             String modID = metadata.getId();
             try {
@@ -112,10 +106,6 @@ public final class SpeedrunConfigAPI {
             } catch (ReflectiveOperationException e) {
                 throw new InitializeConfigException("Failed to initialize config for " + modID + ".", e);
             }
-        }
-
-        for (SpeedrunConfigContainer.Uninitialized<?> t : test) {
-            SpeedrunAPI.LOGGER.warn("id = {} ({})", t.mod.getMetadata().getId(), t.priority);
         }
     }
 
