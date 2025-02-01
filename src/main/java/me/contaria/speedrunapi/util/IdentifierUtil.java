@@ -5,15 +5,15 @@ import net.minecraft.util.Identifier;
 public final class IdentifierUtil {
 
     public static Identifier of(String namespace, String path) {
-        return new Identifier(namespace, path);
+        return Identifier.of(namespace, path);
     }
 
     public static Identifier ofVanilla(String path) {
-        return new Identifier("minecraft", path);
+        return Identifier.ofVanilla(path);
     }
 
     public static Identifier parse(String id) {
         int index = id.indexOf(':');
-        return new Identifier(id.substring(0, index), id.substring(index + 1));
+        return Identifier.of(id.substring(0, index), id.substring(index + 1));
     }
 }
