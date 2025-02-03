@@ -1,5 +1,6 @@
 package me.contaria.speedrunapi.config.toast;
 
+import me.contaria.speedrunapi.util.IdentifierUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -7,10 +8,13 @@ import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.List;
 
 public class SpeedrunConfigErrorToast implements Toast {
+    private static final Identifier TEXTURE = IdentifierUtil.ofVanilla("toast/advancement");
+
     private final Text title;
     private final Text description;
     private Screen firstScreen;
@@ -36,15 +40,15 @@ public class SpeedrunConfigErrorToast implements Toast {
 
         List<OrderedText> description = manager.getClient().textRenderer.wrapLines(this.description, this.getWidth() - 7);
         if (description.size() < 2) {
-            context.drawTexture(Toast.TEXTURE, 0, 0, 0, 0, this.getWidth(), this.getHeight());
+            context.drawGuiTexture(TEXTURE, 0, 0, this.getWidth(), this.getHeight());
         } else {
-            context.drawTexture(Toast.TEXTURE, 0, 0, 0, 0, this.getWidth(), 11);
+            context.drawGuiTexture(TEXTURE, 160, 32, 0, 0, 0, 0, this.getWidth(), 11);
             int y = 8;
             for (int i = 0; i < description.size(); i++) {
-                context.drawTexture(Toast.TEXTURE, 0, y, 0, 11, this.getWidth(), 10);
+                context.drawGuiTexture(TEXTURE, 160, 32, 0, 11, 0, y, this.getWidth(), 10);
                 y += 10;
             }
-            context.drawTexture(Toast.TEXTURE, 0, y, 0, 21, this.getWidth(), 11);
+            context.drawGuiTexture(TEXTURE, 160, 32, 0, 21, 0, y, this.getWidth(), 11);
         }
 
         context.drawText(manager.getClient().textRenderer, this.title, 7, 7, 0xFFFF00 | 0xFF000000, true);
