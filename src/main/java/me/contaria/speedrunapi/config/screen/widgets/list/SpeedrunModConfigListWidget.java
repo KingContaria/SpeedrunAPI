@@ -224,8 +224,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         protected void renderIfHovered(MatrixStack matrices, int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
 
-            SpeedrunModConfigListWidget.this.client.getTextureManager().bindTexture(EDIT_MOD_CONFIG);
             DrawableHelper.fill(matrices, x, y, x + 32, y + 32, -1601138544);
+
+            RenderSystem.setShaderTexture(0, EDIT_MOD_CONFIG);
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             int textureOffset = mouseX - x < 32 ? 32 : 0;
             DrawableHelper.drawTexture(matrices, x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
