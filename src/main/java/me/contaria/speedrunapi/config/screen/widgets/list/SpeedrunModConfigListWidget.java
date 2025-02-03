@@ -39,7 +39,10 @@ import java.util.Map;
 @ApiStatus.Internal
 public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
     private static final Identifier NO_MOD_ICON = IdentifierUtil.ofVanilla("textures/misc/unknown_server.png");
-    private static final Identifier EDIT_MOD_CONFIG = IdentifierUtil.ofVanilla("textures/gui/world_selection.png");
+    private static final Identifier ERROR_HIGHLIGHTED_TEXTURE = IdentifierUtil.ofVanilla("world_list/error_highlighted");
+    private static final Identifier ERROR_TEXTURE = IdentifierUtil.ofVanilla("world_list/error");
+    private static final Identifier JOIN_HIGHLIGHTED_TEXTURE = IdentifierUtil.ofVanilla("world_list/join_highlighted");
+    private static final Identifier JOIN_TEXTURE = IdentifierUtil.ofVanilla("world_list/join");
 
     private final SpeedrunModConfigsScreen parent;
 
@@ -214,9 +217,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         protected void renderIfHovered(DrawContext context, int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
+            boolean highlight = mouseX - x < 32;
+
+            Identifier id = available ? (highlight ? JOIN_HIGHLIGHTED_TEXTURE : JOIN_TEXTURE) : (highlight ? ERROR_HIGHLIGHTED_TEXTURE : ERROR_TEXTURE);
 
             context.fill(x, y, x + 32, y + 32, -1601138544);
-            context.drawTexture(EDIT_MOD_CONFIG, x, y, available ? 0.0f : 96.0f, mouseX - x < 32 ? 32 : 0, 32, 32, 256, 256);
+            context.drawGuiTexture(id, x, y, 32, 32);
 
             if (!available && this.isMouseOver(mouseX, mouseY)) {
                 context.drawOrderedTooltip(SpeedrunModConfigListWidget.this.client.textRenderer, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
