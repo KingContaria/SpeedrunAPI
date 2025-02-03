@@ -26,7 +26,9 @@ dependencies {
 	include(api(annotationProcessor "com.github.bawnorton.mixinsquared:mixinsquared-fabric:${project.mixinsquared}"))
 
 	// Fabric API
-	include(modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_api))
+	include(modApi fabricApi.module("fabric-key-binding-api-v1", project.fabric_api)) {
+		transitive = false
+	}
 }
 
 processResources {
