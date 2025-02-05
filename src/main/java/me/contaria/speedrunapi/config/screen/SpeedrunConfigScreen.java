@@ -40,7 +40,7 @@ public class SpeedrunConfigScreen extends Screen {
         this.searchField.setVisible(this.searchFieldOpen);
         if (this.searchFieldOpen) {
             this.setFocused(this.searchField);
-            //this.searchField.setSelected(true);
+            this.searchField.setFocusUnlocked(true);
             this.list.setY(50);
         } else {
             this.searchField.setText("");
