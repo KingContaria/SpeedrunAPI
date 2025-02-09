@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
-    @Inject(method = "<init>", at = @At("TAIL"))
+    @Inject(method = "init", at = @At("TAIL"))
     private void onPostLaunchEntrypoint(CallbackInfo ci) {
         SpeedrunConfigAPI.onPostLaunch();
     }
