@@ -22,7 +22,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
 
     @Override
     public @NotNull String getDefaultText() {
-        return I18n.translate(this.get() ? "gui.on" : "gui.off");
+        return I18n.translate(this.get() ? "options.on" : "options.off");
     }
 
     @Override
