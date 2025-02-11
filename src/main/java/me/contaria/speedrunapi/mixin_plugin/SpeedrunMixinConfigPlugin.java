@@ -19,10 +19,12 @@ import java.util.Set;
  */
 public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
     protected String mixinPackage;
+    protected String compatPackage;
 
     @Override
     public void onLoad(String mixinPackage) {
         this.mixinPackage = mixinPackage;
+        this.compatPackage = mixinPackage + ".compat.";
     }
 
     @Override
@@ -32,27 +34,33 @@ public class SpeedrunMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (!this.shouldApplyCompatMixin(mixinClassName)) {
+            return false;
+        }
         // ensure we do not force apply any mixin when the target class isn't present, otherwise causing a crash
         if (SpeedrunMixinConfigPlugin.class.getClassLoader().getResource(targetClassName.replace('.', '/') + ".class") == null) {
             SpeedrunAPI.LOGGER.warn("target class {} for mixin {} not found", targetClassName, mixinClassName);
             return false;
         }
-        String compatPackage = this.mixinPackage + ".compat.";
-        if (mixinClassName.startsWith(compatPackage)) {
-            String modid = mixinClassName.substring(compatPackage.length()).split("\\.", 2)[0];
-            for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-                if (mod.getMetadata().getId().replace('-', '_').equals(modid)) {
+        return true;
+    }
+
+    private boolean shouldApplyCompatMixin(String mixinClassName) {
+        if (!mixinClassName.startsWith(this.compatPackage)) {
+            return true;
+        }
+        String modid = mixinClassName.substring(this.compatPackage.length()).split("\\.", 2)[0];
+        for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
+            if (mod.getMetadata().getId().replace('-', '_').equals(modid)) {
+                return true;
+            }
+            for (String provided : mod.getMetadata().getProvides()) {
+                if (provided.replace('-', '_').equals(modid)) {
                     return true;
                 }
-                for (String provided : mod.getMetadata().getProvides()) {
-                    if (provided.replace('-', '_').equals(modid)) {
-                        return true;
-                    }
-                }
             }
-            return false;
         }
-        return true;
+        return false;
     }
 
     @Override
