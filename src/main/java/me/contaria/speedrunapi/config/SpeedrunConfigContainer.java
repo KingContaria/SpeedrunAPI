@@ -56,7 +56,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
         try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
             JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
-            int dataVersion = jsonObject.has("dataVersion") ? jsonObject.remove("dataVersion").getAsInt() : 0;
+            int dataVersion = jsonObject.has(".dataVersion") ? jsonObject.remove(".dataVersion").getAsInt() : 0;
 
             this.config.onLoad(jsonObject, dataVersion);
             this.fromJson(jsonObject);
