@@ -42,9 +42,11 @@ public class SpeedrunConfigScreen extends Screen {
             this.setFocused(this.searchField);
             this.searchField.setFocusUnlocked(true);
             this.list.setY(50);
+            this.list.setHeight(this.height - 57 - 25);
         } else {
             this.searchField.setText("");
             this.list.setY(25);
+            this.list.setHeight(this.height - 57);
         }
     }
 
@@ -57,6 +59,7 @@ public class SpeedrunConfigScreen extends Screen {
         this.list = new SpeedrunOptionListWidget(this, this.config, this.client, this.width, this.height - 57, 25, this.searchField.getText());
         if (this.searchFieldOpen) {
             this.list.setY(50);
+            this.list.setHeight(this.height - 57 - 25);
         }
         this.addDrawableChild(this.list);
         this.addDrawableChild(this.searchField);
