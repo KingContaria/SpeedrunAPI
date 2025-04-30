@@ -13,9 +13,7 @@ import me.contaria.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import net.fabricmc.loader.api.ModContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -56,7 +54,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
         this.config.preLoad();
 
-        try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new FileReader(configFile))) {
+        try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
             JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
             int dataVersion = jsonObject.has("dataVersion") ? jsonObject.remove("dataVersion").getAsInt() : 0;
 
