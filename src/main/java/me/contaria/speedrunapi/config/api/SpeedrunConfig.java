@@ -1,6 +1,8 @@
 package me.contaria.speedrunapi.config.api;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import net.minecraft.client.gui.screen.Screen;
@@ -151,5 +153,37 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      */
     default boolean shouldParseStaticFields() {
         return false;
+    }
+
+    /**
+     * Handles any exceptions thrown during config loading, including those thrown in {@link SpeedrunConfig#handleLoadException(Exception, SpeedrunOption, JsonElement)}.
+     * <p>
+     * This includes {@link SpeedrunConfig#onLoad} but excludes {@link SpeedrunConfig#preLoad} and {@link SpeedrunConfig#finishLoading}.
+     */
+    default void handleLoadException(Exception e) throws Exception {
+        SpeedrunAPI.LOGGER.error("Failed to load {} config!", this.modID(), e);
+    }
+
+    /**
+     * Handles any exceptions thrown by {@link SpeedrunOption#fromJson} during config loading.
+     */
+    default void handleLoadException(Exception e, SpeedrunOption<?> option, JsonElement jsonElement) throws Exception {
+        throw e;
+    }
+
+    /**
+     * Handles any exceptions thrown during config saving, including those thrown in {@link SpeedrunConfig#handleSaveException(Exception, SpeedrunOption)}.
+     * <p>
+     * This includes {@link SpeedrunConfig#onSave} but excludes {@link SpeedrunConfig#preSave} and {@link SpeedrunConfig#finishSaving}.
+     */
+    default void handleSaveException(Exception e) throws Exception {
+        SpeedrunAPI.LOGGER.error("Failed to save {} config!", this.modID(), e);
+    }
+
+    /**
+     * Handles any exceptions thrown by {@link SpeedrunOption#toJson} during config saving.
+     */
+    default void handleSaveException(Exception e, SpeedrunOption<?> option) throws Exception {
+        throw e;
     }
 }
