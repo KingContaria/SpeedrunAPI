@@ -1,9 +1,6 @@
 package me.contaria.speedrunapi.config;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
@@ -15,6 +12,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.throwables.MixinException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -55,17 +53,25 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             return;
         }
 
-        this.config.preLoad();
+        try {
+            this.config.preLoad();
 
-        try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
-            JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
-            SpeedrunConfigParsedMetadata metadata = this.removeMetadata(jsonObject);
+            try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
+                JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
+                SpeedrunConfigParsedMetadata metadata = this.removeMetadata(jsonObject);
 
-            this.config.onLoad(jsonObject, metadata);
-            this.fromJson(jsonObject);
+                this.config.onLoad(jsonObject, metadata);
+                this.fromJson(jsonObject);
+            } catch (MixinException e) {
+                throw e;
+            } catch (Exception e) {
+                this.config.handleLoadException(e);
+            }
+
+            this.config.finishLoading();
+        } catch (Exception e) {
+            throw new SpeedrunConfigAPIException("Failed to load " + this.config.modID() + " config!", e);
         }
-
-        this.config.finishLoading();
     }
 
     private SpeedrunConfigParsedMetadata removeMetadata(JsonObject jsonObject) {
@@ -113,15 +119,23 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public void save() throws IOException {
         File configFile = this.config.getConfigFile();
 
-        this.config.preSave();
+        try {
+            this.config.preSave();
 
-        JsonObject jsonObject = this.toJson();
-        this.config.onSave(jsonObject);
-        jsonObject = this.addMetadata(jsonObject);
+            try {
+                JsonObject jsonObject = this.toJson();
+                this.config.onSave(jsonObject);
+                jsonObject = this.addMetadata(jsonObject);
 
-        Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(jsonObject).getBytes(StandardCharsets.UTF_8));
+                Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(jsonObject).getBytes(StandardCharsets.UTF_8));
+            } catch (Exception e) {
+                this.config.handleSaveException(e);
+            }
 
-        this.config.finishSaving();
+            this.config.finishSaving();
+        } catch (Exception e) {
+            throw new SpeedrunConfigAPIException("Failed to save " + this.config.modID() + " config!", e);
+        }
     }
 
     private JsonObject addMetadata(JsonObject jsonObject) {
@@ -150,12 +164,21 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public void fromJson(JsonObject jsonObject) {
         for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
             SpeedrunOption<?> option = this.options.get(entry.getKey());
-            if (option != null) {
+            if (option == null) {
+                continue;
+            }
+
+            JsonElement jsonElement = entry.getValue();
+            try {
                 try {
-                    option.fromJson(entry.getValue());
-                } catch (ClassCastException | IllegalStateException e) {
-                    SpeedrunAPI.LOGGER.warn("Failed to load the value for {} in {} config.", option.getID(), this.config.modID());
+                    option.fromJson(jsonElement);
+                } catch (MixinException e) {
+                    throw e;
+                } catch (Exception e) {
+                    this.config.handleLoadException(e, option, jsonElement);
                 }
+            } catch (Exception e) {
+                throw new SpeedrunConfigAPIException("Failed to load the value for " + option.getID() + " in " + this.config.modID() + " config: " + jsonElement, e);
             }
         }
     }
@@ -166,9 +189,22 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         for (Map.Entry<String, SpeedrunOption<?>> entry : this.options.entrySet()) {
-            JsonElement value = entry.getValue().toJson();
-            if (value != null) {
-                jsonObject.add(entry.getKey(), value);
+            SpeedrunOption<?> option = entry.getValue();
+
+            JsonElement jsonElement;
+            try {
+                try {
+                    jsonElement = option.toJson();
+                } catch (Exception e) {
+                    this.config.handleSaveException(e, option);
+                    continue;
+                }
+            } catch (Exception e) {
+                throw new SpeedrunConfigAPIException("Failed to save the value for " + option.getID() + " in " + this.config.modID() + " config: " + option.get(), e);
+            }
+
+            if (jsonElement != null) {
+                jsonObject.add(entry.getKey(), jsonElement);
             }
         }
         return jsonObject;
