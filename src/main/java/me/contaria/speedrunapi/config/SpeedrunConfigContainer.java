@@ -7,10 +7,13 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
+import me.contaria.speedrunapi.config.api.SpeedrunConfigParsedMetadata;
 import me.contaria.speedrunapi.config.api.SpeedrunOption;
 import me.contaria.speedrunapi.config.exceptions.NoSuchConfigException;
 import me.contaria.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -56,13 +59,55 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
 
         try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
             JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
-            int dataVersion = jsonObject.has(".dataVersion") ? jsonObject.remove(".dataVersion").getAsInt() : 0;
+            SpeedrunConfigParsedMetadata metadata = this.removeMetadata(jsonObject);
 
-            this.config.onLoad(jsonObject, dataVersion);
+            this.config.onLoad(jsonObject, metadata);
             this.fromJson(jsonObject);
         }
 
         this.config.finishLoading();
+    }
+
+    private SpeedrunConfigParsedMetadata removeMetadata(JsonObject jsonObject) {
+        return new SpeedrunConfigParsedMetadataImpl(
+                this.removeAndGetVersionFromJson(jsonObject, ".apiVersion"),
+                this.removeAndGetVersionFromJson(jsonObject, ".modVersion"),
+                this.removeAndGetIntFromJson(jsonObject, ".dataVersion")
+        );
+    }
+
+    private Version removeAndGetVersionFromJson(JsonObject jsonObject, String name) {
+        if (!jsonObject.has(name)) {
+            return null;
+        }
+        JsonElement jsonElement = jsonObject.remove(name);
+        if (!jsonElement.isJsonPrimitive()) {
+            return null;
+        }
+        JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
+        if (!jsonPrimitive.isString()) {
+            return null;
+        }
+        try {
+            return Version.parse(jsonElement.getAsString());
+        } catch (VersionParsingException e) {
+            return null;
+        }
+    }
+
+    private int removeAndGetIntFromJson(JsonObject jsonObject, String name) {
+        if (!jsonObject.has(name)) {
+            return 0;
+        }
+        JsonElement jsonElement = jsonObject.remove(name);
+        if (!jsonElement.isJsonPrimitive()) {
+            return 0;
+        }
+        JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
+        if (!jsonPrimitive.isNumber()) {
+            return 0;
+        }
+        return jsonElement.getAsInt();
     }
 
     public void save() throws IOException {
@@ -83,6 +128,8 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         JsonObject result = new JsonObject();
 
         // add internal SpeedrunAPI metadata
+        result.add(".apiVersion", new JsonPrimitive(SpeedrunAPI.MOD_CONTAINER.getMetadata().getVersion().getFriendlyString()));
+        result.add(".modVersion", new JsonPrimitive(this.mod.getMetadata().getVersion().getFriendlyString()));
         result.add(".dataVersion", new JsonPrimitive(this.dataVersion));
 
         // check and re-add entries from original jsonObject
