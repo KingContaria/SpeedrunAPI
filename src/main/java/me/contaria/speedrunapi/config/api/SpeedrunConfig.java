@@ -56,9 +56,9 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      * This method may be used to convert older versions of the config file or.
      *
      * @param jsonObject  - The config JSON that is about to be loaded.
-     * @param dataVersion - The data version this JSON was saved as.
+     * @param metadata - The metadata this JSON was saved with.
      */
-    default void onLoad(JsonObject jsonObject, int dataVersion) {
+    default void onLoad(JsonObject jsonObject, SpeedrunConfigParsedMetadata metadata) {
     }
 
     /**
