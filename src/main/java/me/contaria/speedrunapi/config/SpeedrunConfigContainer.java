@@ -128,11 +128,15 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
                 jsonObject = this.addMetadata(jsonObject);
 
                 Files.write(configFile.toPath(), SpeedrunConfigAPI.GSON.toJson(jsonObject).getBytes(StandardCharsets.UTF_8));
+            } catch (MixinException e) {
+                throw e;
             } catch (Exception e) {
                 this.config.handleSaveException(e);
             }
 
             this.config.finishSaving();
+        } catch (MixinException e) {
+            throw e;
         } catch (Exception e) {
             throw new SpeedrunConfigAPIException("Failed to save " + this.config.modID() + " config!", e);
         }
@@ -174,6 +178,8 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
                 } catch (Exception e) {
                     this.config.handleLoadException(e, option, jsonElement);
                 }
+            } catch (MixinException e) {
+                throw e;
             } catch (Exception e) {
                 throw new SpeedrunConfigAPIException("Failed to load the value for " + option.getID() + " in " + this.config.modID() + " config: " + jsonElement, e);
             }
@@ -189,6 +195,8 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
             try {
                 try {
                     jsonElement = option.toJson();
+                } catch (MixinException e) {
+                    throw e;
                 } catch (Exception e) {
                     this.config.handleSaveException(e, option);
                     continue;
