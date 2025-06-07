@@ -2,7 +2,6 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import net.minecraft.client.gui.screen.Screen;
@@ -161,7 +160,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      * This includes {@link SpeedrunConfig#onLoad} but excludes {@link SpeedrunConfig#preLoad} and {@link SpeedrunConfig#finishLoading}.
      */
     default void handleLoadException(Exception e) throws Exception {
-        SpeedrunAPI.LOGGER.error("Failed to load {} config!", this.modID(), e);
+        SpeedrunConfigAPI.handleLoadException(this.modID(), e);
     }
 
     /**
@@ -177,7 +176,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      * This includes {@link SpeedrunConfig#onSave} but excludes {@link SpeedrunConfig#preSave} and {@link SpeedrunConfig#finishSaving}.
      */
     default void handleSaveException(Exception e) throws Exception {
-        SpeedrunAPI.LOGGER.error("Failed to save {} config!", this.modID(), e);
+        SpeedrunConfigAPI.handleSaveException(this.modID(), e);
     }
 
     /**
