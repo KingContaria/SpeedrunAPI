@@ -3,5 +3,8 @@
   "speedrunapi.gui.config.title": "Speedrun API - Mod Configs",
   "speedrunapi.gui.config.noConfigs": "§7There is no mods to configure here :(",
   "speedrunapi.gui.config.unavailable": "This Config is unavailable right now!",
-  "speedrunapi.gui.config.search": "Search for options"
+  "speedrunapi.gui.config.search": "Search for options",
+  "speedrunapi.gui.toast.error.title": "SpeedrunAPI Error!",
+  "speedrunapi.gui.toast.error.description.load": "Encountered a %s while loading %s config, check the log for more information.",
+  "speedrunapi.gui.toast.error.description.save": "Encountered a %s while saving %s config, check the log for more information."
 }
