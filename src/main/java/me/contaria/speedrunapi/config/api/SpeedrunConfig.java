@@ -90,6 +90,15 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
     }
 
     /**
+     * Gets called when the config screen closes normally, e.g. when pressing the done button or Esc, but not after an Atum hotkey reset.
+     *
+     * @param current - The current open config screen.
+     * @param parent  - The parent screen of the open config screen.
+     */
+    default void onConfigScreenClose(Screen current, Screen parent) {
+    }
+
+    /**
      * Mod Authors can override this method to change the config file location, for example to add global config files.
      *
      * @return Returns the file the config should be saved to.
