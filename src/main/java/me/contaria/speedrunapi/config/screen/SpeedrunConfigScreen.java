@@ -97,6 +97,7 @@ public class SpeedrunConfigScreen extends Screen {
     public void onClose() {
         assert this.client != null;
         this.client.openScreen(this.parent);
+        this.config.getConfig().onConfigScreenClose(this, this.parent);
     }
 
     @Override
