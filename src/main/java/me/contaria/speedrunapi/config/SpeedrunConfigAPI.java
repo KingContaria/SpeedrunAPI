@@ -26,6 +26,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -268,6 +269,17 @@ public final class SpeedrunConfigAPI {
         } catch (NoSuchConfigException e) {
             return false;
         }
+    }
+
+    /**
+     * Gets the config container of the given mod.
+     *
+     * @param modID - The mod ID of the mod owning the config.
+     * @return Returns the {@link SpeedrunConfigContainer} of the mods config.
+     * @throws NoSuchConfigException - If the given mod does not exist or does not provide a {@link SpeedrunConfig}.
+     */
+    public static @NotNull SpeedrunConfigContainer<?> getConfigContainer(String modID) throws NoSuchConfigException {
+        return getConfig(modID);
     }
 
     @ApiStatus.Internal
