@@ -2,7 +2,9 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
+import me.contaria.speedrunapi.config.api.gui.SpeedrunWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +47,7 @@ public interface SpeedrunOption<T> {
      */
     default @Nullable String getDescription() {
         String description = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".description";
-        if (I18n.hasTranslation(description)) {
+        if (SpeedrunConfigAPI.hasTranslation(description)) {
             return I18n.translate(description);
         }
         return null;
@@ -58,10 +60,10 @@ public interface SpeedrunOption<T> {
     default @NotNull String getText() {
         String value = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value";
         String valueSpecified = value + "." + this.get();
-        if (I18n.hasTranslation(valueSpecified)) {
+        if (SpeedrunConfigAPI.hasTranslation(valueSpecified)) {
             return I18n.translate(valueSpecified);
         }
-        if (I18n.hasTranslation(value)) {
+        if (SpeedrunConfigAPI.hasTranslation(value)) {
             return I18n.translate(value, this.get());
         }
         return this.getDefaultText();
@@ -130,13 +132,13 @@ public interface SpeedrunOption<T> {
     boolean hasWidget();
 
     /**
-     * Creates an {@link AbstractButtonWidget} to configure this option on the mods config screen.
+     * Creates either a {@link ButtonWidget} or a {@link SpeedrunWidget} to configure this option on the mods config screen.
      * <p>
      * X and y will be set by the config screen and should be left as 0, 0.
      * Width and height should be set to 150, 20 by default to fit the option list widget, unless you know what you're doing.
      *
-     * @return Returns a new {@link AbstractButtonWidget} to be added to the config screen.
+     * @return Returns a new {@link ButtonWidget} to be added to the config screen.
      */
     @NotNull
-    AbstractButtonWidget createWidget();
+    Object createWidget();
 }

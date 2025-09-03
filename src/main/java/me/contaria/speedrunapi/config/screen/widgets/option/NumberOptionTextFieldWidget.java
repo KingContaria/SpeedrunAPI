@@ -1,32 +1,36 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
+import me.contaria.speedrunapi.config.api.gui.CallbackButtonWidget;
+import me.contaria.speedrunapi.config.api.gui.SpeedrunWidget;
 import me.contaria.speedrunapi.config.option.NumberOption;
-import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
-import me.contaria.speedrunapi.util.IdentifierUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.PagedEntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {
-    private static final Identifier APPLY_TEXTURE = IdentifierUtil.ofVanilla("textures/gui/container/beacon.png");
-
+public class NumberOptionTextFieldWidget<T extends NumberOption<?>> implements SpeedrunWidget {
     private final NumberOption<?> option;
+    private final TextFieldWidget textWidget;
     private final ButtonWidget applyButton;
 
-    public NumberOptionTextFieldWidget(T option, int x, int y) {
-        super(MinecraftClient.getInstance().textRenderer, x, y, 125, 20, "");
+    private int x;
+    private int y;
+
+    public NumberOptionTextFieldWidget(T option) {
+        super();
         this.option = option;
-        this.applyButton = new IconButtonWidget(APPLY_TEXTURE, 90, 222, 256, 256, x + 130, y, button -> this.apply());
+        this.textWidget = new TextFieldWidget(-1, MinecraftClient.getInstance().textRenderer, 0, 0, 125, 20);
+        this.applyButton = new CallbackButtonWidget(20, 20, Formatting.BOLD + "✓", button -> this.apply());
         this.updateText();
-        this.setChangedListener(string -> this.applyButton.active = !this.option.get().toString().equals(string));
+        this.textWidget.setListener(new Listener(option));
     }
 
     private void apply() {
         try {
-            this.option.setFromString(this.getText());
+            this.option.setFromString(this.textWidget.getText());
             this.updateText();
         } catch (NumberFormatException e) {
             this.updateText();
@@ -34,40 +38,84 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Text
     }
 
     private void updateText() {
-        this.setText(this.option.get().toString());
+        this.textWidget.setText(this.option.get().toString());
         this.applyButton.active = false;
     }
 
     @Override
-    public int getWidth() {
-        return super.getWidth() + 5 + this.applyButton.getWidth();
-    }
+    public void render(int mouseX, int mouseY) {
+        this.textWidget.x = this.x;
+        this.textWidget.y = this.y;
+        this.textWidget.render();
 
-    @Override
-    public void setWidth(int value) {
-        super.setWidth(value - 5 - this.applyButton.getWidth());
-    }
-
-    @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        super.render(mouseX, mouseY, delta);
         this.applyButton.x = this.x + 130;
         this.applyButton.y = this.y;
-        this.applyButton.render(mouseX, mouseY, delta);
+        this.applyButton.render(MinecraftClient.getInstance(), mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX, mouseY, button) || this.applyButton.mouseClicked(mouseX, mouseY, button);
+    public int getX() {
+        return this.x;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return super.mouseReleased(mouseX, mouseY, button) || this.applyButton.mouseReleased(mouseX, mouseY, button);
+    public void setX(int x) {
+        this.x = x;
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) || this.applyButton.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    public int getY() {
+        return this.y;
+    }
+
+    @Override
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    @Override
+    public int getWidth() {
+        return 150;
+    }
+
+    @Override
+    public int getHeight() {
+        return 20;
+    }
+
+    @Override
+    public boolean keyPressed(char id, int code) {
+        return this.textWidget.keyPressed(id, code);
+    }
+
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int button) {
+        if (this.applyButton.isMouseOver(MinecraftClient.getInstance(), mouseX, mouseY)) {
+            this.apply();
+            return true;
+        }
+        this.textWidget.mouseClicked(mouseX, mouseY, button);
+        return true;
+    }
+
+    private class Listener implements PagedEntryListWidget.Listener {
+        private final NumberOption<?> option;
+
+        private Listener(NumberOption<?> option) {
+            this.option = option;
+        }
+
+        @Override
+        public void setBooleanValue(int id, boolean value) {
+        }
+
+        @Override
+        public void setFloatValue(int id, float value) {
+        }
+
+        @Override
+        public void setStringValue(int id, String text) {
+            NumberOptionTextFieldWidget.this.applyButton.active = !this.option.get().toString().equals(text);
+        }
     }
 }

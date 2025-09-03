@@ -1,6 +1,9 @@
 package me.contaria.speedrunapi.config;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
@@ -14,7 +17,9 @@ import net.fabricmc.loader.api.VersionParsingException;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.throwables.MixinException;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Collection;
@@ -56,7 +61,7 @@ public final class SpeedrunConfigContainer<T extends SpeedrunConfig> {
         try {
             this.config.preLoad();
 
-            try (JsonReader reader = SpeedrunConfigAPI.GSON.newJsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
+            try (JsonReader reader = new JsonReader(new InputStreamReader(Files.newInputStream(configFile.toPath()), StandardCharsets.UTF_8))) {
                 JsonObject jsonObject = SpeedrunConfigAPI.GSON.fromJson(reader, JsonObject.class);
                 SpeedrunConfigParsedMetadata metadata = this.removeMetadata(jsonObject);
 

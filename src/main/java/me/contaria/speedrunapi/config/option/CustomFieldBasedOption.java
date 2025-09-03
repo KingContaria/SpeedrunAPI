@@ -5,7 +5,6 @@ import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +77,7 @@ public class CustomFieldBasedOption<T> extends FieldBasedOption<T> {
     }
 
     @Override
-    public @NotNull AbstractButtonWidget createWidget() {
+    public @NotNull Object createWidget() {
         if (this.createWidgetFunction == null) {
             throw new UnsupportedOperationException("No widget supplier given for " + this.getID() + " in " + this.getModID() + "config.");
         }

@@ -1,16 +1,17 @@
 package me.contaria.speedrunapi.mixin.resourceloader;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.resource.DefaultClientResourcePack;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.DefaultResourcePack;
 import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.IOException;
@@ -21,12 +22,18 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-@Mixin(DefaultClientResourcePack.class)
-public abstract class DefaultClientResourcePackMixin {
+@Mixin(DefaultResourcePack.class)
+public abstract class DefaultResourcePackMixin {
+    @Shadow
+    @Final
+    public static Set<String> NAMESPACES;
+
     @Unique
     private static final boolean HAS_FABRIC_RESOURCE_LOADER = FabricLoader.getInstance().isModLoaded("fabric-resource-loader-v0");
     @Unique
     private static final Map<String, Set<ModContainer>> NAMESPACES_TO_MODS = new HashMap<>();
+    @Unique
+    private static final Set<String> NAMESPACES_INCLUDING_MODS = new HashSet<>();
 
     static {
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
@@ -49,34 +56,22 @@ public abstract class DefaultClientResourcePackMixin {
                 }
             });
         }
+
+        NAMESPACES_INCLUDING_MODS.addAll(NAMESPACES);
+        NAMESPACES_INCLUDING_MODS.addAll(NAMESPACES_TO_MODS.keySet());
     }
 
-    @ModifyArg(
-            method = "<init>",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/resource/DefaultResourcePack;<init>([Ljava/lang/String;)V"
-            )
+    @ModifyReturnValue(
+            method = "getNamespaces",
+            at = @At("RETURN")
     )
-    private static String[] initModsToNamespaces(String[] namespaces) {
-        if (HAS_FABRIC_RESOURCE_LOADER) {
-            SpeedrunAPI.LOGGER.info("Disabling SpeedrunAPI resource loader in favor of fabric-resource-loader.");
-            return namespaces;
-        }
-
-        Set<String> combined = new LinkedHashSet<>();
-        combined.addAll(Arrays.asList(namespaces));
-        combined.addAll(NAMESPACES_TO_MODS.keySet());
-        return combined.toArray(new String[0]);
+    private Set<String> includeModNamespaces(Set<String> namespaces) {
+        return NAMESPACES_INCLUDING_MODS;
     }
 
-    @Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
-    private void loadModResources(ResourceType type, Identifier id, CallbackInfoReturnable<InputStream> cir) {
+    @Inject(method = "open", at = @At("HEAD"), cancellable = true)
+    private void loadModResources(Identifier id, CallbackInfoReturnable<InputStream> cir) {
         if (HAS_FABRIC_RESOURCE_LOADER) {
-            return;
-        }
-        // make sure only client resources are loaded
-        if (type != ResourceType.CLIENT_RESOURCES) {
             return;
         }
         Set<ModContainer> mods = NAMESPACES_TO_MODS.get(id.getNamespace());

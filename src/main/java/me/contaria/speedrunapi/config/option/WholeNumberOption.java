@@ -4,9 +4,6 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
-import me.contaria.speedrunapi.config.screen.widgets.option.WholeNumberOptionSliderWidget;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,14 +36,6 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     }
 
     @Override
-    public @NotNull AbstractButtonWidget createWidget() {
-        if (this.useTextField) {
-            return new NumberOptionTextFieldWidget<>(this, 0, 0);
-        }
-        return new WholeNumberOptionSliderWidget<>(this, 0, 0);
-    }
-
-    @Override
     public void setFromSliderValue(double sliderValue) {
         long min = this.getMin();
         long max = this.getMax();
@@ -56,6 +45,16 @@ public abstract class WholeNumberOption<T extends Number> extends NumberOption<T
     @Override
     public void setFromString(String stringValue) throws NumberFormatException {
         this.setLong(Long.parseLong(stringValue));
+    }
+
+    @Override
+    public float getSliderMin() {
+        return (float) this.getMin();
+    }
+
+    @Override
+    public float getSliderMax() {
+        return (float) this.getMax();
     }
 
     public long getMin() {

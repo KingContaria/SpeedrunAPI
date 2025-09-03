@@ -4,9 +4,6 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.FractionalNumberOptionSliderWidget;
-import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,14 +42,6 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     }
 
     @Override
-    public @NotNull AbstractButtonWidget createWidget() {
-        if (this.useTextField) {
-            return new NumberOptionTextFieldWidget<>(this, 0, 0);
-        }
-        return new FractionalNumberOptionSliderWidget<>(this, 0, 0);
-    }
-
-    @Override
     public void setFromSliderValue(double sliderValue) {
         double min = this.getMin();
         double max = this.getMax();
@@ -62,6 +51,16 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     @Override
     public void setFromString(String stringValue) throws NumberFormatException {
         this.setDouble(Double.parseDouble(stringValue));
+    }
+
+    @Override
+    public float getSliderMin() {
+        return (float) this.getMin();
+    }
+
+    @Override
+    public float getSliderMax() {
+        return (float) this.getMax();
     }
 
     public double getMin() {

@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,7 +131,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      *
      * @return Returns an input listener for the default config screen.
      */
-    default @Nullable Predicate<InputUtil.KeyCode> createInputListener() {
+    default @Nullable Predicate<Integer> createInputListener() {
         return null;
     }
 

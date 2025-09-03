@@ -2,6 +2,7 @@ package me.contaria.speedrunapi.config.screen.widgets.list;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.contaria.speedrunapi.SpeedrunAPI;
+import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
@@ -15,36 +16,35 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @ApiStatus.Internal
-public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConfigListWidget.ModConfigListEntry> {
+public class SpeedrunModConfigListWidget extends EntryListWidget {
     private static final Identifier NO_MOD_ICON = IdentifierUtil.ofVanilla("textures/misc/unknown_server.png");
-    private static final Identifier EDIT_MOD_CONFIG = IdentifierUtil.ofVanilla("textures/gui/world_selection.png");
 
     private final SpeedrunModConfigsScreen parent;
+    private final List<SpeedrunModConfigListWidget.ModConfigListEntry> entries;
 
     public SpeedrunModConfigListWidget(Map<ModContainer, SpeedrunConfigScreenProvider> modConfigScreenProviders, SpeedrunModConfigsScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
         super(client, width, height, top, bottom, 36);
         this.parent = parent;
+        this.entries = new ArrayList<>();
 
         for (Map.Entry<ModContainer, SpeedrunConfigScreenProvider> config : modConfigScreenProviders.entrySet()) {
-            this.addEntry(new ModConfigEntry(config.getKey(), config.getValue()));
+            this.entries.add(new ModConfigEntry(config.getKey(), config.getValue()));
         }
 /*
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
@@ -52,13 +52,33 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             if (modConfigScreenProviders.containsKey(mod) || mod.getMetadata().getType().equals("builtin") || mod.getMetadata().getId().equals("fabricloader") || mod.getContainingMod().isPresent()) {
                 continue;
             }
-            this.addEntry(new ModEntry(mod));
+            this.entries.add(new ModEntry(mod));
         }
  */
 
-        if (this.children().isEmpty()) {
-            this.addEntry(new NoModConfigsEntry());
+        if (this.entries.isEmpty()) {
+            this.entries.add(new NoModConfigsEntry());
         }
+    }
+
+    @Override
+    public Entry getEntry(int index) {
+        return this.entries.get(index);
+    }
+
+    @Override
+    protected int getEntryCount() {
+        return this.entries.size();
+    }
+
+    @Override
+    protected void selectEntry(int index, boolean doubleClick, int lastMouseX, int lastMouseY) {
+        this.selectedEntry = index;
+    }
+
+    @Override
+    protected boolean isEntrySelected(int index) {
+        return this.selectedEntry == index;
     }
 
     @Override
@@ -71,12 +91,23 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         return super.getScrollbarPosition() + 20;
     }
 
-    @Override
-    public ModConfigListEntry getFocused() {
-        return this.getSelected();
-    }
+    public abstract class ModConfigListEntry implements EntryListWidget.Entry {
+        @Override
+        public void mouseReleased(int index, int mouseX, int mouseY, int button, int x, int y) {
+        }
 
-    public abstract static class ModConfigListEntry extends EntryListWidget.Entry<ModConfigListEntry> {
+        @Override
+        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+            return false;
+        }
+
+        @Override
+        public void updatePosition(int index, int x, int y) {
+        }
+
+        public boolean isMouseOver(int x, int y, int mouseX, int mouseY) {
+            return mouseX > x && mouseX < x + SpeedrunModConfigListWidget.this.getRowWidth() && mouseY > y && mouseY < y + SpeedrunModConfigListWidget.this.getItemHeight();
+        }
     }
 
     public class ModEntry extends ModConfigListEntry {
@@ -118,11 +149,11 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 text.append(author);
                 shouldAddComma = true;
             }
-            return new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.minecraft.textRenderer, text.toString());
+            return new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, text.toString());
         }
 
         private List<String> createDescription(String description) {
-            List<String> list = SpeedrunModConfigListWidget.this.minecraft.textRenderer.wrapStringToWidthAsList(description, SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
+            List<String> list = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(description, SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
             if (list.size() > 2) {
                 list.set(1, list.get(1) + "...");
                 return list.subList(0, 2);
@@ -131,13 +162,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         private void registerIcon() {
-            if (SpeedrunModConfigListWidget.this.minecraft.getTextureManager().getTexture(this.icon) != null) {
+            if (SpeedrunModConfigListWidget.this.client.getTextureManager().getTexture(this.icon) != null) {
                 this.hasIcon = true;
                 return;
             }
             this.mod.getIconPath(32).flatMap(this.modContainer::findPath).ifPresent(iconPath -> {
                 try (InputStream inputStream = Files.newInputStream(iconPath)) {
-                    SpeedrunModConfigListWidget.this.minecraft.getTextureManager().registerTexture(this.icon, new NativeImageBackedTexture(NativeImage.read(inputStream)));
+                    SpeedrunModConfigListWidget.this.client.getTextureManager().loadTexture(this.icon, new NativeImageBackedTexture(ImageIO.read(inputStream)));
                     this.hasIcon = true;
                 } catch (IOException e) {
                     SpeedrunAPI.LOGGER.warn("Failed to load mod icon for {}.", this.mod.getId(), e);
@@ -146,17 +177,17 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            MinecraftClient client = SpeedrunModConfigListWidget.this.minecraft;
+        public void render(int index, int x, int y, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered) {
+            MinecraftClient client = SpeedrunModConfigListWidget.this.client;
             TextRenderer textRenderer = client.textRenderer;
 
             textRenderer.draw(this.name, x + 32 + 3, y + 1, 0xFFFFFF);
             textRenderer.draw(this.version, x + 32 + 3 + textRenderer.getStringWidth(this.name) + 4, y + 1, 0xFFFFFF);
 
             if (this.authors != null) {
-                this.authors.x = x + entryWidth - this.authors.getWidth() - 5;
+                this.authors.x = x + rowWidth - this.authors.getWidth() - 5;
                 this.authors.y = y + 1;
-                this.authors.render(mouseX, mouseY, tickDelta);
+                this.authors.render(mouseX, mouseY);
             }
 
             int yOffset = 0;
@@ -165,11 +196,11 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
                 yOffset += textRenderer.fontHeight;
             }
 
-            GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
             client.getTextureManager().bindTexture(this.hasIcon ? this.icon : NO_MOD_ICON);
             GlStateManager.enableBlend();
-            DrawableHelper.blit(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
+            DrawableHelper.drawTexture(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
             GlStateManager.disableBlend();
 
             if (client.options.touchscreen || hovered) {
@@ -178,15 +209,6 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         }
 
         protected void renderIfHovered(int x, int y, int mouseX, int mouseY) {
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            SpeedrunModConfigListWidget.this.setSelected(this);
-            if (this.authors != null) {
-                return this.authors.mouseClicked(mouseX, mouseY, button);
-            }
-            return false;
         }
     }
 
@@ -200,7 +222,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             super(mod);
             this.configScreenProvider = configScreenProvider;
             String configUnavailableKey = "speedrunapi.config." + this.mod.getId() + ".unavailable";
-            if (I18n.hasTranslation(configUnavailableKey)) {
+            if (SpeedrunConfigAPI.hasTranslation(configUnavailableKey)) {
                 this.unavailableTooltip = I18n.translate(configUnavailableKey);
             } else {
                 this.unavailableTooltip = I18n.translate("speedrunapi.gui.config.unavailable");
@@ -210,39 +232,23 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         @Override
         protected void renderIfHovered(int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
-
-            SpeedrunModConfigListWidget.this.minecraft.getTextureManager().bindTexture(EDIT_MOD_CONFIG);
-            DrawableHelper.fill(x, y, x + 32, y + 32, -1601138544);
-            GlStateManager.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-            int textureOffset = mouseX - x < 32 ? 32 : 0;
-            DrawableHelper.blit(x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
-
-            if (!available && this.isMouseOver(mouseX, mouseY)) {
-                SpeedrunModConfigListWidget.this.parent.renderTooltip(SpeedrunModConfigListWidget.this.minecraft.textRenderer.wrapStringToWidthAsList(this.unavailableTooltip, 200), mouseX, mouseY);
+            if (!available && this.isMouseOver(x, y, mouseX, mouseY)) {
+                List<String> tooltip = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200);
+                SpeedrunModConfigListWidget.this.parent.setTooltip(tooltip, mouseX, mouseY);
             }
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            SpeedrunModConfigListWidget.this.setSelected(this);
-            if (super.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-            if (mouseX - SpeedrunModConfigListWidget.this.getRowLeft() <= 32.0) {
+        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+            SpeedrunModConfigListWidget.this.selectEntry(index, false, x, y);
+            if (mouseX - SpeedrunModConfigListWidget.this.xStart <= 32.0) {
                 return this.openConfig();
             }
-            if (Util.getMeasuringTimeMs() - this.lastPress < 250L) {
+            long time = System.nanoTime() / 1000000L;
+            if (time - this.lastPress < 250L) {
                 return this.openConfig();
             }
-            this.lastPress = Util.getMeasuringTimeMs();
-            return false;
-        }
-
-        @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-                return this.openConfig();
-            }
+            this.lastPress = time;
             return false;
         }
 
@@ -250,8 +256,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             if (!this.configScreenProvider.isAvailable()) {
                 return false;
             }
-            SpeedrunModConfigListWidget.this.minecraft.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0f));
-            SpeedrunModConfigListWidget.this.minecraft.openScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
+            SpeedrunModConfigListWidget.this.client.getSoundManager().play(PositionedSoundInstance.master(new Identifier("gui.button.press"), 1.0f));
+            SpeedrunModConfigListWidget.this.client.setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
             return true;
         }
     }
@@ -260,8 +266,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         private final String text = I18n.translate("speedrunapi.gui.config.noConfigs");
 
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            SpeedrunModConfigListWidget.this.drawCenteredString(SpeedrunModConfigListWidget.this.minecraft.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public void render(int index, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered) {
+            SpeedrunModConfigListWidget.this.parent.drawCenteredString(SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

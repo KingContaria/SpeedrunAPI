@@ -2,28 +2,59 @@ package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.NumberOption;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.PagedEntryListWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
-    protected final T option;
+public class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
+    private final T option;
 
-    public NumberOptionSliderWidget(T option, int x, int y, double value) {
-        super(MinecraftClient.getInstance().options, x, y, 150, 20, value);
+    public NumberOptionSliderWidget(T option) {
+        super(new PagedEntryListWidget.Listener() {
+            @Override
+            public void setBooleanValue(int id, boolean value) {
+            }
+
+            @Override
+            public void setFloatValue(int id, float value) {
+            }
+
+            @Override
+            public void setStringValue(int id, String text) {
+            }
+        }, -1, 0, 0, "UNUSED TRANSLATION KEY", option.getSliderMin(), option.getSliderMax(), option.get().floatValue(), (id, name, value) -> option.getText());
         this.option = option;
+        this.setSliderProgress((float) ((option.get().doubleValue() - option.getSliderMin()) / (option.getSliderMax() - option.getSliderMin())));
+    }
+
+    private void updateValue() {
+        this.option.setFromSliderValue(this.getProgress());
+        this.message = this.option.getText();
+    }
+
+    @Override
+    public void setSliderValue(float value, boolean updateListener) {
+        super.setSliderValue(value, updateListener);
         this.updateValue();
     }
 
     @Override
-    protected void updateMessage() {
-        this.setMessage(this.option.getText());
+    protected void mouseDragged(MinecraftClient client, int mouseX, int mouseY) {
+        super.mouseDragged(client, mouseX, mouseY);
+        this.updateValue();
     }
 
     @Override
-    protected void applyValue() {
-        this.option.setFromSliderValue(this.value);
+    public void setSliderProgress(float progress) {
+        super.setSliderProgress(progress);
+        this.updateValue();
     }
 
-    protected abstract void updateValue();
+    @Override
+    public boolean isMouseOver(MinecraftClient client, int mouseX, int mouseY) {
+        boolean isMouseOver = super.isMouseOver(client, mouseX, mouseY);
+        this.updateValue();
+        return isMouseOver;
+    }
 }

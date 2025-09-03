@@ -8,10 +8,14 @@
   "client": [
     "entrypoint.MinecraftClientMixin",
     "gui.SettingsScreenMixin",
-    "resourceloader.DefaultClientResourcePackMixin"
+    "resourceloader.DefaultResourcePackMixin"
   ],
   "server": [
     "entrypoint.MinecraftDedicatedServerMixin"
   ],
-  "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
+  "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin",
+  "mixins": [
+    "accessor.I18nAccessor",
+    "accessor.TranslationStorageAccessor"
+  ]
 }

@@ -15,15 +15,13 @@ import me.contaria.speedrunapi.config.exceptions.NoSuchConfigException;
 import me.contaria.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import me.contaria.speedrunapi.config.option.CustomFieldBasedOption;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
-import me.contaria.speedrunapi.config.toast.SpeedrunConfigErrorToast;
+import me.contaria.speedrunapi.mixin.accessor.I18nAccessor;
+import me.contaria.speedrunapi.mixin.accessor.TranslationStorageAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.InputUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -294,26 +292,23 @@ public final class SpeedrunConfigAPI {
     }
 
     @ApiStatus.Internal
-    public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.KeyCode> inputListener, Screen parent) {
+    public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<Integer> inputListener, Screen parent) {
         return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
     }
 
     @ApiStatus.Internal
     public static void handleLoadException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to load {} config!", modID, e);
-        MinecraftClient.getInstance().getToastManager().add(new SpeedrunConfigErrorToast(
-                "speedrunapi.gui.toast.error.title",
-                "speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID
-        ));
     }
 
     @ApiStatus.Internal
     public static void handleSaveException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to save {} config!", modID, e);
-        MinecraftClient.getInstance().getToastManager().add(new SpeedrunConfigErrorToast(
-                "speedrunapi.gui.toast.error.title",
-                "speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID
-        ));
+    }
+
+    @ApiStatus.Internal
+    public static boolean hasTranslation(String key) {
+        return ((TranslationStorageAccessor) I18nAccessor.speedrunapi$getStorage()).speedrunapi$getTranslations().containsKey(key);
     }
 
     @SuppressWarnings("unused")
@@ -406,7 +401,7 @@ public final class SpeedrunConfigAPI {
 
         @FunctionalInterface
         public interface WidgetProvider<T> {
-            AbstractButtonWidget createWidget(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField);
+            Object createWidget(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField);
         }
     }
 }
