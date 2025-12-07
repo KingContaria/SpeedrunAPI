@@ -137,7 +137,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             }
             this.mod.getIconPath(32).flatMap(this.modContainer::findPath).ifPresent(iconPath -> {
                 try (InputStream inputStream = Files.newInputStream(iconPath)) {
-                    SpeedrunModConfigListWidget.this.minecraft.getTextureManager().registerTexture(this.icon, new NativeImageBackedTexture(NativeImage.read(inputStream)));
+                    // register the texture this way for 1.15.x compat, the return type of TextureManager#registerTexture changed from 1.15.1 to 1.15.2
+                    //SpeedrunModConfigListWidget.this.minecraft.getTextureManager().registerTexture(this.icon, new NativeImageBackedTexture(NativeImage.read(inputStream)));
+                    new NativeImageBackedTexture(NativeImage.read(inputStream)).registerTexture(
+                            SpeedrunModConfigListWidget.this.minecraft.getTextureManager(),
+                            null, this.icon, Runnable::run
+                    );
                     this.hasIcon = true;
                 } catch (IOException e) {
                     SpeedrunAPI.LOGGER.warn("Failed to load mod icon for {}.", this.mod.getId(), e);
