@@ -70,6 +70,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         return super.getRowWidth() + 50;
     }
 
+    // re-declare getRowLeft as public for compat,
+    // it is protected in earlier versions
+    @Override
+    public int getRowLeft() {
+        return super.getRowLeft();
+    }
+
     @Override
     protected int getScrollbarPositionX() {
         return super.getScrollbarPositionX() + 20;
