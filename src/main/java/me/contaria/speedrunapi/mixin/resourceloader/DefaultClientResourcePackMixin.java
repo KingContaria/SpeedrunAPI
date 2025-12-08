@@ -1,17 +1,17 @@
 package me.contaria.speedrunapi.mixin.resourceloader;
 
+import com.google.common.collect.ImmutableSet;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.DefaultResourcePack;
-import net.minecraft.resource.InputSupplier;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.IOException;
@@ -52,12 +52,15 @@ public abstract class DefaultClientResourcePackMixin {
         }
     }
 
-    @ModifyVariable(
+    @ModifyExpressionValue(
             method = "<init>",
-            at = @At("HEAD"),
-            argsOnly = true
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/google/common/collect/ImmutableSet;copyOf([Ljava/lang/Object;)Lcom/google/common/collect/ImmutableSet;",
+                    remap = false
+            )
     )
-    private static Set<String> initModsToNamespaces(Set<String> namespaces) {
+    private static ImmutableSet<String> initModsToNamespaces(ImmutableSet<String> namespaces) {
         if (HAS_FABRIC_RESOURCE_LOADER) {
             SpeedrunAPI.LOGGER.info("Disabling SpeedrunAPI resource loader in favor of fabric-resource-loader.");
             return namespaces;
@@ -66,11 +69,11 @@ public abstract class DefaultClientResourcePackMixin {
         Set<String> combined = new LinkedHashSet<>();
         combined.addAll(namespaces);
         combined.addAll(NAMESPACES_TO_MODS.keySet());
-        return combined;
+        return ImmutableSet.copyOf(combined);
     }
 
-    @Inject(method = "open", at = @At("HEAD"), cancellable = true)
-    private void loadModResources(ResourceType type, Identifier id, CallbackInfoReturnable<InputSupplier<InputStream>> cir) {
+    @Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
+    private void loadModResources(ResourceType type, Identifier id, CallbackInfoReturnable<InputStream> cir) {
         if (HAS_FABRIC_RESOURCE_LOADER) {
             return;
         }
@@ -85,7 +88,7 @@ public abstract class DefaultClientResourcePackMixin {
         for (ModContainer mod : mods) {
             mod.findPath("assets/" + id.getNamespace() + "/" + id.getPath()).ifPresent(path -> {
                 try {
-                    cir.setReturnValue(InputSupplier.create(path));
+                    cir.setReturnValue(path.toUri().toURL().openStream());
                 } catch (Exception e) {
                     SpeedrunAPI.LOGGER.warn("Failed to load resource '{}' from mod '{}'.", id, mod.getMetadata().getId(), e);
                 }

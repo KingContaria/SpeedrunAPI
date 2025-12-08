@@ -12,7 +12,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
@@ -123,8 +122,8 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
             this.text.y = y + 5 + y_offset;
             this.text.renderText(matrices);
 
-            this.button.setX(x + entryWidth - this.button.getWidth() - 5);
-            this.button.setY(y + 5);
+            this.button.x = x + entryWidth - this.button.getWidth() - 5;
+            this.button.y = y + 5;
             this.button.render(matrices, mouseX, mouseY, tickDelta);
 
             if (this.isMouseOver(mouseX, mouseY) && this.text.isMouseOver(mouseX, mouseY)) {

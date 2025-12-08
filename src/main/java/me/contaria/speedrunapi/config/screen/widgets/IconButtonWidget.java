@@ -5,13 +5,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
-
-import java.util.function.Supplier;
 
 @ApiStatus.Internal
 public class IconButtonWidget extends ButtonWidget {
@@ -35,7 +32,7 @@ public class IconButtonWidget extends ButtonWidget {
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, Text title, PressAction onPress) {
-        super(x, y, 20, 20, TextUtil.empty(), onPress, Supplier::get);
+        super(x, y, 20, 20, TextUtil.empty(), onPress);
         this.texture = texture;
         this.u = u;
         this.v = v;
@@ -47,11 +44,12 @@ public class IconButtonWidget extends ButtonWidget {
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.renderButton(matrices, mouseX, mouseY, delta);
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, this.texture);
-        DrawableHelper.drawTexture(matrices, this.getX() + 2, this.getY() + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
-        if (this.isMouseOver(mouseX, mouseY)) {
-            DrawableHelper.drawCenteredTextWithShadow(matrices, MinecraftClient.getInstance().textRenderer, this.title.asOrderedText(), this.getX() + this.getWidth() / 2, this.getY() - 15, 16777215);
-        }
+        DrawableHelper.drawTexture(matrices, this.x + 2, this.y + 2, this.u, this.v, 16, 16, this.textureWidth, this.textureHeight);
+    }
+
+    @Override
+    public void renderTooltip(MatrixStack matrices, int mouseX, int mouseY) {
+        DrawableHelper.drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, this.title, this.x + this.getWidth() / 2, this.y - 15, 16777215);
     }
 }

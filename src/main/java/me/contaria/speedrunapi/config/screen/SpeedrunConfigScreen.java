@@ -61,7 +61,7 @@ public class SpeedrunConfigScreen extends Screen {
         }
         this.addDrawableChild(this.list);
         this.addDrawableChild(this.searchField);
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> this.close()).dimensions(this.width / 2 - 100, this.height - 27, 200, 20).build());
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.close()));
     }
 
     @Override
