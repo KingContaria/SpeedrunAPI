@@ -153,7 +153,7 @@ public class SpeedrunOptionListWidget extends ElementListWidget<SpeedrunOptionLi
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunOptionListWidget.this.client.textRenderer, this.category.asOrderedText(), x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
 
         @Override

@@ -275,7 +275,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
         @Override
         public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+            DrawableHelper.drawCenteredTextWithShadow(matrices, SpeedrunModConfigListWidget.this.client.textRenderer, this.text.asOrderedText(), x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

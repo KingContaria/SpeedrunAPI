@@ -2,7 +2,6 @@ package me.contaria.speedrunapi.config.toast;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
@@ -40,15 +39,15 @@ public class SpeedrunConfigErrorToast implements Toast {
         RenderSystem.setShaderTexture(0, Toast.TEXTURE);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         if (description.size() < 2) {
-            DrawableHelper.drawTexture(matrices, 0, 0, 0, 0, this.getWidth(), this.getHeight());
+            manager.drawTexture(matrices, 0, 0, 0, 0, this.getWidth(), this.getHeight());
         } else {
-            DrawableHelper.drawTexture(matrices, 0, 0, 0, 0, this.getWidth(), 11);
+            manager.drawTexture(matrices, 0, 0, 0, 0, this.getWidth(), 11);
             int y = 8;
             for (int i = 0; i < description.size(); i++) {
-                DrawableHelper.drawTexture(matrices, 0, y, 0, 11, this.getWidth(), 10);
+                manager.drawTexture(matrices, 0, y, 0, 11, this.getWidth(), 10);
                 y += 10;
             }
-            DrawableHelper.drawTexture(matrices, 0, y, 0, 21, this.getWidth(), 11);
+            manager.drawTexture(matrices, 0, y, 0, 21, this.getWidth(), 11);
         }
 
         manager.getClient().textRenderer.draw(matrices, this.title, 7.0f, 7.0f, 0xFFFF00 | 0xFF000000);
