@@ -51,8 +51,8 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Text
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderWidget(context, mouseX, mouseY, delta);
         this.applyButton.setX(this.getX() + 130);
         this.applyButton.setY(this.getY());
         this.applyButton.render(context, mouseX, mouseY, delta);
