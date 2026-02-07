@@ -211,12 +211,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
         public ModConfigEntry(ModContainer mod, SpeedrunConfigScreenProvider configScreenProvider) {
             super(mod);
             this.configScreenProvider = configScreenProvider;
-            String configUnavailableKey = "speedrunapi.config." + this.mod.getId() + ".unavailable";
-            if (Language.getInstance().hasTranslation(configUnavailableKey)) {
-                this.unavailableTooltip = TextUtil.translatable(configUnavailableKey);
-            } else {
-                this.unavailableTooltip = TextUtil.translatable("speedrunapi.gui.config.unavailable");
-            }
+            this.unavailableTooltip = configScreenProvider.getUnavailableReason().orElseGet(() -> {
+                String configUnavailableKey = "speedrunapi.config." + this.mod.getId() + ".unavailable";
+                if (Language.getInstance().hasTranslation(configUnavailableKey)) {
+                    return TextUtil.translatable(configUnavailableKey);
+                }
+                return TextUtil.translatable("speedrunapi.gui.config.unavailable");
+            });
         }
 
         @Override

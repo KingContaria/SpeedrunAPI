@@ -2,7 +2,10 @@ package me.contaria.speedrunapi.config.api;
 
 import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * Provides a custom config screen, can be used by mods using their own config system to show up in the config list.
@@ -27,5 +30,15 @@ public interface SpeedrunConfigScreenProvider {
      */
     default boolean isAvailable() {
         return true;
+    }
+
+    /**
+     * Mod Authors can override this method to set a tooltip to be displayed to the user when the config is unavailable.
+     * By default, or when returning {@link Optional#empty}, either "speedrunapi.config.<modid>.unavailable" or "speedrunapi.gui.config.unavailable" is used.
+     *
+     * @return Returns an optional reason for the {@link SpeedrunConfigScreenProvider} being unavailable
+     */
+    default Optional<Text> getUnavailableReason() {
+        return Optional.empty();
     }
 }
