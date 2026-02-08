@@ -42,6 +42,9 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
     private final SpeedrunModConfigsScreen parent;
 
+    @Nullable
+    private Text tooltipToRender;
+
     public SpeedrunModConfigListWidget(Map<ModContainer, SpeedrunConfigScreenProvider> modConfigScreenProviders, SpeedrunModConfigsScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
         super(client, width, height, top, bottom, 36);
         this.parent = parent;
@@ -61,6 +64,15 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
 
         if (this.children().isEmpty()) {
             this.addEntry(new NoModConfigsEntry());
+        }
+    }
+
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        super.render(matrices, mouseX, mouseY, delta);
+        if (this.tooltipToRender != null) {
+            this.parent.renderTooltip(matrices, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.tooltipToRender, 200), mouseX, mouseY);
+            this.tooltipToRender = null;
         }
     }
 
@@ -232,7 +244,7 @@ public class SpeedrunModConfigListWidget extends EntryListWidget<SpeedrunModConf
             DrawableHelper.drawTexture(matrices, x, y, available ? 0.0f : 96.0f, textureOffset, 32, 32, 256, 256);
 
             if (!available && this.isMouseOver(mouseX, mouseY)) {
-                SpeedrunModConfigListWidget.this.parent.renderTooltip(matrices, SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200), mouseX, mouseY);
+                SpeedrunModConfigListWidget.this.tooltipToRender = this.unavailableTooltip;
             }
         }
 
