@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidget;
+import me.contaria.speedrunapi.config.screen.widgets.option.OptionWidgetClientWrapper;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
@@ -63,6 +63,6 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
 
     @Override
     public @NotNull AbstractButtonWidget createWidget() {
-        return new BooleanOptionButtonWidget(this, 0, 0);
+        return OptionWidgetClientWrapper.createBooleanOptionButtonWidget(this, 0, 0);
     }
 }

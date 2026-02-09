@@ -6,7 +6,7 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.option.EnumTextProvider;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
+import me.contaria.speedrunapi.config.screen.widgets.option.OptionWidgetClientWrapper;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
@@ -66,7 +66,7 @@ public class EnumOption extends FieldBasedOption<Enum> {
 
     @Override
     public @NotNull AbstractButtonWidget createWidget() {
-        return new EnumOptionButtonWidget(this, 0, 0);
+        return OptionWidgetClientWrapper.createEnumOptionButtonWidget(this, 0, 0);
     }
 
     @Override
