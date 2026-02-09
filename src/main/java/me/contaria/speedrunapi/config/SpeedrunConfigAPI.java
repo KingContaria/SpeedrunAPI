@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -296,25 +297,19 @@ public final class SpeedrunConfigAPI {
 
     @ApiStatus.Internal
     public static Screen createDefaultModConfigScreen(String modID, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
-        return new SpeedrunConfigScreen(getConfig(modID), inputListener, parent);
+        return ClientWrapper.createDefaultModConfigScreen(getConfig(modID), inputListener, parent);
     }
 
     @ApiStatus.Internal
     public static void handleLoadException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to load {} config!", modID, e);
-        MinecraftClient.getInstance().getToastManager().add(new SpeedrunConfigErrorToast(
-                TextUtil.translatable("speedrunapi.gui.toast.error.title"),
-                TextUtil.translatable("speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID)
-        ));
+        ClientWrapper.addErrorToast(TextUtil.translatable("speedrunapi.gui.toast.error.title"), TextUtil.translatable("speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID));
     }
 
     @ApiStatus.Internal
     public static void handleSaveException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to save {} config!", modID, e);
-        MinecraftClient.getInstance().getToastManager().add(new SpeedrunConfigErrorToast(
-                TextUtil.translatable("speedrunapi.gui.toast.error.title"),
-                TextUtil.translatable("speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID)
-        ));
+        ClientWrapper.addErrorToast(TextUtil.translatable("speedrunapi.gui.toast.error.title"), TextUtil.translatable("speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID));
     }
 
     @SuppressWarnings("unused")
@@ -410,4 +405,18 @@ public final class SpeedrunConfigAPI {
             AbstractButtonWidget createWidget(SpeedrunOption<T> option, SpeedrunConfig config, SpeedrunConfigStorage configStorage, Field optionField);
         }
     }
+
+    @ApiStatus.Internal
+    public static class ClientWrapper {
+        @ApiStatus.Internal
+        public static Screen createDefaultModConfigScreen(SpeedrunConfigContainer<?> container, @Nullable Predicate<InputUtil.Key> inputListener, Screen parent) {
+            return new SpeedrunConfigScreen(container, inputListener, parent);
+        }
+
+        @ApiStatus.Internal
+        public static void addErrorToast(Text title, Text description) {
+            MinecraftClient.getInstance().getToastManager().add(new SpeedrunConfigErrorToast(title, description));
+        }
+    }
+
 }

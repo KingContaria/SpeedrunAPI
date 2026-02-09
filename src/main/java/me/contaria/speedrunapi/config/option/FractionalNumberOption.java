@@ -4,8 +4,7 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.FractionalNumberOptionSliderWidget;
-import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
+import me.contaria.speedrunapi.config.screen.widgets.option.OptionWidgetClientWrapper;
 import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.text.Text;
@@ -49,9 +48,9 @@ public abstract class FractionalNumberOption<T extends Number> extends NumberOpt
     @Override
     public @NotNull AbstractButtonWidget createWidget() {
         if (this.useTextField) {
-            return new NumberOptionTextFieldWidget<>(this, 0, 0);
+            return OptionWidgetClientWrapper.createNumberOptionTextFieldWidget(this, 0, 0);
         }
-        return new FractionalNumberOptionSliderWidget<>(this, 0, 0);
+        return OptionWidgetClientWrapper.createFractionalNumberOptionSliderWidget(this, 0, 0);
     }
 
     @Override

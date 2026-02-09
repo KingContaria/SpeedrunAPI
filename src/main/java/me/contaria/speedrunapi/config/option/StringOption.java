@@ -7,7 +7,7 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import me.contaria.speedrunapi.config.screen.widgets.option.StringOptionTextFieldWidget;
+import me.contaria.speedrunapi.config.screen.widgets.option.OptionWidgetClientWrapper;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class StringOption extends FieldBasedOption<String> {
 
     @Override
     public @NotNull AbstractButtonWidget createWidget() {
-        return new StringOptionTextFieldWidget(this, 0, 0);
+        return OptionWidgetClientWrapper.createStringOptionTextFieldWidget(this, 0, 0);
     }
 
     public int getMaxLength() {
