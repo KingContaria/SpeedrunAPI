@@ -2,12 +2,9 @@ package me.contaria.speedrunapi.config.screen;
 
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
-import me.contaria.speedrunapi.config.api.gui.ButtonWidgetCallback;
 import me.contaria.speedrunapi.config.api.gui.CallbackButtonWidget;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.PagedEntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
@@ -51,23 +48,9 @@ public class SpeedrunConfigScreen extends AbstractSpeedrunConfigAPIScreen {
     @Override
     public void init() {
         String search = this.searchField != null ? this.searchField.getText() : "";
-        this.searchField = new TextFieldWidget(-1, this.client.textRenderer, this.width / 2 - 100, 25, 200, 20);
+        this.searchField = new TextFieldWidget(this.client.textRenderer, this.width / 2 - 100, 25, 200, 20);
         this.searchField.setText(search);
         this.searchField.setVisible(this.searchFieldOpen);
-        this.searchField.setListener(new PagedEntryListWidget.Listener() {
-            @Override
-            public void setBooleanValue(int id, boolean value) {
-            }
-
-            @Override
-            public void setFloatValue(int id, float value) {
-            }
-
-            @Override
-            public void setStringValue(int id, String text) {
-                SpeedrunConfigScreen.this.list.updateEntries(text);
-            }
-        });
         this.list = new SpeedrunOptionListWidget(this, this.config, this.client, this.width, this.height, 25, this.height - 32, this.searchField.getText());
         if (this.searchFieldOpen) {
             this.list.adjustTop(50);
@@ -95,6 +78,7 @@ public class SpeedrunConfigScreen extends AbstractSpeedrunConfigAPIScreen {
             return;
         }
         if (this.searchField.keyPressed(id, code)) {
+            this.list.updateEntries(this.searchField.getText());
             return;
         }
         if (code == 1) {
@@ -124,19 +108,6 @@ public class SpeedrunConfigScreen extends AbstractSpeedrunConfigAPIScreen {
     protected void mouseDragged(int mouseX, int mouseY, int button, long mouseLastClicked) {
         super.mouseDragged(mouseX, mouseY, button, mouseLastClicked);
         this.list.mouseDragged(mouseX, mouseY, button, mouseLastClicked);
-    }
-
-    @Override
-    public void handleMouse() {
-        super.handleMouse();
-        this.list.handleMouse();
-    }
-
-    @Override
-    protected void buttonClicked(ButtonWidget button) {
-        if (button instanceof ButtonWidgetCallback) {
-            ((ButtonWidgetCallback) button).onPress();
-        }
     }
 
     @Override

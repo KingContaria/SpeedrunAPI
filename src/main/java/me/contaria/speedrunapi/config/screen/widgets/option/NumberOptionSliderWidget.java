@@ -2,59 +2,61 @@ package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.NumberOption;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.PagedEntryListWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import org.jetbrains.annotations.ApiStatus;
+import org.lwjgl.opengl.GL11;
 
 @ApiStatus.Internal
-public class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
+public class NumberOptionSliderWidget<T extends NumberOption<?>> extends ButtonWidget {
     private final T option;
 
+    private double progress;
+    public boolean focused;
+
     public NumberOptionSliderWidget(T option) {
-        super(new PagedEntryListWidget.Listener() {
-            @Override
-            public void setBooleanValue(int id, boolean value) {
-            }
-
-            @Override
-            public void setFloatValue(int id, float value) {
-            }
-
-            @Override
-            public void setStringValue(int id, String text) {
-            }
-        }, -1, 0, 0, "UNUSED TRANSLATION KEY", option.getSliderMin(), option.getSliderMax(), option.get().floatValue(), (id, name, value) -> option.getText());
+        super(-1, 0, 0, 150, 20, option.getText());
         this.option = option;
-        this.setSliderProgress((float) ((option.get().doubleValue() - option.getSliderMin()) / (option.getSliderMax() - option.getSliderMin())));
-    }
-
-    private void updateValue() {
-        this.option.setFromSliderValue(this.getProgress());
-        this.message = this.option.getText();
+        this.progress = (option.get().doubleValue() - option.getSliderMin()) / (option.getSliderMax() - option.getSliderMin());
     }
 
     @Override
-    public void setSliderValue(float value, boolean updateListener) {
-        super.setSliderValue(value, updateListener);
-        this.updateValue();
+    public int getYImage(boolean isHovered) {
+        return 0;
     }
 
     @Override
     protected void mouseDragged(MinecraftClient client, int mouseX, int mouseY) {
-        super.mouseDragged(client, mouseX, mouseY);
-        this.updateValue();
-    }
+        if (this.visible) {
+            if (this.focused) {
+                this.progress = Math.max(0.0, Math.min(1.0, (mouseX - (this.x + 4.0)) / (this.width - 8.0)));
+                this.updateValue();
+            }
 
-    @Override
-    public void setSliderProgress(float progress) {
-        super.setSliderProgress(progress);
-        this.updateValue();
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            this.drawTexture(this.x + (int)(this.progress * (this.width - 8)), this.y, 0, 66, 4, 20);
+            this.drawTexture(this.x + (int)(this.progress * (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
+        }
     }
 
     @Override
     public boolean isMouseOver(MinecraftClient client, int mouseX, int mouseY) {
-        boolean isMouseOver = super.isMouseOver(client, mouseX, mouseY);
-        this.updateValue();
-        return isMouseOver;
+        if (super.isMouseOver(client, mouseX, mouseY)) {
+            this.progress = Math.max(0.0, Math.min(1.0, (mouseX - (this.x + 4.0)) / (this.width - 8.0)));
+            this.updateValue();
+            this.focused = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void mouseReleased(int mouseX, int mouseY) {
+        this.focused = false;
+    }
+
+    private void updateValue() {
+        this.option.setFromSliderValue(this.progress);
+        this.message = this.option.getText();
     }
 }

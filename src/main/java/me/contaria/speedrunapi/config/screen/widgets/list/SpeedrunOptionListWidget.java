@@ -8,8 +8,10 @@ import me.contaria.speedrunapi.config.api.gui.SpeedrunWidget;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.class_1803;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.I18n;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +33,8 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         this.config = config;
         this.entries = new ArrayList<>();
         this.updateEntries(filter);
+
+        this.centerListVertically = false;
     }
 
     public void keyPressed(char id, int code) {
@@ -54,8 +58,8 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
     }
 
     @Override
-    public Entry getEntry(int index) {
-        return this.entries.get(index);
+    public class_1803 method_6697(int i) {
+        return this.entries.get(i);
     }
 
     @Override
@@ -97,7 +101,7 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
             }
         }
 
-        this.scrollAmount = 0.0f;
+        this.scroll(-this.getScrollAmount());
     }
 
     public void adjustTop(int top) {
@@ -123,27 +127,23 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         return super.getScrollbarPosition() + 42;
     }
 
-    public abstract class OptionListEntry implements EntryListWidget.Entry {
+    public abstract static class OptionListEntry implements class_1803 {
         public void keyPressed(int index, char id, int code) {
         }
 
         @Override
-        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public boolean method_6699(int index, int mouseX, int mouseY, int button, int x, int y) {
             return false;
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public void method_6701(int index, int mouseX, int mouseY, int button, int x, int y) {
         }
 
         public void mouseDragged(int index, int mouseX, int mouseY, int button, int x, int y, long mouseLastClicked) {
         }
 
         public void tick() {
-        }
-
-        @Override
-        public void updatePosition(int index, int x, int y) {
         }
     }
 
@@ -152,7 +152,7 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         private final Object widget;
 
         public OptionEntry(SpeedrunOption<?> option) {
-            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, SpeedrunOptionListWidget.this.client.textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.yStart, SpeedrunOptionListWidget.this.yEnd);
+            this.text = new TextWidget(SpeedrunOptionListWidget.this.parent, MinecraftClient.getInstance().textRenderer, option.getName(), option.getDescription(), SpeedrunOptionListWidget.this.yStart, SpeedrunOptionListWidget.this.yEnd);
             this.widget = option.createWidget();
             if (!(this.widget instanceof ButtonWidget || this.widget instanceof SpeedrunWidget)) {
                 throw new RuntimeException("Return value of SpeedrunOption#createWidget is not a ButtonWidget or SpeedrunWidget!");
@@ -160,9 +160,9 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         }
 
         @Override
-        public void render(int index, int x, int y, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered) {
+        public void method_6700(int index, int x, int y, int rowWidth, int rowHeight, Tessellator tessellator, int mouseX, int mouseY, boolean hovered) {
             this.text.x = x + 5;
-            int yOffset = (20 - SpeedrunOptionListWidget.this.client.textRenderer.fontHeight) / 2;
+            int yOffset = (20 - MinecraftClient.getInstance().textRenderer.fontHeight) / 2;
             this.text.y = y + 5 + yOffset;
             this.text.renderText();
 
@@ -170,7 +170,7 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
                 ButtonWidget button = (ButtonWidget) this.widget;
                 button.x = x + rowWidth - button.getWidth() - 5;
                 button.y = y + 5;
-                button.render(SpeedrunOptionListWidget.this.client, mouseX, mouseY);
+                button.render(MinecraftClient.getInstance(), mouseX, mouseY);
             } else {
                 SpeedrunWidget widget = (SpeedrunWidget) this.widget;
                 widget.setX(x + rowWidth - widget.getWidth() - 5);
@@ -191,7 +191,7 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         }
 
         @Override
-        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public boolean method_6699(int index, int mouseX, int mouseY, int button, int x, int y) {
             if (this.widget instanceof SpeedrunWidget) {
                 return ((SpeedrunWidget) this.widget).mouseClicked(mouseX, mouseY, button);
             } else {
@@ -208,7 +208,7 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         }
 
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public void method_6701(int index, int mouseX, int mouseY, int button, int x, int y) {
             if (this.widget instanceof SpeedrunWidget) {
                 ((SpeedrunWidget) this.widget).mouseReleased(mouseX, mouseY, button);
             } else {
@@ -239,8 +239,8 @@ public class SpeedrunOptionListWidget extends EntryListWidget {
         }
 
         @Override
-        public void render(int index, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered) {
-            SpeedrunOptionListWidget.this.parent.drawCenteredString(SpeedrunOptionListWidget.this.client.textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public void method_6700(int index, int x, int y, int entryWidth, int entryHeight, Tessellator tessellator, int mouseX, int mouseY, boolean hovered) {
+            SpeedrunOptionListWidget.this.parent.drawCenteredString(MinecraftClient.getInstance().textRenderer, this.category, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }

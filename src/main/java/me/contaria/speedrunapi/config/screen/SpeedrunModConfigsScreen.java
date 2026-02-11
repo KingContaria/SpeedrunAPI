@@ -45,12 +45,6 @@ public class SpeedrunModConfigsScreen extends AbstractSpeedrunConfigAPIScreen {
         this.list.mouseClicked(mouseX, mouseY, button);
     }
 
-    @Override
-    public void handleMouse() {
-        super.handleMouse();
-        this.list.handleMouse();
-    }
-
     public void onClose() {
         this.client.setScreen(this.parent);
     }

@@ -1,6 +1,5 @@
 package me.contaria.speedrunapi.config.screen.widgets.list;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
@@ -11,9 +10,11 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.class_1803;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.EntryListWidget;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.NativeImageBackedTexture;
@@ -21,6 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -37,6 +39,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
 
     private final SpeedrunModConfigsScreen parent;
     private final List<SpeedrunModConfigListWidget.ModConfigListEntry> entries;
+
+    private int selectedEntry = -1;
 
     public SpeedrunModConfigListWidget(Map<ModContainer, SpeedrunConfigScreenProvider> modConfigScreenProviders, SpeedrunModConfigsScreen parent, MinecraftClient client, int width, int height, int top, int bottom) {
         super(client, width, height, top, bottom, 36);
@@ -59,11 +63,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         if (this.entries.isEmpty()) {
             this.entries.add(new NoModConfigsEntry());
         }
+
+        this.centerListVertically = false;
     }
 
     @Override
-    public Entry getEntry(int index) {
-        return this.entries.get(index);
+    public class_1803 method_6697(int i) {
+        return this.entries.get(i);
     }
 
     @Override
@@ -91,18 +97,14 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         return super.getScrollbarPosition() + 20;
     }
 
-    public abstract class ModConfigListEntry implements EntryListWidget.Entry {
+    public abstract class ModConfigListEntry implements class_1803 {
         @Override
-        public void mouseReleased(int index, int mouseX, int mouseY, int button, int x, int y) {
-        }
-
-        @Override
-        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public boolean method_6699(int index, int mouseX, int mouseY, int button, int x, int y) {
             return false;
         }
 
         @Override
-        public void updatePosition(int index, int x, int y) {
+        public void method_6701(int index, int mouseX, int mouseY, int button, int x, int y) {
         }
 
         public boolean isMouseOver(int x, int y, int mouseX, int mouseY) {
@@ -149,11 +151,11 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
                 text.append(author);
                 shouldAddComma = true;
             }
-            return new TextWidget(SpeedrunModConfigListWidget.this.parent, SpeedrunModConfigListWidget.this.client.textRenderer, text.toString());
+            return new TextWidget(SpeedrunModConfigListWidget.this.parent, MinecraftClient.getInstance().textRenderer, text.toString());
         }
 
         private List<String> createDescription(String description) {
-            List<String> list = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(description, SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
+            List<String> list = MinecraftClient.getInstance().textRenderer.wrapLines(description, SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
             if (list.size() > 2) {
                 list.set(1, list.get(1) + "...");
                 return list.subList(0, 2);
@@ -162,13 +164,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         }
 
         private void registerIcon() {
-            if (SpeedrunModConfigListWidget.this.client.getTextureManager().getTexture(this.icon) != null) {
+            if (MinecraftClient.getInstance().getTextureManager().getTexture(this.icon) != null) {
                 this.hasIcon = true;
                 return;
             }
             this.mod.getIconPath(32).flatMap(this.modContainer::findPath).ifPresent(iconPath -> {
                 try (InputStream inputStream = Files.newInputStream(iconPath)) {
-                    SpeedrunModConfigListWidget.this.client.getTextureManager().loadTexture(this.icon, new NativeImageBackedTexture(ImageIO.read(inputStream)));
+                    MinecraftClient.getInstance().getTextureManager().loadTexture(this.icon, new NativeImageBackedTexture(ImageIO.read(inputStream)));
                     this.hasIcon = true;
                 } catch (IOException e) {
                     SpeedrunAPI.LOGGER.warn("Failed to load mod icon for {}.", this.mod.getId(), e);
@@ -177,8 +179,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         }
 
         @Override
-        public void render(int index, int x, int y, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered) {
-            MinecraftClient client = SpeedrunModConfigListWidget.this.client;
+        public void method_6700(int index, int x, int y, int rowWidth, int rowHeight, Tessellator tessellator, int mouseX, int mouseY, boolean hovered) {
+            MinecraftClient client = MinecraftClient.getInstance();
             TextRenderer textRenderer = client.textRenderer;
 
             textRenderer.draw(this.name, x + 32 + 3, y + 1, 0xFFFFFF);
@@ -196,12 +198,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
                 yOffset += textRenderer.fontHeight;
             }
 
-            GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
             client.getTextureManager().bindTexture(this.hasIcon ? this.icon : NO_MOD_ICON);
-            GlStateManager.enableBlend();
+            GL11.glEnable(3042); // blend
             DrawableHelper.drawTexture(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
-            GlStateManager.disableBlend();
+            GL11.glDisable(3042); // blend
 
             if (client.options.touchscreen || hovered) {
                 this.renderIfHovered(x, y, mouseX, mouseY);
@@ -233,13 +235,13 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         protected void renderIfHovered(int x, int y, int mouseX, int mouseY) {
             boolean available = this.configScreenProvider.isAvailable();
             if (!available && this.isMouseOver(x, y, mouseX, mouseY)) {
-                List<String> tooltip = SpeedrunModConfigListWidget.this.client.textRenderer.wrapLines(this.unavailableTooltip, 200);
+                List<String> tooltip = MinecraftClient.getInstance().textRenderer.wrapLines(this.unavailableTooltip, 200);
                 SpeedrunModConfigListWidget.this.parent.setTooltip(tooltip, mouseX, mouseY);
             }
         }
 
         @Override
-        public boolean mouseClicked(int index, int mouseX, int mouseY, int button, int x, int y) {
+        public boolean method_6699(int index, int mouseX, int mouseY, int button, int x, int y) {
             SpeedrunModConfigListWidget.this.selectEntry(index, false, x, y);
             if (mouseX - SpeedrunModConfigListWidget.this.xStart <= 32.0) {
                 return this.openConfig();
@@ -256,8 +258,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
             if (!this.configScreenProvider.isAvailable()) {
                 return false;
             }
-            SpeedrunModConfigListWidget.this.client.getSoundManager().play(PositionedSoundInstance.master(new Identifier("gui.button.press"), 1.0f));
-            SpeedrunModConfigListWidget.this.client.setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
+            MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(new Identifier("gui.button.press"), 1.0f));
+            MinecraftClient.getInstance().setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
             return true;
         }
     }
@@ -266,8 +268,8 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
         private final String text = I18n.translate("speedrunapi.gui.config.noConfigs");
 
         @Override
-        public void render(int index, int x, int y, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered) {
-            SpeedrunModConfigListWidget.this.parent.drawCenteredString(SpeedrunModConfigListWidget.this.client.textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
+        public void method_6700(int index, int x, int y, int entryWidth, int entryHeight, Tessellator tessellator, int mouseX, int mouseY, boolean hovered) {
+            SpeedrunModConfigListWidget.this.parent.drawCenteredString(MinecraftClient.getInstance().textRenderer, this.text, x + entryWidth / 2, y + entryHeight / 2, 0xFFFFFF);
         }
     }
 }
