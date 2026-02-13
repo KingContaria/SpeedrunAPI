@@ -12,12 +12,12 @@
     "gui.SettingsScreenMixin",
     "resourceloader.DefaultResourcePackMixin"
   ],
-  "server": [
-    "entrypoint.MinecraftDedicatedServerMixin"
-  ],
-  "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin",
   "mixins": [
     "accessor.I18nAccessor",
     "accessor.TranslationStorageAccessor"
-  ]
+  ],
+  "server": [
+    "entrypoint.MinecraftDedicatedServerMixin"
+  ],
+  "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
 }
