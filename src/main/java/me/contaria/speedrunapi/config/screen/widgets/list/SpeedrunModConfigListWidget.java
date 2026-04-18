@@ -35,8 +35,6 @@ import java.util.Map;
 
 @ApiStatus.Internal
 public class SpeedrunModConfigListWidget extends EntryListWidget {
-    private static final Identifier NO_MOD_ICON = IdentifierUtil.ofVanilla("textures/misc/unknown_server.png");
-
     private final SpeedrunModConfigsScreen parent;
     private final List<SpeedrunModConfigListWidget.ModConfigListEntry> entries;
 
@@ -200,10 +198,12 @@ public class SpeedrunModConfigListWidget extends EntryListWidget {
 
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-            client.getTextureManager().bindTexture(this.hasIcon ? this.icon : NO_MOD_ICON);
-            GL11.glEnable(3042); // blend
-            DrawableHelper.drawTexture(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
-            GL11.glDisable(3042); // blend
+            if (this.hasIcon) {
+                client.getTextureManager().bindTexture(this.icon);
+                GL11.glEnable(3042); // blend
+                DrawableHelper.drawTexture(x, y, 0.0f, 0.0f, 32, 32, 32, 32);
+                GL11.glDisable(3042); // blend
+            }
 
             if (client.options.touchscreen || hovered) {
                 this.renderIfHovered(x, y, mouseX, mouseY);
