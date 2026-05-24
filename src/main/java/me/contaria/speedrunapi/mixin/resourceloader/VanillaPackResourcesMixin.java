@@ -3,10 +3,10 @@ package me.contaria.speedrunapi.mixin.resourceloader;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.resource.DefaultResourcePack;
-import net.minecraft.resource.InputSupplier;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.VanillaPackResources;
+import net.minecraft.server.packs.resources.IoSupplier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,8 +22,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
-@Mixin(DefaultResourcePack.class)
-public abstract class DefaultClientResourcePackMixin {
+@Mixin(VanillaPackResources.class)
+public abstract class VanillaPackResourcesMixin {
     @Unique
     private static final boolean HAS_FABRIC_RESOURCE_LOADER = FabricLoader.getInstance().isModLoaded("fabric-resource-loader-v0");
     @Unique
@@ -69,13 +69,13 @@ public abstract class DefaultClientResourcePackMixin {
         return combined;
     }
 
-    @Inject(method = "open", at = @At("HEAD"), cancellable = true)
-    private void loadModResources(ResourceType type, Identifier id, CallbackInfoReturnable<InputSupplier<InputStream>> cir) {
+    @Inject(method = "getResource", at = @At("HEAD"), cancellable = true)
+    private void loadModResources(PackType type, Identifier id, CallbackInfoReturnable<IoSupplier<InputStream>> cir) {
         if (HAS_FABRIC_RESOURCE_LOADER) {
             return;
         }
         // make sure only client resources are loaded
-        if (type != ResourceType.CLIENT_RESOURCES) {
+        if (type != PackType.CLIENT_RESOURCES) {
             return;
         }
         Set<ModContainer> mods = NAMESPACES_TO_MODS.get(id.getNamespace());
@@ -85,7 +85,7 @@ public abstract class DefaultClientResourcePackMixin {
         for (ModContainer mod : mods) {
             mod.findPath("assets/" + id.getNamespace() + "/" + id.getPath()).ifPresent(path -> {
                 try {
-                    cir.setReturnValue(InputSupplier.create(path));
+                    cir.setReturnValue(IoSupplier.create(path));
                 } catch (Exception e) {
                     SpeedrunAPI.LOGGER.warn("Failed to load resource '{}' from mod '{}'.", id, mod.getMetadata().getId(), e);
                 }

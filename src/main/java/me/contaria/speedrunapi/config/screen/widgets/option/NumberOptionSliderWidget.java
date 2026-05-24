@@ -2,11 +2,11 @@ package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.NumberOption;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.gui.components.AbstractSliderButton;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
-public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extends SliderWidget {
+public abstract class NumberOptionSliderWidget<T extends NumberOption<?>> extends AbstractSliderButton {
     protected final T option;
 
     public NumberOptionSliderWidget(T option, int x, int y, double value) {

@@ -4,31 +4,36 @@ import me.contaria.speedrunapi.config.option.NumberOption;
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.List;
+
 @ApiStatus.Internal
-public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends TextFieldWidget {
-    private static final Identifier APPLY_TEXTURE = IdentifierUtil.ofVanilla("textures/gui/container/beacon.png");
+public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends AbstractContainerWidget {
+    private static final Identifier APPLY_SPRITE = IdentifierUtil.ofVanilla("container/beacon/confirm");
 
     private final NumberOption<?> option;
-    private final ButtonWidget applyButton;
+    private final EditBox editBox;
+    private final Button applyButton;
 
     public NumberOptionTextFieldWidget(T option, int x, int y) {
-        super(MinecraftClient.getInstance().textRenderer, x, y, 125, 20, TextUtil.empty());
+        super(x, y, 150, 20, TextUtil.empty(), null);
+        this.editBox = new EditBox(Minecraft.getInstance().font, x, y, 125, 20, TextUtil.empty());
         this.option = option;
-        this.applyButton = new IconButtonWidget(APPLY_TEXTURE, 90, 222, 256, 256, x + 130, y, button -> this.apply());
+        this.applyButton = new IconButtonWidget(APPLY_SPRITE, 0, 0, 18, 18, x + 130, y, TextUtil.empty(), button -> this.apply(), true);
         this.updateText();
-        this.setChangedListener(string -> this.applyButton.active = !this.option.get().toString().equals(string));
+        this.editBox.setResponder(string -> this.applyButton.active = !this.option.get().toString().equals(string));
     }
 
     private void apply() {
         try {
-            this.option.setFromString(this.getText());
+            this.option.setFromString(this.editBox.getValue());
             this.updateText();
         } catch (NumberFormatException e) {
             this.updateText();
@@ -36,40 +41,31 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Text
     }
 
     private void updateText() {
-        this.setText(this.option.get().toString());
+        this.editBox.setValue(this.option.get().toString());
         this.applyButton.active = false;
     }
 
     @Override
-    public int getWidth() {
-        return super.getWidth() + 5 + this.applyButton.getWidth();
-    }
-
-    @Override
-    public void setWidth(int value) {
-        super.setWidth(value - 5 - this.applyButton.getWidth());
-    }
-
-    @Override
-    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.renderWidget(context, mouseX, mouseY, delta);
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        this.editBox.setX(this.getX());
+        this.editBox.setY(this.getY());
+        this.editBox.extractWidgetRenderState(graphics, mouseX, mouseY, a);
         this.applyButton.setX(this.getX() + 130);
         this.applyButton.setY(this.getY());
-        this.applyButton.render(context, mouseX, mouseY, delta);
+        this.applyButton.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX, mouseY, button) || this.applyButton.mouseClicked(mouseX, mouseY, button);
+    public List<? extends GuiEventListener> children() {
+        return List.of(this.editBox, this.applyButton);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        return super.mouseReleased(mouseX, mouseY, button) || this.applyButton.mouseReleased(mouseX, mouseY, button);
+    protected int contentHeight() {
+        return 0;
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) || this.applyButton.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    protected void updateWidgetNarration(NarrationElementOutput output) {
     }
 }

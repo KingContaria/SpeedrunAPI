@@ -6,12 +6,13 @@
     "defaultRequire": 1
   },
   "client": [
-    "entrypoint.MinecraftClientMixin",
+    "accessor.ScreenAccessor",
+    "entrypoint.MinecraftMixin",
     "gui.OptionsScreenMixin",
-    "resourceloader.DefaultClientResourcePackMixin"
+    "resourceloader.VanillaPackResourcesMixin"
   ],
   "server": [
-    "entrypoint.MinecraftDedicatedServerMixin"
+    "entrypoint.DedicatedServerMixin"
   ],
   "plugin": "me.contaria.speedrunapi.mixin_plugin.SpeedrunMixinConfigPlugin"
 }

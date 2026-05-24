@@ -4,9 +4,9 @@ import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.OptionsScreen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,19 +18,19 @@ public abstract class OptionsScreenMixin extends Screen {
     @Unique
     private IconButtonWidget configButton;
 
-    protected OptionsScreenMixin(Text title) {
+    protected OptionsScreenMixin(Component title) {
         super(title);
     }
 
-    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/option/OptionsScreen;refreshWidgetPositions()V"))
+    @Inject(method = "init", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/options/OptionsScreen;repositionElements()V"))
     private void addSpeedrunConfigButton(CallbackInfo ci) {
-        this.configButton = this.addDrawableChild(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 159, 29, TextUtil.translatable("speedrunapi.gui.config.button"), button -> {
-            assert this.client != null;
-            this.client.setScreen(new SpeedrunModConfigsScreen(this));
+        this.configButton = this.addRenderableWidget(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 159, 29, TextUtil.translatable("speedrunapi.gui.config.button"), button -> {
+            assert this.minecraft != null;
+            this.minecraft.setScreen(new SpeedrunModConfigsScreen(this));
         }));
     }
 
-    @Inject(method = "refreshWidgetPositions", at = @At("TAIL"))
+    @Inject(method = "repositionElements", at = @At("TAIL"))
     private void resizeSpeedrunConfigButton(CallbackInfo ci) {
         this.configButton.setPosition(this.width / 2 + 159, 29);
     }

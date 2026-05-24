@@ -2,10 +2,10 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.platform.InputConstants;
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,7 +132,7 @@ public interface SpeedrunConfig extends SpeedrunConfigStorage, SpeedrunConfigScr
      *
      * @return Returns an input listener for the default config screen.
      */
-    default @Nullable Predicate<InputUtil.Key> createInputListener() {
+    default @Nullable Predicate<InputConstants.Key> createInputListener() {
         return null;
     }
 

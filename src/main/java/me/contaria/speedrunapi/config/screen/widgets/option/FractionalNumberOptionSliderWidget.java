@@ -1,6 +1,7 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.FractionalNumberOption;
+import net.minecraft.client.input.KeyEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
@@ -12,13 +13,13 @@ public class FractionalNumberOptionSliderWidget<T extends Number> extends Number
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_LEFT || event.key() == GLFW.GLFW_KEY_RIGHT) {
             double interval = this.option.getIntervals();
             if (interval == 0) {
-                return super.keyPressed(keyCode, scanCode, modifiers);
+                return super.keyPressed(event);
             }
-            this.option.setDouble(this.option.get().doubleValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -interval : interval));
+            this.option.setDouble(this.option.get().doubleValue() + (event.key() == GLFW.GLFW_KEY_LEFT ? -interval : interval));
             this.updateValue();
             return true;
         }
