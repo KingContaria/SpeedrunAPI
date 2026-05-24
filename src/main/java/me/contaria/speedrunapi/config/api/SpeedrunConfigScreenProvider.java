@@ -1,7 +1,7 @@
 package me.contaria.speedrunapi.config.api;
 
 import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.NotNull;
 
 /**

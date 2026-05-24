@@ -1,6 +1,7 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.WholeNumberOption;
+import net.minecraft.client.input.KeyEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
@@ -12,11 +13,11 @@ public class WholeNumberOptionSliderWidget<T extends Number> extends NumberOptio
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.key() == GLFW.GLFW_KEY_LEFT || event.key() == GLFW.GLFW_KEY_RIGHT) {
             long interval = this.option.getIntervals();
             interval = interval != 0 ? interval : 1;
-            this.option.setLong(this.option.get().longValue() + (keyCode == GLFW.GLFW_KEY_LEFT ? -interval : interval));
+            this.option.setLong(this.option.get().longValue() + (event.key() == GLFW.GLFW_KEY_LEFT ? -interval : interval));
             this.updateValue();
             return true;
         }

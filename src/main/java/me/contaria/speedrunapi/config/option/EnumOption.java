@@ -8,8 +8,8 @@ import me.contaria.speedrunapi.config.api.option.EnumTextProvider;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,12 +65,12 @@ public class EnumOption extends FieldBasedOption<Enum> {
     }
 
     @Override
-    public @NotNull ClickableWidget createWidget() {
+    public @NotNull AbstractButton createWidget() {
         return new EnumOptionButtonWidget(this, 0, 0);
     }
 
     @Override
-    public @NotNull Text getText() {
+    public @NotNull Component getText() {
         Enum value = this.get();
         if (value instanceof EnumTextProvider) {
             return ((EnumTextProvider) value).toText();

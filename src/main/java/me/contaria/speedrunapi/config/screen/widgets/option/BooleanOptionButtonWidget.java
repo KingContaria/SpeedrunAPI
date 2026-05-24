@@ -1,13 +1,13 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.BooleanOption;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.components.Button;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
 @ApiStatus.Internal
-public class BooleanOptionButtonWidget extends ButtonWidget {
+public class BooleanOptionButtonWidget extends Button.Plain {
 
     public BooleanOptionButtonWidget(BooleanOption option, int x, int y) {
         super(x, y, 150, 20, option.getText(), button -> {

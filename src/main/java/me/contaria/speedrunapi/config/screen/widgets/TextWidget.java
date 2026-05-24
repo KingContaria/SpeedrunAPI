@@ -1,12 +1,17 @@
 package me.contaria.speedrunapi.config.screen.widgets;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import me.contaria.speedrunapi.mixin.accessor.ScreenAccessor;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,28 +19,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @ApiStatus.Internal
-public class TextWidget implements Drawable, Element {
+public class TextWidget implements Renderable, GuiEventListener {
     private final Screen screen;
-    private final TextRenderer textRenderer;
+    private final Font textRenderer;
     @NotNull
-    private final Text text;
+    private final Component text;
     @Nullable
-    private final Text tooltip;
+    private final Component tooltip;
     private final int minTooltipY;
     private final int maxTooltipY;
 
     public int x;
     public int y;
 
-    public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text) {
+    public TextWidget(Screen screen, Font textRenderer, @NotNull Component text) {
         this(screen, textRenderer, text, null);
     }
 
-    public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text, @Nullable Text tooltip) {
+    public TextWidget(Screen screen, Font textRenderer, @NotNull Component text, @Nullable Component tooltip) {
         this(screen, textRenderer, text, tooltip, 0, screen.height);
     }
 
-    public TextWidget(Screen screen, TextRenderer textRenderer, @NotNull Text text, @Nullable Text tooltip, int minTooltipY, int maxTooltipY) {
+    public TextWidget(Screen screen, Font textRenderer, @NotNull Component text, @Nullable Component tooltip, int minTooltipY, int maxTooltipY) {
         this.screen = screen;
         this.textRenderer = textRenderer;
         this.text = text;
@@ -45,40 +50,43 @@ public class TextWidget implements Drawable, Element {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            Text textComponent = this.getTextComponentAtPosition(mouseX, mouseY);
-            if (textComponent != null) {
-                return this.screen.handleTextClick(textComponent.getStyle());
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == 0) {
+            ActiveTextCollector.ClickableStyleFinder finder = new ActiveTextCollector.ClickableStyleFinder(this.textRenderer, (int)event.x(), (int)event.y());
+            finder.accept(x, y, text.getVisualOrderText());
+            Style clicked = finder.result();
+            if (clicked != null) {
+                ScreenAccessor.callDefaultHandleClickEvent(clicked.getClickEvent(), Minecraft.getInstance(), this.screen);
+                return true;
             }
         }
         return false;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderText(context);
-        this.renderTooltip(context, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        this.renderText(graphics);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    public void renderText(DrawContext context) {
-        context.drawText(this.textRenderer, this.text, this.x, this.y, 0xFFFFFF, true);
+    public void renderText(GuiGraphicsExtractor graphics) {
+        graphics.text(this.textRenderer, this.text.copy(), this.x, this.y, 0xFFFFFFff, false);
     }
 
-    public void renderTooltip(DrawContext context, int mouseX, int mouseY) {
+    public void renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (this.tooltip != null && this.isMouseOver(mouseX, mouseY)) {
-            List<OrderedText> tooltip = this.textRenderer.wrapLines(this.tooltip, 200);
+            List<FormattedCharSequence> tooltip = this.textRenderer.split(this.tooltip, 200);
             int height = tooltip.size() * 10;
             int y = mouseY;
             y = Math.min(y, this.maxTooltipY - height);
             y = Math.max(y, this.minTooltipY - height);
-            context.drawOrderedTooltip(this.textRenderer, tooltip, mouseX, y);
+            graphics.setTooltipForNextFrame(this.textRenderer, tooltip, mouseX, y);
         }
     }
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX > this.x && mouseX < this.x + this.textRenderer.getWidth(this.text) && mouseY > this.y && mouseY < this.y + this.textRenderer.fontHeight;
+        return mouseX > this.x && mouseX < this.x + this.textRenderer.width(this.text) && mouseY > this.y && mouseY < this.y + this.textRenderer.lineHeight;
     }
 
     @Override
@@ -90,21 +98,21 @@ public class TextWidget implements Drawable, Element {
         return false;
     }
 
-    public Text getTextComponentAtPosition(double x, double y) {
+    public Component getTextComponentAtPosition(double x, double y) {
         if (this.isMouseOver(x, y)) {
-            return this.getTextComponentAtPositionInternal(this.text, 0, this.textRenderer.getWidth(this.text.copy()), x, y);
+            return this.getTextComponentAtPositionInternal(this.text, 0, this.textRenderer.width(this.text.plainCopy()), x, y);
         }
         return null;
     }
 
-    private Text getTextComponentAtPositionInternal(Text text, int textX, int width, double x, double y) {
-        if (x > this.x + textX && x < this.x + textX + width && y > this.y && y < this.y + this.textRenderer.fontHeight) {
+    private Component getTextComponentAtPositionInternal(Component text, int textX, int width, double x, double y) {
+        if (x > this.x + textX && x < this.x + textX + width && y > this.y && y < this.y + this.textRenderer.lineHeight) {
             return text;
         }
         textX += width;
-        for (Text sibling : text.getSiblings()) {
-            int siblingWidth = this.textRenderer.getWidth(sibling.copy());
-            Text textAtPosition = this.getTextComponentAtPositionInternal(sibling, textX, siblingWidth, x, y);
+        for (Component sibling : text.getSiblings()) {
+            int siblingWidth = this.textRenderer.width(sibling.plainCopy());
+            Component textAtPosition = this.getTextComponentAtPositionInternal(sibling, textX, siblingWidth, x, y);
             if (textAtPosition != null) {
                 return textAtPosition;
             }
@@ -114,6 +122,6 @@ public class TextWidget implements Drawable, Element {
     }
 
     public int getWidth() {
-        return this.textRenderer.getWidth(this.text);
+        return this.textRenderer.width(this.text);
     }
 }

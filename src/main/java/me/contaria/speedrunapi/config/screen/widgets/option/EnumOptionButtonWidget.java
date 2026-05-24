@@ -1,13 +1,13 @@
 package me.contaria.speedrunapi.config.screen.widgets.option;
 
 import me.contaria.speedrunapi.config.option.EnumOption;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.components.Button;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Supplier;
 
 @ApiStatus.Internal
-public class EnumOptionButtonWidget extends ButtonWidget {
+public class EnumOptionButtonWidget extends Button.Plain {
 
     public EnumOptionButtonWidget(EnumOption option, int x, int y) {
         super(x, y, 150, 20, option.getText(), button -> {

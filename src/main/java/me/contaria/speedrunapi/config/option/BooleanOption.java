@@ -6,9 +6,9 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfig;
 import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.BooleanOptionButtonWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +22,8 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
     }
 
     @Override
-    public @NotNull Text getDefaultText() {
-        return ScreenTexts.onOrOff(this.get());
+    public @NotNull Component getDefaultText() {
+        return CommonComponents.optionStatus(this.get());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BooleanOption extends FieldBasedOption<Boolean> {
     }
 
     @Override
-    public @NotNull ClickableWidget createWidget() {
+    public @NotNull AbstractButton createWidget() {
         return new BooleanOptionButtonWidget(this, 0, 0);
     }
 }

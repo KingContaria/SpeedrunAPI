@@ -6,7 +6,7 @@ import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionSliderWi
 import me.contaria.speedrunapi.config.screen.widgets.option.NumberOptionTextFieldWidget;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,7 +41,7 @@ public @interface Config {
         ONINITIALIZE,
 
         /**
-         * Activates when {@link MinecraftClient} finishes initialization.
+         * Activates when {@link Minecraft} finishes initialization.
          */
         POSTLAUNCH
     }
@@ -69,7 +69,7 @@ public @interface Config {
     @interface Text {
         /**
          * The method needs to be declared in the same {@link SpeedrunConfig} class as the annotated option.
-         * It has to take one paramter of the annotated option's type and returns {@link net.minecraft.text.Text}.
+         * It has to take one paramter of the annotated option's type and returns {@link net.minecraft.network.chat.Component}.
          *
          * @return Returns the name (not including parameters) of the Getter method that should be used for the annotated option.
          */

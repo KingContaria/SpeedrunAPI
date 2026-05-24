@@ -7,7 +7,7 @@ import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -142,7 +142,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     }
 
     @Override
-    public @NotNull Text getName() {
+    public @NotNull Component getName() {
         if (this.name != null) {
             return TextUtil.translatable(this.name);
         }
@@ -150,7 +150,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     }
 
     @Override
-    public @Nullable Text getDescription() {
+    public @Nullable Component getDescription() {
         if (this.description != null) {
             return TextUtil.translatable(this.description);
         }
@@ -189,10 +189,10 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     }
 
     @Override
-    public @NotNull Text getText() {
+    public @NotNull Component getText() {
         try {
             if (this.textGetter != null) {
-                return (Text) this.textGetter.invoke(this.configStorage, this.get());
+                return (Component) this.textGetter.invoke(this.configStorage, this.get());
             }
         } catch (ReflectiveOperationException e) {
             throw new ReflectionConfigException("Failed to get text for option " + this.getID() + " in " + this.getModID() + "config.", e);

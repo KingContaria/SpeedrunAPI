@@ -1,34 +1,34 @@
 package me.contaria.speedrunapi.config.toast;
 
 import me.contaria.speedrunapi.util.IdentifierUtil;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
 public class SpeedrunConfigErrorToast implements Toast {
     private static final Identifier TEXTURE = IdentifierUtil.ofVanilla("toast/advancement");
 
-    private final Text title;
-    private final Text description;
+    private final Component title;
+    private final Component description;
     private Screen firstScreen;
     private boolean fadeOut;
 
-    public SpeedrunConfigErrorToast(Text title, Text description) {
+    public SpeedrunConfigErrorToast(Component title, Component description) {
         this.title = title;
         this.description = description;
     }
 
     @Override
-    public Visibility getVisibility() {
+    public Visibility getWantedVisibility() {
         return this.fadeOut ? Visibility.HIDE : Visibility.SHOW;
     }
 
@@ -37,42 +37,42 @@ public class SpeedrunConfigErrorToast implements Toast {
     }
 
     @Override
-    public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        if (MinecraftClient.getInstance().getOverlay() != null) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long fullyVisibleForMs) {
+        if (Minecraft.getInstance().getOverlay() != null) {
             return;
         }
 
         if (this.firstScreen == null) {
-            this.firstScreen = MinecraftClient.getInstance().currentScreen;
+            this.firstScreen = Minecraft.getInstance().screen;
         }
-        if (this.firstScreen != MinecraftClient.getInstance().currentScreen) {
+        if (this.firstScreen != Minecraft.getInstance().screen) {
             this.fadeOut = true;
         }
 
-        List<OrderedText> description = textRenderer.wrapLines(this.description, this.getWidth() - 7);
+        List<FormattedCharSequence> description = font.split(this.description, this.width() - 7);
         if (description.size() < 2) {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 0, 0, this.getWidth(), this.getHeight());
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 0, 0, this.width(), this.height());
         } else {
-            context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 0, 0, 0, 0, this.getWidth(), 11);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 0, 0, 0, 0, this.width(), 11);
             int y = 8;
             for (int i = 0; i < description.size(); i++) {
-                context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 0, 11, 0, y, this.getWidth(), 10);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 0, 11, 0, y, this.width(), 10);
                 y += 10;
             }
-            context.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE, 160, 32, 0, 21, 0, y, this.getWidth(), 11);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, 160, 32, 0, 21, 0, y, this.width(), 11);
         }
 
-        context.drawText(textRenderer, this.title, 7, 7, 0xFFFF00 | 0xFF000000, true);
+        graphics.text(font, this.title, 7, 7, 0xFFFF00 | 0xFF000000, true);
 
         int y = 18;
-        for (OrderedText line : description) {
-            context.drawText(textRenderer, line, 7, y, -1, true);
+        for (FormattedCharSequence line : description) {
+            graphics.text(font, line, 7, y, -1, true);
             y += 10;
         }
     }
 
     @Override
-    public int getHeight() {
-        return Toast.super.getHeight() + Math.max(1, MinecraftClient.getInstance().textRenderer.wrapLines(this.description, this.getWidth() - 7).size() - 1) * 10;
+    public int height() {
+        return Toast.super.height() + Math.max(1, Minecraft.getInstance().font.split(this.description, this.width() - 7).size() - 1) * 10;
     }
 }

@@ -3,9 +3,9 @@ package me.contaria.speedrunapi.config.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import me.contaria.speedrunapi.util.TextUtil;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Language;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,44 +38,44 @@ public interface SpeedrunOption<T> {
     /**
      * @return Returns the name of this option.
      */
-    default @NotNull Text getName() {
+    default @NotNull Component getName() {
         return TextUtil.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID());
     }
 
     /**
      * @return Returns the description of this option.
      */
-    default @Nullable Text getDescription() {
+    default @Nullable Component getDescription() {
         Language language = Language.getInstance();
         String description = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".description";
-        if (language.hasTranslation(description)) {
+        if (language.has(description)) {
             return TextUtil.translatable(description);
         }
         return null;
     }
 
     /**
-     * @return Returns the value of this option as a {@link Text}.
+     * @return Returns the value of this option as a {@link Component}.
      * @see SpeedrunOption#getDefaultText
      */
-    default @NotNull Text getText() {
+    default @NotNull Component getText() {
         Language language = Language.getInstance();
         String value = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value";
         String valueSpecified = value + "." + this.get();
-        if (language.hasTranslation(valueSpecified)) {
+        if (language.has(valueSpecified)) {
             return TextUtil.translatable(valueSpecified);
         }
-        if (language.hasTranslation(value)) {
+        if (language.has(value)) {
             return TextUtil.translatable(value, this.get());
         }
         return this.getDefaultText();
     }
 
     /**
-     * @return Returns the default {@link Text} returned by {@link SpeedrunOption#getText}.
+     * @return Returns the default {@link Component} returned by {@link SpeedrunOption#getText}.
      * @see SpeedrunOption#getText
      */
-    default @NotNull Text getDefaultText() {
+    default @NotNull Component getDefaultText() {
         return TextUtil.literal(this.getString());
     }
 
@@ -134,13 +134,13 @@ public interface SpeedrunOption<T> {
     boolean hasWidget();
 
     /**
-     * Creates an {@link ClickableWidget} to configure this option on the mods config screen.
+     * Creates an {@link AbstractWidget} to configure this option on the mods config screen.
      * <p>
      * X and y will be set by the config screen and should be left as 0, 0.
      * Width and height should be set to 150, 20 by default to fit the option list widget, unless you know what you're doing.
      *
-     * @return Returns a new {@link ClickableWidget} to be added to the config screen.
+     * @return Returns a new {@link AbstractWidget} to be added to the config screen.
      */
     @NotNull
-    ClickableWidget createWidget();
+    AbstractWidget createWidget();
 }
