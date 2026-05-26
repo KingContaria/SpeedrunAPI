@@ -17,7 +17,6 @@ import me.contaria.speedrunapi.config.exceptions.SpeedrunConfigAPIException;
 import me.contaria.speedrunapi.config.option.CustomFieldBasedOption;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.toast.SpeedrunConfigErrorToast;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
@@ -25,6 +24,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -303,8 +303,8 @@ public final class SpeedrunConfigAPI {
     public static void handleLoadException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to load {} config!", modID, e);
         Minecraft.getInstance().getToastManager().addToast(new SpeedrunConfigErrorToast(
-                TextUtil.translatable("speedrunapi.gui.toast.error.title"),
-                TextUtil.translatable("speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID)
+                Component.translatable("speedrunapi.gui.toast.error.title"),
+                Component.translatable("speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID)
         ));
     }
 
@@ -312,8 +312,8 @@ public final class SpeedrunConfigAPI {
     public static void handleSaveException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to save {} config!", modID, e);
         Minecraft.getInstance().getToastManager().addToast(new SpeedrunConfigErrorToast(
-                TextUtil.translatable("speedrunapi.gui.toast.error.title"),
-                TextUtil.translatable("speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID)
+                Component.translatable("speedrunapi.gui.toast.error.title"),
+                Component.translatable("speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID)
         ));
     }
 

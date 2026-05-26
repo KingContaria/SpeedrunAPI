@@ -7,7 +7,6 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfigScreenProvider;
 import me.contaria.speedrunapi.config.screen.SpeedrunModConfigsScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
@@ -110,8 +109,8 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
             this.mod = this.modContainer.getMetadata();
             this.icon = IdentifierUtil.of("speedrunapi", "mods/" + this.mod.getId() + "/icon");
 
-            this.name = TextUtil.literal(this.mod.getName());
-            this.version = TextUtil.literal(this.mod.getVersion().getFriendlyString().split("\\+")[0]).withStyle(ChatFormatting.GRAY);
+            this.name = Component.literal(this.mod.getName());
+            this.version = Component.literal(this.mod.getVersion().getFriendlyString().split("\\+")[0]).withStyle(ChatFormatting.GRAY);
             this.authors = this.createAuthorsText(this.mod.getAuthors());
             this.description = this.createDescription(this.mod.getDescription());
 
@@ -122,10 +121,10 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
             if (authors == null || authors.isEmpty()) {
                 return null;
             }
-            MutableComponent text = TextUtil.literal(" by ").withStyle(style -> style.withColor(ChatFormatting.GRAY).withItalic(true));
+            MutableComponent text = Component.literal(" by ").withStyle(style -> style.withColor(ChatFormatting.GRAY).withItalic(true));
             boolean shouldAddComma = false;
             for (Person person : this.mod.getAuthors()) {
-                MutableComponent author = TextUtil.literal(person.getName());
+                MutableComponent author = Component.literal(person.getName());
                 person.getContact().get("homepage").ifPresent(link -> {
                     try {
                         URI uri = new URI(link);
@@ -134,7 +133,7 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
                     }
                 });
                 if (shouldAddComma) {
-                    text.append(TextUtil.literal(", "));
+                    text.append(Component.literal(", "));
                 }
                 text = text.append(author);
                 shouldAddComma = true;
@@ -143,9 +142,9 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
         }
 
         private List<FormattedCharSequence> createDescription(String description) {
-            List<FormattedCharSequence> list = SpeedrunModConfigListWidget.this.minecraft.font.split(TextUtil.literal(description), SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
+            List<FormattedCharSequence> list = SpeedrunModConfigListWidget.this.minecraft.font.split(Component.literal(description), SpeedrunModConfigListWidget.this.getRowWidth() - 32 - 6);
             if (list.size() > 2) {
-                return ImmutableList.of(list.get(0), FormattedCharSequence.composite(list.get(1), TextUtil.literal("...").getVisualOrderText()));
+                return ImmutableList.of(list.get(0), FormattedCharSequence.composite(list.get(1), Component.literal("...").getVisualOrderText()));
             }
             return list;
         }
@@ -220,9 +219,9 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
             this.configScreenProvider = configScreenProvider;
             String configUnavailableKey = "speedrunapi.config." + this.mod.getId() + ".unavailable";
             if (Language.getInstance().has(configUnavailableKey)) {
-                this.unavailableTooltip = TextUtil.translatable(configUnavailableKey);
+                this.unavailableTooltip = Component.translatable(configUnavailableKey);
             } else {
-                this.unavailableTooltip = TextUtil.translatable("speedrunapi.gui.config.unavailable");
+                this.unavailableTooltip = Component.translatable("speedrunapi.gui.config.unavailable");
             }
         }
 
@@ -276,7 +275,7 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
     }
 
     public class NoModConfigsEntry extends ModConfigListEntry {
-        private final Component text = TextUtil.translatable("speedrunapi.gui.config.noConfigs");
+        private final Component text = Component.translatable("speedrunapi.gui.config.noConfigs");
 
         @Override
         public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {

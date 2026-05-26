@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import me.contaria.speedrunapi.SpeedrunAPI;
 import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunOptionListWidget;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -12,6 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -31,7 +31,7 @@ public class SpeedrunConfigScreen extends Screen {
     private boolean searchFieldOpen;
 
     public SpeedrunConfigScreen(SpeedrunConfigContainer<?> config, @Nullable Predicate<InputConstants.Key> inputListener, Screen parent) {
-        super(TextUtil.literal(config.getModContainer().getMetadata().getName()));
+        super(Component.literal(config.getModContainer().getMetadata().getName()));
         this.config = config;
         this.inputListener = inputListener;
         this.parent = parent;
@@ -55,7 +55,7 @@ public class SpeedrunConfigScreen extends Screen {
     @Override
     protected void init() {
         assert this.minecraft != null;
-        this.searchField = new EditBox(this.font, this.width / 2 - 100, 25, 200, 20, this.searchField, TextUtil.translatable("speedrunapi.gui.config.search"));
+        this.searchField = new EditBox(this.font, this.width / 2 - 100, 25, 200, 20, this.searchField, Component.translatable("speedrunapi.gui.config.search"));
         this.searchField.setVisible(this.searchFieldOpen);
         this.searchField.setResponder(string -> this.list.updateEntries(string));
         this.list = new SpeedrunOptionListWidget(this, this.config, this.minecraft, this.width, this.height - 57, 25, this.searchField.getValue());

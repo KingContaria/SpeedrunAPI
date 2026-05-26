@@ -1,6 +1,5 @@
 package me.contaria.speedrunapi.config.screen.widgets;
 
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -22,7 +21,7 @@ public class IconButtonWidget extends Button.Plain {
     private final boolean sprite;
 
     public IconButtonWidget(Identifier texture, int x, int y, OnPress onPress) {
-        this(texture, 0, 0, 16, 16, x, y, TextUtil.empty(), onPress, false);
+        this(texture, 0, 0, 16, 16, x, y, Component.empty(), onPress, false);
     }
 
     public IconButtonWidget(Identifier texture, int x, int y, Component title, OnPress onPress) {
@@ -30,11 +29,11 @@ public class IconButtonWidget extends Button.Plain {
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, OnPress onPress) {
-        this(texture, u, v, textureWidth, textureHeight, x, y, TextUtil.empty(), onPress, false);
+        this(texture, u, v, textureWidth, textureHeight, x, y, Component.empty(), onPress, false);
     }
 
     public IconButtonWidget(Identifier texture, int u, int v, int textureWidth, int textureHeight, int x, int y, Component title, OnPress onPress, boolean sprite) {
-        super(x, y, 20, 20, TextUtil.empty(), onPress, Supplier::get);
+        super(x, y, 20, 20, Component.empty(), onPress, Supplier::get);
         this.texture = texture;
         this.u = u;
         this.v = v;
