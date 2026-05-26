@@ -6,7 +6,6 @@ import me.contaria.speedrunapi.config.api.SpeedrunOption;
 import me.contaria.speedrunapi.config.api.annotations.Config;
 import me.contaria.speedrunapi.config.exceptions.InvalidConfigException;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -144,7 +143,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Override
     public @NotNull Component getName() {
         if (this.name != null) {
-            return TextUtil.translatable(this.name);
+            return Component.translatable(this.name);
         }
         return SpeedrunOption.super.getName();
     }
@@ -152,7 +151,7 @@ public abstract class FieldBasedOption<T> implements SpeedrunOption<T> {
     @Override
     public @Nullable Component getDescription() {
         if (this.description != null) {
-            return TextUtil.translatable(this.description);
+            return Component.translatable(this.description);
         }
         return SpeedrunOption.super.getDescription();
     }

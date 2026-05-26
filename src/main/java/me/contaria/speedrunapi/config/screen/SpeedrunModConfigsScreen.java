@@ -2,12 +2,12 @@ package me.contaria.speedrunapi.config.screen;
 
 import me.contaria.speedrunapi.config.SpeedrunConfigAPI;
 import me.contaria.speedrunapi.config.screen.widgets.list.SpeedrunModConfigListWidget;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
@@ -15,7 +15,7 @@ public class SpeedrunModConfigsScreen extends Screen {
     private final Screen parent;
 
     public SpeedrunModConfigsScreen(Screen parent) {
-        super(TextUtil.translatable("speedrunapi.gui.config.title"));
+        super(Component.translatable("speedrunapi.gui.config.title"));
         this.parent = parent;
     }
 

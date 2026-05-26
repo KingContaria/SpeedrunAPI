@@ -2,7 +2,6 @@ package me.contaria.speedrunapi.config.api;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -39,7 +38,7 @@ public interface SpeedrunOption<T> {
      * @return Returns the name of this option.
      */
     default @NotNull Component getName() {
-        return TextUtil.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID());
+        return Component.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID());
     }
 
     /**
@@ -49,7 +48,7 @@ public interface SpeedrunOption<T> {
         Language language = Language.getInstance();
         String description = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".description";
         if (language.has(description)) {
-            return TextUtil.translatable(description);
+            return Component.translatable(description);
         }
         return null;
     }
@@ -63,10 +62,10 @@ public interface SpeedrunOption<T> {
         String value = "speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value";
         String valueSpecified = value + "." + this.get();
         if (language.has(valueSpecified)) {
-            return TextUtil.translatable(valueSpecified);
+            return Component.translatable(valueSpecified);
         }
         if (language.has(value)) {
-            return TextUtil.translatable(value, this.get());
+            return Component.translatable(value, this.get());
         }
         return this.getDefaultText();
     }
@@ -76,7 +75,7 @@ public interface SpeedrunOption<T> {
      * @see SpeedrunOption#getText
      */
     default @NotNull Component getDefaultText() {
-        return TextUtil.literal(this.getString());
+        return Component.literal(this.getString());
     }
 
     /**

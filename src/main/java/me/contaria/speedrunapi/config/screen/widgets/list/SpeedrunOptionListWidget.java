@@ -5,7 +5,6 @@ import me.contaria.speedrunapi.config.SpeedrunConfigContainer;
 import me.contaria.speedrunapi.config.api.SpeedrunOption;
 import me.contaria.speedrunapi.config.screen.SpeedrunConfigScreen;
 import me.contaria.speedrunapi.config.screen.widgets.TextWidget;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -62,7 +61,7 @@ public class SpeedrunOptionListWidget extends ContainerObjectSelectionList<Speed
             if (!Language.getInstance().has(categoryTranslation) && Language.getInstance().has(category.getKey())) {
                 categoryTranslation = category.getKey();
             }
-            this.addEntry(new OptionCategoryEntry(TextUtil.translatable(categoryTranslation)));
+            this.addEntry(new OptionCategoryEntry(Component.translatable(categoryTranslation)));
             for (SpeedrunOption<?> option : category.getValue()) {
                 this.addEntry(new OptionEntry(option));
             }

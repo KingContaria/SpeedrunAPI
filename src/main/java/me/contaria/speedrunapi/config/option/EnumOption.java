@@ -7,7 +7,6 @@ import me.contaria.speedrunapi.config.api.SpeedrunConfigStorage;
 import me.contaria.speedrunapi.config.api.option.EnumTextProvider;
 import me.contaria.speedrunapi.config.exceptions.ReflectionConfigException;
 import me.contaria.speedrunapi.config.screen.widgets.option.EnumOptionButtonWidget;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -75,6 +74,6 @@ public class EnumOption extends FieldBasedOption<Enum> {
         if (value instanceof EnumTextProvider) {
             return ((EnumTextProvider) value).toText();
         }
-        return TextUtil.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value." + value.name());
+        return Component.translatable("speedrunapi.config." + this.getModID() + ".option." + this.getID() + ".value." + value.name());
     }
 }

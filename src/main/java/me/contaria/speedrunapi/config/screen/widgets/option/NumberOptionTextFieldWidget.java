@@ -3,12 +3,12 @@ package me.contaria.speedrunapi.config.screen.widgets.option;
 import me.contaria.speedrunapi.config.option.NumberOption;
 import me.contaria.speedrunapi.config.screen.widgets.IconButtonWidget;
 import me.contaria.speedrunapi.util.IdentifierUtil;
-import me.contaria.speedrunapi.util.TextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -23,10 +23,10 @@ public class NumberOptionTextFieldWidget<T extends NumberOption<?>> extends Abst
     private final Button applyButton;
 
     public NumberOptionTextFieldWidget(T option, int x, int y) {
-        super(x, y, 150, 20, TextUtil.empty(), null);
-        this.editBox = new EditBox(Minecraft.getInstance().font, x, y, 125, 20, TextUtil.empty());
+        super(x, y, 150, 20, Component.empty(), null);
+        this.editBox = new EditBox(Minecraft.getInstance().font, x, y, 125, 20, Component.empty());
         this.option = option;
-        this.applyButton = new IconButtonWidget(APPLY_SPRITE, 0, 0, 18, 18, x + 130, y, TextUtil.empty(), button -> this.apply(), true);
+        this.applyButton = new IconButtonWidget(APPLY_SPRITE, 0, 0, 18, 18, x + 130, y, Component.empty(), button -> this.apply(), true);
         this.updateText();
         this.editBox.setResponder(string -> this.applyButton.active = !this.option.get().toString().equals(string));
     }
