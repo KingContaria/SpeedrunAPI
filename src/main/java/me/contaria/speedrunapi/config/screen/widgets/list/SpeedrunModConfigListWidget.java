@@ -190,7 +190,7 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
 
             graphics.blit(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, this.hasIcon ? this.icon : NO_MOD_ICON, this.getContentX(), this.getContentY(), 0.0f, 0.0f, 32, 32, 32, 32);
 
-            if (client.options.touchscreen().get() || hovered) {
+            if (hovered) {
                 this.renderIfHovered(graphics, mouseX, mouseY);
             }
         }
@@ -269,7 +269,7 @@ public class SpeedrunModConfigListWidget extends AbstractSelectionList<SpeedrunM
                 return false;
             }
             SpeedrunModConfigListWidget.this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
-            SpeedrunModConfigListWidget.this.minecraft.setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
+            SpeedrunModConfigListWidget.this.minecraft.gui.setScreen(this.configScreenProvider.createConfigScreen(SpeedrunModConfigListWidget.this.parent));
             return true;
         }
     }

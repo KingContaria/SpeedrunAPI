@@ -97,7 +97,7 @@ public class SpeedrunConfigScreen extends Screen {
     @Override
     public void onClose() {
         assert this.minecraft != null;
-        this.minecraft.setScreen(this.parent);
+        this.minecraft.gui.setScreen(this.parent);
         this.config.getConfig().onConfigScreenClose(this, this.parent);
     }
 

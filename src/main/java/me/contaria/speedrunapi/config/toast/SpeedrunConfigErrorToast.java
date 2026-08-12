@@ -38,14 +38,14 @@ public class SpeedrunConfigErrorToast implements Toast {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long fullyVisibleForMs) {
-        if (Minecraft.getInstance().getOverlay() != null) {
+        if (Minecraft.getInstance().gui.overlay() != null) {
             return;
         }
 
         if (this.firstScreen == null) {
-            this.firstScreen = Minecraft.getInstance().screen;
+            this.firstScreen = Minecraft.getInstance().gui.screen();
         }
-        if (this.firstScreen != Minecraft.getInstance().screen) {
+        if (this.firstScreen != Minecraft.getInstance().gui.screen()) {
             this.fadeOut = true;
         }
 
