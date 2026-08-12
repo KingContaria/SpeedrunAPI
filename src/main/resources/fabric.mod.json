@@ -13,8 +13,8 @@
 		}
 	],
 	"contact": {
-		"sources": "https://github.com/Dustiyn/SpeedrunAPI",
-		"issues": "https://github.com/Dustiyn/SpeedrunAPI/issues"
+		"sources": "https://github.com/WRChip/SpeedrunAPI",
+		"issues": "https://github.com/WRChip/SpeedrunAPI/issues"
 	},
 	"license": "MIT",
 	"environment": "*",
