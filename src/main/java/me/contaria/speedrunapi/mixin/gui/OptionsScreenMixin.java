@@ -25,7 +25,7 @@ public abstract class OptionsScreenMixin extends Screen {
     private void addSpeedrunConfigButton(CallbackInfo ci) {
         this.configButton = this.addRenderableWidget(new IconButtonWidget(IdentifierUtil.ofVanilla("textures/item/writable_book.png"), this.width / 2 + 159, 29, Component.translatable("speedrunapi.gui.config.button"), button -> {
             assert this.minecraft != null;
-            this.minecraft.setScreen(new SpeedrunModConfigsScreen(this));
+            this.minecraft.gui.setScreen(new SpeedrunModConfigsScreen(this));
         }));
     }
 

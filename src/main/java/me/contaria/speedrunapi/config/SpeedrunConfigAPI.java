@@ -302,7 +302,7 @@ public final class SpeedrunConfigAPI {
     @ApiStatus.Internal
     public static void handleLoadException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to load {} config!", modID, e);
-        Minecraft.getInstance().getToastManager().addToast(new SpeedrunConfigErrorToast(
+        Minecraft.getInstance().gui.toastManager().addToast(new SpeedrunConfigErrorToast(
                 Component.translatable("speedrunapi.gui.toast.error.title"),
                 Component.translatable("speedrunapi.gui.toast.error.description.load", e.getClass().getSimpleName(), modID)
         ));
@@ -311,7 +311,7 @@ public final class SpeedrunConfigAPI {
     @ApiStatus.Internal
     public static void handleSaveException(String modID, Exception e) {
         SpeedrunAPI.LOGGER.error("Failed to save {} config!", modID, e);
-        Minecraft.getInstance().getToastManager().addToast(new SpeedrunConfigErrorToast(
+        Minecraft.getInstance().gui.toastManager().addToast(new SpeedrunConfigErrorToast(
                 Component.translatable("speedrunapi.gui.toast.error.title"),
                 Component.translatable("speedrunapi.gui.toast.error.description.save", e.getClass().getSimpleName(), modID)
         ));
